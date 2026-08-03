@@ -1,0 +1,29 @@
+{
+  "name": "@facet-ui/playground",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Roblox playground that consumes the working-tree registry",
+  "scripts": {
+    "build": "pnpm run sync && rbxtsc -p tsconfig.json",
+    "watch": "rbxtsc -p tsconfig.json -w",
+    "lint": "biome check src",
+    "lint:fix": "biome check src --write --unsafe",
+    "typecheck": "pnpm run sync && tsc -p tsconfig.json --noEmit",
+    "place": "rojo build default.project.json -o playground.rbxlx",
+    "sync": "node --import tsx ../../scripts/sync-playground.ts"
+  },
+  "dependencies": {
+    "@facet-ui/react-variants": "workspace:*",
+    "@lattice-ui/react-runtime": "^0.7.0",
+    "@rbxts/react": "17.3.7-ts.1",
+    "@rbxts/react-roblox": "17.3.7-ts.1",
+    "@rbxts/services": "^1.6.0"
+  },
+  "devDependencies": {
+    "@facet-ui/theme": "workspace:*",
+    "@rbxts/compiler-types": "3.0.0-types.0",
+    "@rbxts/types": "^1.0.938",
+    "roblox-ts": "^3.0.0",
+    "vela-rbxts": "^0.6.0"
+  }
+}

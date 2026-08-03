@@ -1,0 +1,38 @@
+{
+  "name": "facet-ui",
+  "version": "0.1.0",
+  "private": false,
+  "type": "module",
+  "description": "Facet CLI \u2014 copy Facet components into your roblox-ts project",
+  "license": "MIT",
+  "homepage": "https://facet.astra-void.xyz",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "bin": {
+    "facet-ui": "dist/index.js",
+    "facet": "dist/index.js"
+  },
+  "files": [
+    "dist",
+    "templates",
+    "README.md"
+  ],
+  "engines": {
+    "node": ">=20"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/astra-void/facet.git",
+    "directory": "packages/tools/cli"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "lint": "biome check src",
+    "lint:fix": "biome check src --write --unsafe",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "watch": "tsc -p tsconfig.json -w"
+  },
+  "dependencies": {
+    "@facet-ui/theme": "workspace:*"
+  }
+}

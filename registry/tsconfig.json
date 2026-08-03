@@ -1,0 +1,17 @@
+{
+  "extends": "../tsconfig.base.json",
+  "compilerOptions": {
+    "noEmit": true,
+    "baseUrl": ".",
+    "rootDir": "src",
+    "paths": {
+      // Registry sources address each other through `~/`. The CLI rewrites this
+      // prefix to the consumer's own directories at copy time, which is why no
+      // component may use a relative import across directories.
+      "~/*": ["src/*"]
+    },
+    "typeRoots": ["./node_modules/@rbxts", "../node_modules/@rbxts"],
+    "types": ["types", "compiler-types"]
+  },
+  "include": ["src", "types"]
+}

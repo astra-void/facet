@@ -1,0 +1,43 @@
+{
+  "name": "facet-monorepo",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Facet \u2014 copy-in UI components for roblox-ts, built on Lattice UI and Vela",
+  "scripts": {
+    "facet": "node --import tsx ./packages/tools/cli/src/index.ts",
+    "registry:build": "node --import tsx ./scripts/build-registry.ts",
+    "registry:check": "node --import tsx ./scripts/build-registry.ts --check",
+    "sync:playground": "node --import tsx ./scripts/sync-playground.ts",
+    "build": "turbo run build",
+    "watch": "turbo run watch",
+    "typecheck": "turbo run typecheck",
+    "test": "vitest run --passWithNoTests",
+    "lint": "turbo run lint && pnpm -w biome check scripts",
+    "lint:fix": "turbo run lint:fix && pnpm -w biome check scripts --write --unsafe",
+    "format": "pnpm -w biome format . --write",
+    "format:check": "pnpm -w biome format .",
+    "check:fast": "pnpm run lint && pnpm run typecheck && pnpm run registry:check",
+    "check": "pnpm run check:fast && pnpm run test",
+    "changeset:add": "changeset",
+    "changeset:version": "changeset version",
+    "changeset:status": "changeset status --verbose",
+    "release:prepare": "pnpm run check && pnpm run changeset:version && pnpm install --lockfile-only",
+    "release:publish": "pnpm run build && pnpm -r --filter \"./packages/*/*\" publish --access public --no-git-checks --report-summary",
+    "release:publish:dry-run": "pnpm run build && pnpm -r --filter \"./packages/*/*\" publish --dry-run --access public --no-git-checks --report-summary"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^2.4.11",
+    "@changesets/cli": "^2.30.0",
+    "@rbxts/compiler-types": "3.0.0-types.0",
+    "@rbxts/react": "17.3.7-ts.1",
+    "@rbxts/react-roblox": "17.3.7-ts.1",
+    "@rbxts/types": "^1.0.938",
+    "@types/node": "^25.5.0",
+    "roblox-ts": "^3.0.0",
+    "tsx": "^4.21.0",
+    "turbo": "^2.9.15",
+    "typescript": "5.9.3",
+    "vitest": "^4.1.1"
+  },
+  "packageManager": "pnpm@11.6.0"
+}

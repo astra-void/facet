@@ -1,0 +1,19 @@
+{
+  "name": "@facet-ui/registry",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Source of truth for every component `facet add` copies into a project",
+  "scripts": {
+    "lint": "biome check src registry.ts",
+    "lint:fix": "biome check src registry.ts --write --unsafe",
+    "typecheck": "tsc -p tsconfig.json --noEmit"
+  },
+  "dependencies": {
+    "@facet-ui/react-variants": "workspace:*"
+  },
+  "devDependencies": {
+    "@lattice-ui/react-runtime": "^0.7.0",
+    "@rbxts/react": "17.3.7-ts.1",
+    "vela-rbxts": "^0.6.0"
+  }
+}

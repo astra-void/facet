@@ -1,0 +1,9 @@
+{
+  "name": "variants",
+  "tree": {
+    "$path": "out",
+    "out": {
+      "$path": "out"
+    }
+  }
+}

@@ -1,0 +1,36 @@
+{
+  "name": "facet-playground",
+  "tree": {
+    "$className": "DataModel",
+    "ReplicatedStorage": {
+      "$className": "ReplicatedStorage",
+      "node_modules": {
+        "$className": "Folder",
+        "@facet-ui": {
+          "$path": "node_modules/@facet-ui"
+        },
+        "@lattice-ui": {
+          "$path": "node_modules/@lattice-ui"
+        },
+        "@rbxts": {
+          "$path": "node_modules/@rbxts"
+        }
+      },
+      "TS": {
+        "$path": "include"
+      },
+      "shared": {
+        "$path": "out/shared"
+      }
+    },
+    "StarterPlayer": {
+      "$className": "StarterPlayer",
+      "StarterPlayerScripts": {
+        "$className": "StarterPlayerScripts",
+        "Playground": {
+          "$path": "out/client"
+        }
+      }
+    }
+  }
+}

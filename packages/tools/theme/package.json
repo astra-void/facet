@@ -1,0 +1,46 @@
+{
+  "name": "@facet-ui/theme",
+  "version": "0.1.0",
+  "private": false,
+  "type": "module",
+  "description": "Facet semantic theme tokens as a Vela config preset",
+  "license": "MIT",
+  "homepage": "https://facet.astra-void.xyz",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "!dist/*.tsbuildinfo"
+  ],
+  "engines": {
+    "node": ">=20"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/astra-void/facet.git",
+    "directory": "packages/tools/theme"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "lint": "biome check src",
+    "lint:fix": "biome check src --write --unsafe",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "watch": "tsc -p tsconfig.json -w"
+  },
+  "peerDependencies": {
+    "vela-rbxts": ">=0.6.0"
+  },
+  "peerDependenciesMeta": {
+    "vela-rbxts": {
+      "optional": true
+    }
+  }
+}
