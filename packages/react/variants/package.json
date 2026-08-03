@@ -12,7 +12,8 @@
     "default.project.json",
     "out",
     "src",
-    "README.md"
+    "README.md",
+    "LICENSE"
   ],
   "repository": {
     "type": "git",
@@ -31,5 +32,18 @@
   },
   "peerDependencies": {
     "@rbxts/react": "^17.3.7-ts.1"
-  }
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "keywords": [
+    "roblox",
+    "roblox-ts",
+    "rbxts",
+    "react",
+    "ui",
+    "variants",
+    "cva",
+    "facet"
+  ]
 }

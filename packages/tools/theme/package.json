@@ -18,7 +18,8 @@
   "files": [
     "dist",
     "README.md",
-    "!dist/*.tsbuildinfo"
+    "!dist/*.tsbuildinfo",
+    "LICENSE"
   ],
   "engines": {
     "node": ">=20"
@@ -42,5 +43,17 @@
     "vela-rbxts": {
       "optional": true
     }
-  }
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "keywords": [
+    "roblox",
+    "roblox-ts",
+    "rbxts",
+    "vela",
+    "theme",
+    "tokens",
+    "facet"
+  ]
 }
