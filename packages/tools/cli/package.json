@@ -1,6 +1,6 @@
 {
   "name": "facet-rbxts",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "private": false,
   "type": "module",
   "description": "Facet CLI — copy Facet components into your roblox-ts project",
