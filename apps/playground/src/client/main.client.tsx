@@ -1,18 +1,58 @@
 import React, { StrictMode } from "@rbxts/react";
 import { createPortal, createRoot } from "@rbxts/react-roblox";
 import { Players } from "@rbxts/services";
+import { Badge } from "../shared/ui/badge";
 import { Button } from "../shared/ui/button";
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "../shared/ui/card";
+import { Label } from "../shared/ui/label";
+import { Separator } from "../shared/ui/separator";
 
-function Playground() {
+function Buttons() {
   return (
-    <frame className="h-full w-full flex-col items-center justify-center gap-4 bg-background">
+    <frame className="w-full flex-row items-center gap-2" AutomaticSize={Enum.AutomaticSize.Y}>
       <Button onClick={() => print("default")} Text="Default" />
       <Button variant="secondary" Text="Secondary" />
       <Button variant="outline" Text="Outline" />
       <Button variant="destructive" Text="Destructive" />
       <Button variant="ghost" Text="Ghost" />
-      <Button size="lg" Text="Large" />
       <Button disabled Text="Disabled" />
+    </frame>
+  );
+}
+
+function Badges() {
+  return (
+    <frame className="w-full flex-row items-center gap-2" AutomaticSize={Enum.AutomaticSize.Y}>
+      <Badge Text="Default" />
+      <Badge variant="secondary" Text="Secondary" />
+      <Badge variant="destructive" Text="Destructive" />
+      <Badge variant="outline" Text="Outline" />
+    </frame>
+  );
+}
+
+function Playground() {
+  return (
+    <frame className="h-full w-full flex-col items-center justify-center gap-4 bg-background p-6">
+      <frame className="w-96 flex-col gap-4" AutomaticSize={Enum.AutomaticSize.Y}>
+        <Label Text="Components" />
+        <Separator />
+        <Buttons />
+        <Badges />
+        <Card>
+          <CardHeader>
+            <CardTitle Text="Shop" />
+            <CardDescription Text="Everything here is a copied-in component, styled only by Vela classes." />
+          </CardHeader>
+          <CardContent>
+            <Label Text="Nothing for sale yet." />
+          </CardContent>
+          <CardFooter>
+            <Button size="sm" Text="Buy" />
+            <Button size="sm" variant="outline" Text="Cancel" />
+          </CardFooter>
+        </Card>
+      </frame>
     </frame>
   );
 }
