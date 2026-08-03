@@ -9,19 +9,21 @@ allowBuilds:
 onlyBuiltDependencies:
   - esbuild
 
+# Vela releases are consumed the day they ship, which the minimum-release-age
+# policy would otherwise reject. Superseded versions are dropped on each bump.
 minimumReleaseAgeExclude:
-  - '@vela-rbxts/compiler-darwin-arm64@0.6.0'
-  - '@vela-rbxts/compiler-darwin-x64@0.6.0'
-  - '@vela-rbxts/compiler-linux-arm64-gnu@0.6.0'
-  - '@vela-rbxts/compiler-linux-x64-gnu@0.6.0'
-  - '@vela-rbxts/compiler-linux-x64-musl@0.6.0'
-  - '@vela-rbxts/compiler-win32-x64-msvc@0.6.0'
-  - '@vela-rbxts/compiler@0.6.0'
-  - '@vela-rbxts/config@0.6.0'
-  - '@vela-rbxts/ir@0.6.0'
-  - '@vela-rbxts/rbxtsc-host@0.6.0'
-  - '@vela-rbxts/types@0.6.0'
-  - vela-rbxts@0.6.0
+  - '@vela-rbxts/compiler-darwin-arm64@0.7.0'
+  - '@vela-rbxts/compiler-darwin-x64@0.7.0'
+  - '@vela-rbxts/compiler-linux-arm64-gnu@0.7.0'
+  - '@vela-rbxts/compiler-linux-x64-gnu@0.7.0'
+  - '@vela-rbxts/compiler-linux-x64-musl@0.7.0'
+  - '@vela-rbxts/compiler-win32-x64-msvc@0.7.0'
+  - '@vela-rbxts/compiler@0.7.0'
+  - '@vela-rbxts/config@0.7.0'
+  - '@vela-rbxts/ir@0.7.0'
+  - '@vela-rbxts/rbxtsc-host@0.7.0'
+  - '@vela-rbxts/types@0.7.0'
+  - vela-rbxts@0.7.0
 
 # Not `hoisted`: roblox-ts derives its node_modules root from the nearest
 # package.json, so an app in a subdirectory needs its dependencies physically

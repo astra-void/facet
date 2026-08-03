@@ -14,6 +14,9 @@ importers:
       '@changesets/cli':
         specifier: ^2.30.0
         version: 2.31.1(@types/node@25.9.5)
+      '@facet-ui/theme':
+        specifier: workspace:*
+        version: link:packages/tools/theme
       '@rbxts/compiler-types':
         specifier: 3.0.0-types.0
         version: 3.0.0-types.0
@@ -34,7 +37,7 @@ importers:
         version: 3.0.0
       tsx:
         specifier: ^4.21.0
-        version: 4.23.1
+        version: 4.23.4
       turbo:
         specifier: ^2.9.15
         version: 2.10.8
@@ -43,7 +46,7 @@ importers:
         version: 5.9.3
       vitest:
         specifier: ^4.1.1
-        version: 4.1.10(@types/node@25.9.5)(vite@8.2.0(@types/node@25.9.5)(esbuild@0.28.1)(tsx@4.23.1))
+        version: 4.1.10(@types/node@25.9.5)(vite@8.2.0(@types/node@25.9.5)(esbuild@0.28.1)(tsx@4.23.4))
 
   apps/playground:
     dependencies:
@@ -53,6 +56,63 @@ importers:
       '@lattice-ui/react-runtime':
         specifier: ^0.7.0
         version: 0.7.0(@rbxts/react-roblox@17.3.7-ts.1(@rbxts/react@17.3.7-ts.1))(@rbxts/react@17.3.7-ts.1)
+      '@rbxts-js/boolean':
+        specifier: ^1.2.3-ts.1
+        version: 1.2.3-ts.1
+      '@rbxts-js/collections':
+        specifier: ^1.2.3-ts.1
+        version: 1.2.3-ts.1
+      '@rbxts-js/console':
+        specifier: ^1.2.3-ts.1
+        version: 1.2.3-ts.1
+      '@rbxts-js/es7-types':
+        specifier: ^1.2.3-ts.1
+        version: 1.2.3-ts.1
+      '@rbxts-js/instance-of':
+        specifier: ^1.2.3-ts.1
+        version: 1.2.3-ts.1
+      '@rbxts-js/luau-polyfill':
+        specifier: ^1.2.3-ts.1
+        version: 1.2.3-ts.1
+      '@rbxts-js/math':
+        specifier: ^1.2.3-ts.1
+        version: 1.2.3-ts.1
+      '@rbxts-js/number':
+        specifier: ^1.2.3-ts.1
+        version: 1.2.3-ts.1
+      '@rbxts-js/react':
+        specifier: ^17.3.7-ts.1
+        version: 17.3.7-ts.1
+      '@rbxts-js/react-globals':
+        specifier: ^17.3.7-ts.1
+        version: 17.3.7-ts.1
+      '@rbxts-js/react-reconciler':
+        specifier: ^17.3.7-ts.1
+        version: 17.3.7-ts.1
+      '@rbxts-js/react-roblox':
+        specifier: ^17.3.7-ts.1
+        version: 17.3.7-ts.1
+      '@rbxts-js/roblox-lua-promise':
+        specifier: ^3.5.0-ts.2
+        version: 3.5.0-ts.2
+      '@rbxts-js/safe-flags':
+        specifier: ^17.3.7-ts.1
+        version: 17.3.7-ts.1
+      '@rbxts-js/scheduler':
+        specifier: ^17.3.7-ts.1
+        version: 17.3.7-ts.1
+      '@rbxts-js/shared':
+        specifier: ^17.3.7-ts.1
+        version: 17.3.7-ts.1
+      '@rbxts-js/string':
+        specifier: ^1.2.3-ts.1
+        version: 1.2.3-ts.1
+      '@rbxts-js/symbol-luau':
+        specifier: ^1.0.0-ts.1
+        version: 1.0.0-ts.1
+      '@rbxts-js/timers':
+        specifier: ^1.2.3-ts.1
+        version: 1.2.3-ts.1
       '@rbxts/react':
         specifier: 17.3.7-ts.1
         version: 17.3.7-ts.1
@@ -63,9 +123,6 @@ importers:
         specifier: ^1.6.0
         version: 1.6.0
     devDependencies:
-      '@facet-ui/theme':
-        specifier: workspace:*
-        version: link:../../packages/tools/theme
       '@rbxts/compiler-types':
         specifier: 3.0.0-types.0
         version: 3.0.0-types.0
@@ -76,8 +133,8 @@ importers:
         specifier: ^3.0.0
         version: 3.0.0
       vela-rbxts:
-        specifier: ^0.6.0
-        version: 0.6.0
+        specifier: ^0.7.0
+        version: 0.7.0
 
   packages/react/variants:
     devDependencies:
@@ -95,7 +152,7 @@ importers:
     dependencies:
       vela-rbxts:
         specifier: '>=0.6.0'
-        version: 0.6.0
+        version: 0.7.0
 
   registry:
     dependencies:
@@ -110,8 +167,8 @@ importers:
         specifier: 17.3.7-ts.1
         version: 17.3.7-ts.1
       vela-rbxts:
-        specifier: ^0.6.0
-        version: 0.6.0
+        specifier: ^0.7.0
+        version: 0.7.0
 
 packages:
 
@@ -673,63 +730,63 @@ packages:
   '@types/node@25.9.5':
     resolution: {integrity: sha512-OScDchr2fwuUmWdf4kZ9h7PcJiYDVInhJizG/biAq3cAvqwYktuy/TYGGdZNMtNTFUP7rnb0NU4TUdm82kt4Rg==}
 
-  '@vela-rbxts/compiler-darwin-arm64@0.6.0':
-    resolution: {integrity: sha512-37uwpH9QXEZF9hDgKlsl9Iz/c+FvvoMjB28TDvsLwtTE18N2kM0xVId7U4nq4dlNqno22jKtjOML85PH2nmkXg==}
+  '@vela-rbxts/compiler-darwin-arm64@0.7.0':
+    resolution: {integrity: sha512-16LQTWHJe99dbRpgyF2grWb16psS7s4oklNEtBuHcUZ8MbWNx22g2dvN8uXncJ0feXBDVgbaqZyed1kqiUd8aw==}
     engines: {node: '>=20'}
     cpu: [arm64]
     os: [darwin]
 
-  '@vela-rbxts/compiler-darwin-x64@0.6.0':
-    resolution: {integrity: sha512-WDoIQmItmj0isvO+15mH8gpOkc26LhSDF0tpdbxTs5XkJKgNpqkAaWdu+lnRS9EpomAdhK1DgYbw6M5hbR1Rgg==}
+  '@vela-rbxts/compiler-darwin-x64@0.7.0':
+    resolution: {integrity: sha512-tXCy43394R6XrcfqWFbiSINnv7ceyXOSxPm7nXtfkzzeSYAZoZ9H9UOyGcWhjjQk4cP3nJzLXmGDxZ7eXx/04A==}
     engines: {node: '>=20'}
     cpu: [x64]
     os: [darwin]
 
-  '@vela-rbxts/compiler-linux-arm64-gnu@0.6.0':
-    resolution: {integrity: sha512-fuhqrJhI8d8Z0uxNgYmq0iv0XbJbhRSybX1YpZ2K+oeQN27G6G8qh/YjG9LY35ypZFKLiE0tXK22llzjc4HaAw==}
+  '@vela-rbxts/compiler-linux-arm64-gnu@0.7.0':
+    resolution: {integrity: sha512-s1kaSP7uo1N0EMFg+34eJyGXhD8AMsktcbzLQifdMt+3/QXIo8i7o1zD7/IZ99/xNbtqs1IW3HvQXG02Xc4dsA==}
     engines: {node: '>=20'}
     cpu: [arm64]
     os: [linux]
     libc: [glibc]
 
-  '@vela-rbxts/compiler-linux-x64-gnu@0.6.0':
-    resolution: {integrity: sha512-oMCp0xVXFxDGA+BbM5ux2ibhkcOZhFIQ+ImY5kwXxN/N5Xrjnkra5AsfOG4E+fjB25aWQ8hdQnkOIUUp7J5BAw==}
+  '@vela-rbxts/compiler-linux-x64-gnu@0.7.0':
+    resolution: {integrity: sha512-ZBe2E6pIrG4fxHDtXZ9o3HQ39i8fykCWittWNJKeh8qgqCDMuKSB7B88/iDV8JOot9CQw/rSesLEd8q1RVfvzw==}
     engines: {node: '>=20'}
     cpu: [x64]
     os: [linux]
     libc: [glibc]
 
-  '@vela-rbxts/compiler-linux-x64-musl@0.6.0':
-    resolution: {integrity: sha512-u2s6PWCP2wopt1mwt2pkSwBqh7b/Kz39Gn4b+xuiTa0J7m4qWMPwKm7cMgjh+qcAw4Hm2EhIfqyUlOtvMbwCCg==}
+  '@vela-rbxts/compiler-linux-x64-musl@0.7.0':
+    resolution: {integrity: sha512-MnPCI570RWlybGwqXNFWTEdZeOIZxB/wF6j+dOXoGGtHuyzmrjlkPAJSrBTg3IithE2HAnm1MoXbXc9Alyyf3Q==}
     engines: {node: '>=20'}
     cpu: [x64]
     os: [linux]
     libc: [musl]
 
-  '@vela-rbxts/compiler-win32-x64-msvc@0.6.0':
-    resolution: {integrity: sha512-wN17RZclKRnl6NbP9goVoL3NnhO3nK0K1qOdXIZ21t1KHYq/zrl4Na7HS5yH8m65DpoaT30vMmZKqfC6T/iChA==}
+  '@vela-rbxts/compiler-win32-x64-msvc@0.7.0':
+    resolution: {integrity: sha512-80OgFPM+6WtGQmNHH7OdzlxRww5BbbpByZXGwWW4jw9R59ouoGuvCwucYL2yBAKy1fXGqwfn2xTV05DZetVzVQ==}
     engines: {node: '>=20'}
     cpu: [x64]
     os: [win32]
 
-  '@vela-rbxts/compiler@0.6.0':
-    resolution: {integrity: sha512-jG8+t2eMKd1flPv2a8AezLdoZjZ+wjtAZoSDiadtaOSCbsGqaflI+ZyYObjGCqbvzNZc9b849B6yhameOzxHdg==}
+  '@vela-rbxts/compiler@0.7.0':
+    resolution: {integrity: sha512-wB35xu3NjPo8LQ1Apara7k1VU8xq+m84dhGR0qdgXQOzUNA9DmOPzINmIhrIZv06T8tr4WbovfDnEXxsLj29Kw==}
     engines: {node: '>=20'}
 
-  '@vela-rbxts/config@0.6.0':
-    resolution: {integrity: sha512-wZCPfxtOCNOIh8GTyJh4h22Bj40WX8qc7kDBAINBio+Fi9Tr0XR1505pvsH9TNM1Kq//nIqjLEmfYG/KD7+Lzw==}
+  '@vela-rbxts/config@0.7.0':
+    resolution: {integrity: sha512-zx06LIXVkLylnAjmO8I/P/14bzFZ/2OKYqAPkfoL9FiRsQQuxgs+P6ysyglsI+5W+WqE2X1E4GYNNbCjuHQBAg==}
     engines: {node: '>=20'}
 
-  '@vela-rbxts/ir@0.6.0':
-    resolution: {integrity: sha512-13cNArG3+EXxjjwvIfCY3tY2TvS2gshVfRbmV9B4hh4MkVGGoXqydwKvTIeWbhpN2IbOvku4SL6O+s/Q3uRP+A==}
+  '@vela-rbxts/ir@0.7.0':
+    resolution: {integrity: sha512-XhtmS/zOpIvUoZlpAhePPvPJoAne1MqknvkGEjIh0S1zfUC2sWLSu4oFjfc87uH11z3ktrXR/Ge1IBcepRqYTQ==}
     engines: {node: '>=20'}
 
-  '@vela-rbxts/rbxtsc-host@0.6.0':
-    resolution: {integrity: sha512-5S0gs/w27k5d0UiwKJWVoXvM1NyGfdC0tb+yOlxFl9+gRvIFZ+0elWC/UPU3h6aj9hl1kRxXNJnzK5Fi1TFsqw==}
+  '@vela-rbxts/rbxtsc-host@0.7.0':
+    resolution: {integrity: sha512-71V6lL+fEGQTs7XNYTjaJcRUNOM5C0D/1+AUaSKaQgHlYR+LCKNp91z+EcKB4Kr8LFLXKtePD3jwByF27teyvQ==}
     engines: {node: '>=20'}
 
-  '@vela-rbxts/types@0.6.0':
-    resolution: {integrity: sha512-1Ur+R3UC8euiCLbZzFwa2M3AMgfqeBhZ2sfWXuCd7Dr8Pn9q+K64OulLKPKMh1OXHWkowLsAl9gzLa2k4Jgaxg==}
+  '@vela-rbxts/types@0.7.0':
+    resolution: {integrity: sha512-xi5OM6P9bucuPrnStG4TyYBNB3+hHOxi/kGlxVEtpM3IwhwJYuWCKqTPwW6wMWEr7hyvcldgqvXCrtLmR97cCA==}
     engines: {node: '>=20'}
 
   '@vitest/expect@4.1.10':
@@ -1331,8 +1388,8 @@ packages:
   tslib@2.8.1:
     resolution: {integrity: sha512-oJFu94HQb+KVduSUQL7wnpmqnfmLsOA/nAh6b6EH0wCEoK0/mPeXU6c3wKDV83MkOuHPRHtSXKKU99IBazS/2w==}
 
-  tsx@4.23.1:
-    resolution: {integrity: sha512-GQHnkIfxyx1wYCOS/wonik5MVRZU9hi1TEZmzGZSCJB1y9YgoZ8H6itNE/u4suE+yLmOzuE4E5S4TZ/ZX2wcWQ==}
+  tsx@4.23.4:
+    resolution: {integrity: sha512-ZiUQ8oT/KzN51mJUWPqARYqwFLFJZtGZipRkw1ynHMr9vy3eU77m5yfF3Gzm6meEg/beW+lUu3fHYgskTN2oVQ==}
     engines: {node: '>=18.0.0'}
     hasBin: true
 
@@ -1361,8 +1418,8 @@ packages:
     resolution: {integrity: sha512-gptHNQghINnc/vTGIk0SOFGFNXw7JVrlRUtConJRlvaw6DuX0wO5Jeko9sWrMBhh+PsYAZ7oXAiOnf/UKogyiw==}
     engines: {node: '>= 10.0.0'}
 
-  vela-rbxts@0.6.0:
-    resolution: {integrity: sha512-iuEPT5QF7OsyYhyMV/J3HbZmIdsyraBMoenvc2zij35XVCGi3YED9cjISgGjSqnfOwXLXFspdiEGSB09dlldog==}
+  vela-rbxts@0.7.0:
+    resolution: {integrity: sha512-Co5FKEd47+Ky1w6HfvhyQUdrAZt/bbYZcOQLrL7YQ/osh7D5PGl7BYPeXlvcdD8Nu93M85W1jIinW960jLPNrg==}
     engines: {node: '>=20'}
 
   vite@8.2.0:
@@ -2011,49 +2068,49 @@ snapshots:
     dependencies:
       undici-types: 7.24.6
 
-  '@vela-rbxts/compiler-darwin-arm64@0.6.0':
+  '@vela-rbxts/compiler-darwin-arm64@0.7.0':
     optional: true
 
-  '@vela-rbxts/compiler-darwin-x64@0.6.0':
+  '@vela-rbxts/compiler-darwin-x64@0.7.0':
     optional: true
 
-  '@vela-rbxts/compiler-linux-arm64-gnu@0.6.0':
+  '@vela-rbxts/compiler-linux-arm64-gnu@0.7.0':
     optional: true
 
-  '@vela-rbxts/compiler-linux-x64-gnu@0.6.0':
+  '@vela-rbxts/compiler-linux-x64-gnu@0.7.0':
     optional: true
 
-  '@vela-rbxts/compiler-linux-x64-musl@0.6.0':
+  '@vela-rbxts/compiler-linux-x64-musl@0.7.0':
     optional: true
 
-  '@vela-rbxts/compiler-win32-x64-msvc@0.6.0':
+  '@vela-rbxts/compiler-win32-x64-msvc@0.7.0':
     optional: true
 
-  '@vela-rbxts/compiler@0.6.0':
+  '@vela-rbxts/compiler@0.7.0':
     optionalDependencies:
-      '@vela-rbxts/compiler-darwin-arm64': 0.6.0
-      '@vela-rbxts/compiler-darwin-x64': 0.6.0
-      '@vela-rbxts/compiler-linux-arm64-gnu': 0.6.0
-      '@vela-rbxts/compiler-linux-x64-gnu': 0.6.0
-      '@vela-rbxts/compiler-linux-x64-musl': 0.6.0
-      '@vela-rbxts/compiler-win32-x64-msvc': 0.6.0
+      '@vela-rbxts/compiler-darwin-arm64': 0.7.0
+      '@vela-rbxts/compiler-darwin-x64': 0.7.0
+      '@vela-rbxts/compiler-linux-arm64-gnu': 0.7.0
+      '@vela-rbxts/compiler-linux-x64-gnu': 0.7.0
+      '@vela-rbxts/compiler-linux-x64-musl': 0.7.0
+      '@vela-rbxts/compiler-win32-x64-msvc': 0.7.0
 
-  '@vela-rbxts/config@0.6.0':
+  '@vela-rbxts/config@0.7.0':
     dependencies:
-      '@vela-rbxts/types': 0.6.0
+      '@vela-rbxts/types': 0.7.0
 
-  '@vela-rbxts/ir@0.6.0':
+  '@vela-rbxts/ir@0.7.0':
     dependencies:
-      '@vela-rbxts/types': 0.6.0
+      '@vela-rbxts/types': 0.7.0
 
-  '@vela-rbxts/rbxtsc-host@0.6.0':
+  '@vela-rbxts/rbxtsc-host@0.7.0':
     dependencies:
-      '@vela-rbxts/compiler': 0.6.0
-      '@vela-rbxts/config': 0.6.0
-      '@vela-rbxts/ir': 0.6.0
-      '@vela-rbxts/types': 0.6.0
+      '@vela-rbxts/compiler': 0.7.0
+      '@vela-rbxts/config': 0.7.0
+      '@vela-rbxts/ir': 0.7.0
+      '@vela-rbxts/types': 0.7.0
 
-  '@vela-rbxts/types@0.6.0': {}
+  '@vela-rbxts/types@0.7.0': {}
 
   '@vitest/expect@4.1.10':
     dependencies:
@@ -2064,13 +2121,13 @@ snapshots:
       chai: 6.2.2
       tinyrainbow: 3.1.1
 
-  '@vitest/mocker@4.1.10(vite@8.2.0(@types/node@25.9.5)(esbuild@0.28.1)(tsx@4.23.1))':
+  '@vitest/mocker@4.1.10(vite@8.2.0(@types/node@25.9.5)(esbuild@0.28.1)(tsx@4.23.4))':
     dependencies:
       '@vitest/spy': 4.1.10
       estree-walker: 3.0.3
       magic-string: 0.30.21
     optionalDependencies:
-      vite: 8.2.0(@types/node@25.9.5)(esbuild@0.28.1)(tsx@4.23.1)
+      vite: 8.2.0(@types/node@25.9.5)(esbuild@0.28.1)(tsx@4.23.4)
 
   '@vitest/pretty-format@4.1.10':
     dependencies:
@@ -2614,7 +2671,7 @@ snapshots:
   tslib@2.8.1:
     optional: true
 
-  tsx@4.23.1:
+  tsx@4.23.4:
     dependencies:
       esbuild: 0.28.1
     optionalDependencies:
@@ -2639,15 +2696,15 @@ snapshots:
 
   universalify@2.0.1: {}
 
-  vela-rbxts@0.6.0:
+  vela-rbxts@0.7.0:
     dependencies:
       '@rbxts/react': 17.3.7-ts.1
       '@rbxts/services': 1.6.0
-      '@vela-rbxts/config': 0.6.0
-      '@vela-rbxts/rbxtsc-host': 0.6.0
-      '@vela-rbxts/types': 0.6.0
+      '@vela-rbxts/config': 0.7.0
+      '@vela-rbxts/rbxtsc-host': 0.7.0
+      '@vela-rbxts/types': 0.7.0
 
-  vite@8.2.0(@types/node@25.9.5)(esbuild@0.28.1)(tsx@4.23.1):
+  vite@8.2.0(@types/node@25.9.5)(esbuild@0.28.1)(tsx@4.23.4):
     dependencies:
       lightningcss: 1.33.0
       picomatch: 4.0.5
@@ -2658,12 +2715,12 @@ snapshots:
       '@types/node': 25.9.5
       esbuild: 0.28.1
       fsevents: 2.3.3
-      tsx: 4.23.1
+      tsx: 4.23.4
 
-  vitest@4.1.10(@types/node@25.9.5)(vite@8.2.0(@types/node@25.9.5)(esbuild@0.28.1)(tsx@4.23.1)):
+  vitest@4.1.10(@types/node@25.9.5)(vite@8.2.0(@types/node@25.9.5)(esbuild@0.28.1)(tsx@4.23.4)):
     dependencies:
       '@vitest/expect': 4.1.10
-      '@vitest/mocker': 4.1.10(vite@8.2.0(@types/node@25.9.5)(esbuild@0.28.1)(tsx@4.23.1))
+      '@vitest/mocker': 4.1.10(vite@8.2.0(@types/node@25.9.5)(esbuild@0.28.1)(tsx@4.23.4))
       '@vitest/pretty-format': 4.1.10
       '@vitest/runner': 4.1.10
       '@vitest/snapshot': 4.1.10
@@ -2680,7 +2737,7 @@ snapshots:
       tinyexec: 1.3.0
       tinyglobby: 0.2.17
       tinyrainbow: 3.1.1
-      vite: 8.2.0(@types/node@25.9.5)(esbuild@0.28.1)(tsx@4.23.1)
+      vite: 8.2.0(@types/node@25.9.5)(esbuild@0.28.1)(tsx@4.23.4)
       why-is-node-running: 2.3.0
     optionalDependencies:
       '@types/node': 25.9.5

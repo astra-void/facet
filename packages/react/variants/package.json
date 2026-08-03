@@ -7,11 +7,9 @@
   "homepage": "https://facet.astra-void.xyz",
   "main": "out/init.luau",
   "types": "out/index.d.ts",
-  "source": "src/index.ts",
   "files": [
     "default.project.json",
     "out",
-    "src",
     "README.md",
     "LICENSE"
   ],

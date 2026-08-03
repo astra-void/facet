@@ -28,6 +28,7 @@
   "devDependencies": {
     "@biomejs/biome": "^2.4.11",
     "@changesets/cli": "^2.30.0",
+    "@facet-ui/theme": "workspace:*",
     "@rbxts/compiler-types": "3.0.0-types.0",
     "@rbxts/react": "17.3.7-ts.1",
     "@rbxts/react-roblox": "17.3.7-ts.1",

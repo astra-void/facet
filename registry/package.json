@@ -14,6 +14,6 @@
   "devDependencies": {
     "@lattice-ui/react-runtime": "^0.7.0",
     "@rbxts/react": "17.3.7-ts.1",
-    "vela-rbxts": "^0.6.0"
+    "vela-rbxts": "^0.7.0"
   }
 }
