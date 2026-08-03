@@ -56,11 +56,20 @@ function matchesCompound<Variants extends VariantShape>(
  * string plus variant axes, returns a resolver from a variant selection to a
  * flat className.
  *
+ * The `Variants` default is `Record<never, never>`, not `VariantShape`: mapping
+ * over `VariantShape`'s string keys produces an index signature of
+ * `string | undefined`, which then collides with the `className` slot on the
+ * selection object. Without the default, a recipe with no variants — `fv("...")`
+ * — fails to type-check at every call site.
+ *
  * Recipes are pure string composition. They hold no theme values of their own —
  * every token they name (`bg-primary`, `text-muted-foreground`, ...) is resolved
  * by Vela at compile time from the consumer's `vela.config.ts`.
  */
-export function fv<const Variants extends VariantShape>(base: ClassValue, config?: VariantConfig<Variants>) {
+export function fv<const Variants extends VariantShape = Record<never, never>>(
+  base: ClassValue,
+  config?: VariantConfig<Variants>,
+) {
   return (selection?: VariantSelection<Variants> & { className?: ClassValue }): string => {
     const resolved: SelectionRecord = {};
 
