@@ -84,7 +84,17 @@ beside an icon:
 <Button Text="Save"><Icon glyph="check" /></Button>
 ```
 
-`~/lib/text`'s `TextSlot` owns that: given `text` it renders the styled label, otherwise `children`.
+`~/lib/text`'s `TextSlot` owns that: given `Text` it renders the styled label, otherwise `children`.
+The prop is spelled uppercase on every component that draws a string — see
+[decisions/text-api.md](decisions/text-api.md).
+
+**Every text recipe declares a `font-*`.** This is rule 1 again in a different costume: Vela leaves
+`FontFace` untouched when no `font-*` token appears, and Roblox's untouched default is LegacyArial —
+not a weight of the font every other label resolves to, a different typeface, visibly larger at the
+same `TextSize`. `card`'s description had no `font-*` and rendered in Arial next to a SourceSansPro
+title, inside the same header, for as long as nobody had looked at it.
+
+Weight is not optional styling here. It is the only thing that says *which font*.
 
 **`TextSlot` takes no `className`.** Vela lowers `className` at the *call site*, so
 `<TextSlot className={...}>` becomes a runtime host and the resolved `TextColor3` / `TextSize` /

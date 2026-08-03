@@ -9,11 +9,16 @@ import { type ClassName, cn } from "~/lib/utils";
  * Every part is `w-full h-fit`. That is the whole layout strategy: width comes
  * from the parent, height from the content, all the way down. Break the chain at
  * any level — a part with no resolved height — and the card above it collapses.
+ *
+ * `font-normal` on the description is not redundant: Vela leaves `FontFace`
+ * alone when no `font-*` token appears, and Roblox's untouched default is
+ * LegacyArial — a different typeface at a visibly different size from the
+ * SourceSansPro every other label here resolves to.
  */
 export const cardVariants = fv("flex-col w-full h-fit rounded-lg border border-border bg-card");
 export const cardHeaderVariants = fv("flex-col w-full h-fit gap-1 p-6");
 export const cardTitleVariants = fv("w-full h-fit text-left text-xl font-semibold text-card-foreground");
-export const cardDescriptionVariants = fv("w-full h-fit text-left text-xs text-muted-foreground");
+export const cardDescriptionVariants = fv("w-full h-fit text-left text-xs font-normal text-muted-foreground");
 export const cardContentVariants = fv("flex-col w-full h-fit gap-2 px-6 pb-6");
 export const cardFooterVariants = fv("flex-row items-center w-full h-fit gap-2 px-6 pb-6");
 
