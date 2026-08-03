@@ -26,8 +26,7 @@ export default defineRegistry([
     type: "registry:lib",
     description: "TextSlot — wraps string children in a styled textlabel",
     files: [{ path: "lib/text.tsx", type: "registry:lib" }],
-    registryDependencies: ["utils"],
-    dependencies: ["@facet-ui/react-variants", "@lattice-ui/react-runtime"],
+    dependencies: ["@lattice-ui/react-runtime"],
   },
   {
     name: "button",

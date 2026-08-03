@@ -11,31 +11,34 @@ import {
 import { TextSlot } from "~/lib/text";
 import { cn } from "~/lib/utils";
 
-// No `w-fit` here: Vela only lowers `fit`/`auto` to `AutomaticSize` for static
-// class literals, and a recipe's output is computed. Width comes from the
-// `AutomaticSize` instance prop below instead.
-export const buttonVariants = fv("flex-row items-center justify-center gap-2 rounded-md transition duration-150", {
-  variants: {
-    variant: {
-      default: "bg-primary hover:bg-primary/90",
-      destructive: "bg-destructive hover:bg-destructive/90",
-      outline: "border border-input bg-background hover:bg-accent",
-      secondary: "bg-secondary hover:bg-secondary/80",
-      ghost: "hover:bg-accent",
-      link: "",
+// `w-fit` is load-bearing: padding does not grow a frame on Roblox, so without
+// an automatic width this renders zero pixels wide. The `icon` size overrides it
+// with a concrete `w-9`, and the later token wins.
+export const buttonVariants = fv(
+  "flex-row items-center justify-center gap-2 w-fit rounded-md transition duration-150",
+  {
+    variants: {
+      variant: {
+        default: "bg-primary hover:bg-primary/90",
+        destructive: "bg-destructive hover:bg-destructive/90",
+        outline: "border border-input bg-background hover:bg-accent",
+        secondary: "bg-secondary hover:bg-secondary/80",
+        ghost: "hover:bg-accent",
+        link: "",
+      },
+      size: {
+        sm: "h-8 px-3",
+        md: "h-9 px-4",
+        lg: "h-10 px-6",
+        icon: "h-9 w-9",
+      },
     },
-    size: {
-      sm: "h-8 px-3",
-      md: "h-9 px-4",
-      lg: "h-10 px-6",
-      icon: "h-9 w-9",
+    defaultVariants: {
+      variant: "default",
+      size: "md",
     },
   },
-  defaultVariants: {
-    variant: "default",
-    size: "md",
-  },
-});
+);
 
 // Nothing inherits on Roblox, so the label needs its own recipe rather than
 // picking up `text-*` from the button.
@@ -90,21 +93,17 @@ const NEUTRAL_PROPS = {
 
 export function Button(props: ButtonProps) {
   const disabled = props.disabled === true;
-  const size = props.size ?? "md";
 
-  // Padding does not grow a frame on Roblox, so a button with only a height
-  // renders zero pixels wide. Every size but `icon` hugs its label; `icon` is
-  // square by definition and needs no automatic axis.
-  const automaticSize = size === "icon" ? undefined : Enum.AutomaticSize.X;
-
+  // Vela has no `disabled:` variant — disabled is our state, not the host's —
+  // and no `opacity-*` on the runtime class path either, so the dimming has to
+  // come from colour tokens rather than transparency.
   const className = cn(
     buttonVariants({
       variant: props.variant,
       size: props.size,
       className: props.className,
     }),
-    // Vela has no `disabled:` variant — disabled is our state, not the host's.
-    disabled && "opacity-50",
+    disabled && "bg-muted",
   );
 
   const handleActivated = React.useCallback(() => {
@@ -122,7 +121,13 @@ export function Button(props: ButtonProps) {
   };
 
   const content = (
-    <TextSlot text={props.Text} className={buttonLabelVariants({ variant: props.variant, size: props.size })}>
+    <TextSlot
+      text={props.Text}
+      className={cn(
+        buttonLabelVariants({ variant: props.variant, size: props.size }),
+        disabled && "text-muted-foreground",
+      )}
+    >
       {props.children}
     </TextSlot>
   );
@@ -143,13 +148,7 @@ export function Button(props: ButtonProps) {
   }
 
   return (
-    <textbutton
-      className={className}
-      {...NEUTRAL_PROPS}
-      AutomaticSize={automaticSize}
-      {...passthrough}
-      {...behaviorProps}
-    >
+    <textbutton className={className} {...NEUTRAL_PROPS} {...passthrough} {...behaviorProps}>
       {content}
     </textbutton>
   );
