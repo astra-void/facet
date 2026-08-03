@@ -23,7 +23,10 @@ export type InitOptions = {
 };
 
 /** Needed to build the project, not to run it — only `vela.config.ts` imports them. */
-const BUILD_DEPENDENCIES = ["@facet-ui/theme", "vela-rbxts"];
+// Vela is pinned to a floor, not left open: registry components use `w-fit`,
+// `text-<size>` and `font-<weight>`, and Vela only resolves those on the
+// computed-className path from 0.7.0. On 0.6.0 they compile and then do nothing.
+const BUILD_DEPENDENCIES = ["@facet-ui/theme", "vela-rbxts@^0.7.0"];
 
 async function exists(candidate: string): Promise<boolean> {
   try {

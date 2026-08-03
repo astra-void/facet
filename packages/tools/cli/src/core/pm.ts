@@ -95,8 +95,21 @@ export async function installPackages(
 }
 
 /**
- * Which of `packages` the project does not already depend on. Avoids a install
+ * Splits `name@spec` into its name, leaving a scoped package's leading `@`
+ * alone — `@facet-ui/theme` is a name, `vela-rbxts@^0.7.0` is a name and a
+ * range, and both have to survive the same function.
+ */
+function packageName(spec: string): string {
+  const at = spec.lastIndexOf("@");
+  return at > 0 ? spec.slice(0, at) : spec;
+}
+
+/**
+ * Which of `packages` the project does not already depend on. Avoids an install
  * run that would only churn the lockfile.
+ *
+ * A declared dependency counts as present whatever version it is on, so a
+ * version range here is a floor for *new* installs, not an upgrade instruction.
  */
 export async function missingDependencies(root: string, packages: string[]): Promise<string[]> {
   let declared: Record<string, unknown> = {};
@@ -112,7 +125,7 @@ export async function missingDependencies(root: string, packages: string[]): Pro
     return packages;
   }
 
-  return packages.filter((name) => declared[name] === undefined);
+  return packages.filter((spec) => declared[packageName(spec)] === undefined);
 }
 
 /**
