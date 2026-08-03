@@ -12,40 +12,44 @@ So `h-9 px-4`, which is a perfectly good shadcn button, renders **zero pixels wi
 not hypothetical; it is what the first published `button` did.
 
 ```
-h-9 px-4                        → 0 x 36. Invisible.
-h-9 + AutomaticSize={...X}      → hugs its content. Correct.
-h-9 w-9                         → fixed square. Also correct.
+h-9 px-4        → 0 x 36. Invisible.
+h-9 w-fit px-4  → hugs its content. Correct.
+h-9 w-9         → fixed square. Also correct.
 ```
 
-Every leaf declares a width *and* a height: a concrete class on each axis, or `AutomaticSize` for the
-axis that should hug.
+Every leaf declares a width *and* a height: a concrete class on each axis, or `w-fit`/`h-fit`/
+`size-fit` for the axis that should hug.
 
-## 1a. `w-fit` does not work in a Facet component
+## 1a. The dynamic class path is still catching up
 
-Vela lowers `fit`/`auto` to `AutomaticSize` **only when the class string is a static literal.** Its
-runtime path — taken whenever `className` is a computed expression — resolves `fit` to "no size
-contribution" and never sets `AutomaticSize` at all. Verified in the emitted Luau:
+Every Facet class string comes out of `fv()`, so it is a computed expression, and Vela resolves those
+at runtime rather than at compile time. That runtime path implemented a strict subset of the static
+lowering for a long time — `flex-*`, `items-*`, `justify-*`, `fit`/`auto`, `text-<size>`,
+`text-<align>` and `font-<weight>` all silently did nothing, which is how the first `button` shipped
+zero pixels wide and every label sat on Roblox's 8px default.
 
-```lua
--- static:  <frame className="w-fit h-9" />
-Size = UDim2.fromOffset(0, 36), AutomaticSize = Enum.AutomaticSize.X   -- correct
+Vela 0.7.0 closed that set, and **full parity is being implemented now**. So this is a moving line,
+not a design constraint — do not encode it as one.
 
--- dynamic: <frame className={cn("w-fit h-9", ...)} />
-if key == "fit" then return nil end   -- and nothing sets AutomaticSize
+The rule that outlives it: **when a class does nothing, suspect the dynamic path before suspecting
+your class.** Check what the emitted runtime actually resolves:
+
+```bash
+grep -o 'startsWith(token, "[a-z0-9-]*")' apps/playground/out/shared/ui/button.luau | sort -u
 ```
 
-Every Facet class string comes out of `fv()`, so every Facet component is on the dynamic path.
-**`w-fit`, `h-fit`, and `size-fit` are dead tokens here.** Do not write them; they read as intent
-that the build silently drops.
+Whatever is missing there is missing at runtime, whatever the static path or the docs say.
 
-Set the instance prop instead — it survives the runtime host untouched:
+### Accommodations still in place
 
-```tsx
-<textbutton className={buttonVariants({ ... })} AutomaticSize={Enum.AutomaticSize.X} />
-```
+Each is a workaround for a family the runtime path has not reached yet, and each should be deleted
+when it does:
 
-This is a gap in Vela's runtime, not a fact about Roblox. If Vela's runtime host learns `fit`/`auto`,
-this section collapses back into a class and the components get simpler.
+| Where | Workaround | Wanted |
+| --- | --- | --- |
+| `card` | `TextWrapped` instance prop | `whitespace-normal` |
+| `button` | `disabled && "bg-muted"` + muted label | `opacity-50` |
+| `card` | — | `leading-*` to tighten description line height |
 
 ## 2. `AutomaticSize` is a chain, and it breaks at the first weak link
 
@@ -81,6 +85,13 @@ beside an icon:
 ```
 
 `~/lib/text`'s `TextSlot` owns that: given `text` it renders the styled label, otherwise `children`.
+
+**`TextSlot` takes no `className`.** Vela lowers `className` at the *call site*, so
+`<TextSlot className={...}>` becomes a runtime host and the resolved `TextColor3` / `TextSize` /
+`FontFace` arrive as ordinary props — `TextSlot` only has to forward them onto its `textlabel`.
+Accepting `className` and re-applying it inside drops them instead, which is what put every button
+label on Roblox's 8px near-black default. The same trap waits for any component that wraps another
+component and expects to re-read `className` from its own props.
 
 ## 5. Layout is an instance, not a property
 
@@ -139,8 +150,8 @@ import { getPassthroughProps, React } from "@lattice-ui/react-runtime";
 import { TextSlot } from "~/lib/text";
 import { cn } from "~/lib/utils";
 
-// 1. geometry + surface on the root. No `w-fit` — see §1a.
-export const thingVariants = fv("flex-row items-center rounded-md", { variants: { ... } });
+// 1. geometry + surface on the root, both axes resolved
+export const thingVariants = fv("flex-row items-center w-fit h-9 rounded-md", { variants: { ... } });
 
 // 2. a matching recipe for any text this component draws itself
 export const thingLabelVariants = fv("text-foreground", { variants: { ... } });
@@ -158,7 +169,6 @@ export function Thing(props: ThingProps) {
     <frame
       className={thingVariants({ variant: props.variant, className: props.className })}
       {...NEUTRAL_PROPS}
-      AutomaticSize={Enum.AutomaticSize.X}
       {...passthrough}
     >
       <TextSlot text={props.Text} className={thingLabelVariants({ size: props.size })}>

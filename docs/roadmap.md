@@ -61,9 +61,9 @@ with a model), `billboard`, `surface`, `player-list`, `hotbar`.
 
 - **Does `className` survive `asChild`?** Partly answered. The playground compiles it: Vela lowers
   `<Slot className={...}>` to `React.createElement(VelaRuntimeHost, { __velaTag = Slot, ... })`, so a
-  component tag is structurally supported. What is still unverified is runtime — whether
-  `VelaRuntimeHost` applies props in a form `Slot` can merge onto a child it does not own. Needs
-  Studio, not a compiler.
+  component tag is structurally supported, and `TextSlot` proves the resolved props do reach a
+  component and can be forwarded to an instance. What is still unverified is whether Lattice's `Slot`
+  forwards them onto a child it does not own. Needs Studio, not a compiler.
 - Does a Facet component ever take a `Text` prop, or does it always take children? Roblox
   `textbutton` wants `Text`; React composition wants children. `button` currently takes `Text` via
   passthrough. Settle this before ten components each answer it differently.
