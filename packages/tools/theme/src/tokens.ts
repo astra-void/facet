@@ -75,8 +75,10 @@ export function buildTokens(options: FacetThemeOptions = {}): Record<FacetToken,
     "accent-foreground": ramp[50],
     destructive: DESTRUCTIVE.dark,
     "destructive-foreground": ramp[50],
-    border: ramp[800],
-    input: ramp[800],
+    // One step lighter than the dark surfaces they sit on: at ramp[800] an
+    // outline button was almost indistinguishable from a ghost one.
+    border: ramp[700],
+    input: ramp[700],
     ring: ramp[300],
   };
 }
