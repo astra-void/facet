@@ -1,0 +1,46 @@
+name: publish
+
+# Publishes to npm through OIDC trusted publishing — no NPM_TOKEN, no OTP.
+# npm exchanges the workflow's short-lived OIDC token for publish rights, which
+# is why `id-token: write` below is the whole credential story.
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  id-token: write
+
+concurrency:
+  group: publish
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # pnpm does the OIDC exchange itself rather than shelling out to npm, so
+      # the npm CLI version does not matter here — but the pnpm one does: OIDC
+      # publishing was broken in early 11.x and fixed by pnpm/pnpm#11526. The
+      # version comes from `packageManager` in package.json; keep it >= 11.6.
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          registry-url: https://registry.npmjs.org
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      # Publishing is irreversible after 72 hours, so everything that can be
+      # checked gets checked before the first byte goes out.
+      - run: pnpm run check
+
+      - run: pnpm run build
+
+      - name: publish
+        run: pnpm -r --filter "./packages/*/*" publish --access public --no-git-checks
