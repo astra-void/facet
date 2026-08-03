@@ -10,7 +10,10 @@
 - [x] publish `@facet-ui/react-variants`, `@facet-ui/theme`, and `facet-rbxts`
 - [x] verified end to end from npm: install the CLI in a bare project, `init`, `add button`, and
       `rbxtsc` emits Luau with the semantic tokens resolved
-- [ ] verify `button` renders in `apps/playground` inside Studio — nobody has seen it yet
+- [x] verified in Studio: `button`, `badge`, `card`, `label`, and `separator` all render, and every
+      label resolves to SourceSansPro at its recipe's size. Reading the emitted Luau was not enough —
+      `card`'s description had no `font-*`, so it kept Roblox's LegacyArial default and was the only
+      thing on screen in another typeface
 - [ ] a fixture project the CLI runs against in CI, so that end-to-end check stops being manual
 
 `init` creates a Vela config when there is none but never rewrites one that exists, and only reports
@@ -59,15 +62,30 @@ with a model), `billboard`, `surface`, `player-list`, `hotbar`.
 
 ## Open questions
 
-- **Does `className` survive `asChild`?** Partly answered. The playground compiles it: Vela lowers
-  `<Slot className={...}>` to `React.createElement(VelaRuntimeHost, { __velaTag = Slot, ... })`, so a
-  component tag is structurally supported, and `TextSlot` proves the resolved props do reach a
-  component and can be forwarded to an instance. What is still unverified is whether Lattice's `Slot`
-  forwards them onto a child it does not own. Needs Studio, not a compiler.
-- Does a Facet component ever take a `Text` prop, or does it always take children? Roblox
-  `textbutton` wants `Text`; React composition wants children. `button` currently takes `Text` via
-  passthrough. Settle this before ten components each answer it differently.
-- Does `cn` need conflict resolution? Right now Vela's last-token-wins decides `p-2 p-4`. That is
-  fine for recipes; it may not be for consumer overrides through `className`.
-- One registry style or several? shadcn ships `default` and `new-york`. `facet.json` has the field;
-  nothing uses it yet.
+- **Does `className` survive `asChild`?** **Yes — and `asChild` is still broken, for an unrelated
+  reason.** Verified in Studio against a bare `<textbutton>` child:
+  `<Slot className="h-8 w-fit bg-secondary">` resolved onto the child as `BackgroundColor3`
+  0.153/0.153/0.165, `Size` `{0,0},{0,32}`, `AutomaticSize.X`. Class-to-prop lowering crosses `Slot`
+  intact.
+
+  Adding one class that lowers to a modifier *child* — `rounded-md`, `flex-row`, `px-3` — fails with
+  `[Slot] expected exactly one child element besides any UI modifiers.` The cause is a case mismatch
+  in Lattice, not in Vela or here: `slot.luau`'s `UI_MODIFIER_TAGS` is keyed by lowercase JSX tag
+  names (`uicorner`, `uilistlayout`), and `isUiModifierElement` looks the element's `type` up in it
+  directly — but roblox-ts React elements carry the Roblox class name. An instrumented probe printed
+  `UIListLayout`, `UICorner`, `UIPadding`, `TextButton`. Every modifier therefore reads as a second
+  target candidate.
+
+  Every Facet recipe emits at least a `UIListLayout` or a `UICorner`, so this is not a corner case:
+  `asChild` cannot work on any of them until Lattice's lookup is case-correct. Report it upstream;
+  the fix is the tag table, and nothing in the registry needs to change to receive it. `Button` keeps
+  its `asChild` branch in the meantime — the code is right, the dependency is not.
+Settled, with the reasoning kept where it can be argued with:
+
+- **Text is a prop, not children** — [decisions/text-api.md](decisions/text-api.md). `Text?: string`
+  on every component that draws a string; `children` stays composition.
+- **`cn` does not resolve conflicts** — [decisions/class-conflicts.md](decisions/class-conflicts.md).
+  Vela's last-token-wins is what `tailwind-merge` exists to fake, so the obligation is ordering
+  discipline instead: nothing lands after the consumer's `className`.
+- **One registry style** — [decisions/registry-styles.md](decisions/registry-styles.md). The field
+  stays in `facet.json`; a second style does not arrive.
