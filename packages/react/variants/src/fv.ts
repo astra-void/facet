@@ -1,6 +1,14 @@
 import { cn } from "./cn";
 import type { ClassItem, ClassValue } from "./types";
 
+/**
+ * `null` and `undefined` are both `nil` here, and neither can be stored in a Lua
+ * array without leaving a hole — so one `typeIs` narrows out both.
+ */
+function isClassItem(value: ClassValue): value is ClassItem {
+  return !typeIs(value, "nil");
+}
+
 export type VariantShape = Record<string, Record<string, ClassValue>>;
 
 /** The prop object a recipe accepts: one optional key per variant axis. */
@@ -76,7 +84,7 @@ export function fv<const Variants extends VariantShape>(base: ClassValue, config
     // Typed as ClassItem, not ClassValue: an undefined recipe slot is dropped
     // rather than stored, because a Lua array with a hole in it is not an array.
     const classes: ClassItem[] = [];
-    if (base !== undefined) {
+    if (isClassItem(base)) {
       classes.push(base);
     }
 
@@ -92,7 +100,7 @@ export function fv<const Variants extends VariantShape>(base: ClassValue, config
           continue;
         }
         const option = options[picked];
-        if (option !== undefined) {
+        if (isClassItem(option)) {
           classes.push(option);
         }
       }
@@ -101,7 +109,7 @@ export function fv<const Variants extends VariantShape>(base: ClassValue, config
     const compounds = config?.compoundVariants;
     if (compounds !== undefined) {
       for (const compound of compounds) {
-        if (matchesCompound(compound, resolved) && compound.className !== undefined) {
+        if (matchesCompound(compound, resolved) && isClassItem(compound.className)) {
           classes.push(compound.className);
         }
       }
@@ -109,7 +117,7 @@ export function fv<const Variants extends VariantShape>(base: ClassValue, config
 
     // Consumer className lands last so it can override recipe output.
     const consumerClassName = selection?.className;
-    if (consumerClassName !== undefined) {
+    if (isClassItem(consumerClassName)) {
       classes.push(consumerClassName);
     }
 

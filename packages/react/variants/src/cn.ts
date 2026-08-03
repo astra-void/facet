@@ -1,16 +1,27 @@
-import type { ClassItem, ClassValue } from "./types";
+import type { ClassValue } from "./types";
 
 type UnknownTable = Record<string, unknown>;
 
+/**
+ * Positive type tests rather than a chain of `!== undefined`: roblox-ts collapses
+ * `null` and `undefined` onto the same `nil`, so testing for what we *accept* is
+ * both shorter and free of narrowing surprises. Anything unrecognised — booleans,
+ * nil — is simply dropped.
+ */
 function push(out: string[], value: ClassValue) {
-  if (value === undefined || value === false || value === true) {
-    return;
-  }
-
   if (typeIs(value, "string")) {
     if (value !== "") {
       out.push(value);
     }
+    return;
+  }
+
+  if (typeIs(value, "number")) {
+    out.push(tostring(value));
+    return;
+  }
+
+  if (!typeIs(value, "table")) {
     return;
   }
 
@@ -22,7 +33,7 @@ function push(out: string[], value: ClassValue) {
   }
 
   if (typeIs(firstKey, "number")) {
-    for (const entry of value as ClassItem[]) {
+    for (const entry of value as ClassValue[]) {
       push(out, entry);
     }
     return;

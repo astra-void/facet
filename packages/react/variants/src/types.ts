@@ -1,14 +1,21 @@
 /**
- * Structurally compatible with Vela's `ClassValue`, redeclared here so the
- * package carries no dependency on the Vela toolchain.
+ * Mirrors Vela's `ClassValue` exactly.
  *
- * Split into two names on purpose: Lua tables cannot hold `nil` without leaving
- * a hole, so roblox-ts refuses `undefined` as an array element type. `ClassItem`
- * is what may sit *inside* an array; `ClassValue` adds the `undefined` that a
- * `className?:` prop needs.
+ * Exactness matters, not similarity: Vela augments `React.Attributes` with
+ * `className`, and TypeScript intersects `React.Attributes` into every
+ * component's props — so `props.className` inside a Facet component carries
+ * Vela's type no matter what the component declared. A narrower mirror simply
+ * fails to accept it.
  */
-export type ClassDictionary = Record<string, boolean | undefined>;
+export type ClassDictionary = Record<string, boolean | null | undefined>;
 
-export type ClassItem = string | boolean | ClassDictionary | ClassItem[];
+export type ClassValue = string | number | boolean | null | undefined | ClassDictionary | ClassValue[];
 
-export type ClassValue = ClassItem | undefined;
+/**
+ * What may sit inside an array *we* build.
+ *
+ * Lua tables cannot hold `nil` without leaving a hole, so roblox-ts refuses both
+ * `undefined` and `null` as element types — they are the same value at runtime.
+ * Accepting them on the way in is fine; we just never store them.
+ */
+export type ClassItem = string | number | boolean | ClassDictionary | ClassValue[];
