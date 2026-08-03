@@ -22,11 +22,19 @@ export default defineRegistry([
     dependencies: ["@facet-ui/react-variants"],
   },
   {
+    name: "text",
+    type: "registry:lib",
+    description: "TextSlot — wraps string children in a styled textlabel",
+    files: [{ path: "lib/text.tsx", type: "registry:lib" }],
+    registryDependencies: ["utils"],
+    dependencies: ["@facet-ui/react-variants", "@lattice-ui/react-runtime"],
+  },
+  {
     name: "button",
     type: "registry:ui",
     description: "Button with variant and size recipes",
     files: [{ path: "ui/button.tsx", type: "registry:ui" }],
-    registryDependencies: ["utils"],
+    registryDependencies: ["utils", "text"],
     dependencies: ["@facet-ui/react-variants", "@lattice-ui/react-runtime"],
     tokens: [
       "primary",
@@ -39,6 +47,7 @@ export default defineRegistry([
       "accent-foreground",
       "background",
       "input",
+      "foreground",
     ],
   },
 ]);

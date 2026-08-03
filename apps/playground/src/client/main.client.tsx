@@ -6,7 +6,7 @@ import { Button } from "../shared/ui/button";
 function Playground() {
   return (
     <frame className="h-full w-full flex-col items-center justify-center gap-4 bg-background">
-      <Button Text="Default" onClick={() => print("default")} />
+      <Button onClick={() => print("default")} Text="Default" />
       <Button variant="secondary" Text="Secondary" />
       <Button variant="outline" Text="Outline" />
       <Button variant="destructive" Text="Destructive" />
