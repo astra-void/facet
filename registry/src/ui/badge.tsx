@@ -53,7 +53,7 @@ export function Badge(props: BadgeProps) {
       {...NEUTRAL_PROPS}
       {...passthrough}
     >
-      <TextSlot text={props.Text} className={badgeLabelVariants({ variant: props.variant })}>
+      <TextSlot Text={props.Text} className={badgeLabelVariants({ variant: props.variant })}>
         {props.children}
       </TextSlot>
     </frame>

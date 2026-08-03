@@ -97,14 +97,15 @@ export function Button(props: ButtonProps) {
   // Vela has no `disabled:` variant — disabled is our state, not the host's —
   // and no `opacity-*` on the runtime class path either, so the dimming has to
   // come from colour tokens rather than transparency.
-  const className = cn(
-    buttonVariants({
-      variant: props.variant,
-      size: props.size,
-      className: props.className,
-    }),
-    disabled && "bg-muted",
-  );
+  //
+  // It goes *inside* the recipe's className slot, ahead of the consumer's:
+  // resolution is last-token-wins, so anything appended after `props.className`
+  // is an override the consumer cannot undo. See docs/decisions/class-conflicts.md.
+  const className = buttonVariants({
+    variant: props.variant,
+    size: props.size,
+    className: cn(disabled && "bg-muted", props.className),
+  });
 
   const handleActivated = React.useCallback(() => {
     if (disabled) {
@@ -122,11 +123,12 @@ export function Button(props: ButtonProps) {
 
   const content = (
     <TextSlot
-      text={props.Text}
-      className={cn(
-        buttonLabelVariants({ variant: props.variant, size: props.size }),
-        disabled && "text-muted-foreground",
-      )}
+      Text={props.Text}
+      className={buttonLabelVariants({
+        variant: props.variant,
+        size: props.size,
+        className: disabled && "text-muted-foreground",
+      })}
     >
       {props.children}
     </TextSlot>
@@ -137,9 +139,12 @@ export function Button(props: ButtonProps) {
       error("[Button] `asChild` requires a child element.");
     }
 
-    // UNVERIFIED: whether Vela lowers `className` on `Slot` the way it does on a
-    // host element, and whether the lowered props survive Slot's merge onto the
-    // child. Confirm in the playground before shipping any `asChild` component.
+    // Verified in Studio: Vela's class-to-prop lowering does survive `Slot` and
+    // lands on the child. What does not work yet is the rest of the recipe —
+    // `rounded-md` and `flex-row` lower to modifier *children*, and Lattice's
+    // `Slot` matches those by lowercase JSX tag name while roblox-ts React
+    // labels them `UICorner` / `UIListLayout`, so each reads as a second target
+    // and `Slot` errors. Upstream fix; see docs/roadmap.md.
     return (
       <Slot className={className} {...toSlotProps(passthrough)} {...behaviorProps}>
         {props.children}
