@@ -2,16 +2,21 @@
 
 ## Now — make one component real end to end
 
-The skeleton proves the shape; nothing proves it works until `facet add button` writes a file that
-compiles in a project nobody set up by hand.
+- [x] `facet list` — reads the published registry
+- [x] `facet init` — writes `facet.json`, creates `vela.config.ts`, installs build deps, adds `utils`
+- [x] `facet add` — resolves transitively, rewrites `~/`, writes as one transaction
+- [ ] `facet doctor` — the checks `init` and `add` currently only warn about
+- [ ] `facet remove`, `facet diff`
+- [x] publish `@facet-ui/react-variants`, `@facet-ui/theme`, and `facet-rbxts`
+- [x] verified end to end from npm: install the CLI in a bare project, `init`, `add button`, and
+      `rbxtsc` emits Luau with the semantic tokens resolved
+- [ ] verify `button` renders in `apps/playground` inside Studio — nobody has seen it yet
+- [ ] a fixture project the CLI runs against in CI, so that end-to-end check stops being manual
 
-- [ ] `facet init` — write `facet.json`, patch `vela.config.ts` and tsconfig `plugins`, install deps
-- [ ] `facet add` — resolve, rewrite, write transactionally
-- [ ] `facet list` — already implemented; needs the built registry to point at
-- [ ] verify `button` renders in `apps/playground` inside Studio
-- [ ] a fixture project the CLI runs against in CI, asserting the copied file type-checks
-
-Until `add` lands, the registry is a plan rather than a product.
+`init` creates a Vela config when there is none but never rewrites one that exists, and only reports
+on tsconfig rather than editing it. Both files belong to the consumer and are routinely JSONC or
+non-trivial TypeScript; a pattern-matched edit that mangles one is worse than a printed snippet.
+Revisit only with a real parser, not a smarter regex.
 
 ## Next — the registry itself
 

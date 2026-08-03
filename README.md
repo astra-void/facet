@@ -9,8 +9,8 @@ moment: edit it, delete half of it, rename it. There is no upgrade that will ove
 because there is no upgrade.
 
 ```bash
-npx facet-ui init
-npx facet-ui add button dialog toast
+npx facet-rbxts init
+npx facet-rbxts add button dialog toast
 ```
 
 ## The three layers
@@ -33,7 +33,7 @@ Two small packages and a CLI. The components are not published; they are copied.
 | --- | --- |
 | `@facet-ui/react-variants` | `fv()` variant recipes and `cn()` — the cva equivalent. The only runtime code a Facet component imports from Facet. |
 | `@facet-ui/theme` | Semantic tokens (`primary`, `muted-foreground`, …) as a Vela config preset. Facet's answer to `:root { --primary }`. |
-| `facet-ui` | The CLI. Fetches components from the hosted registry rather than bundling them. |
+| `facet-rbxts` | The CLI. Fetches components from the hosted registry rather than bundling them. |
 
 ## Repository layout
 
@@ -41,7 +41,7 @@ Two small packages and a CLI. The components are not published; they are copied.
 packages/
   react/variants/     @facet-ui/react-variants  — rbxts runtime, built by rbxtsc
   tools/theme/        @facet-ui/theme           — node, feeds vela.config.ts
-  tools/cli/          facet-ui                  — node, ships registry/ + templates/
+  tools/cli/          facet-rbxts               — node, the CLI
 registry/
   registry.ts         the authored manifest — what exists, what it depends on
   src/ui/*.tsx        the component sources `facet add` copies
@@ -94,9 +94,13 @@ exactly one mode — see [docs/decisions/runtime-theming.md](docs/decisions/runt
 
 ## Status
 
-Skeleton. The registry holds `button` and `utils`; the CLI's contracts (registry schema, dependency
-resolution, import rewriting, config) are implemented, and `init` / `add` / `remove` / `diff` /
-`doctor` are specified but not yet written. See [docs/roadmap.md](docs/roadmap.md).
+Early, but the whole chain works. All three packages are on npm and the registry is live, so
+`npm i -D facet-rbxts` → `facet init` → `facet add button` → `rbxtsc` compiles in a project set up
+from scratch. `doctor`, `remove`, and `diff` are specified but not written, and the registry holds
+only `button` and `utils`.
+
+What has *not* been checked is how any of it looks: compiling is a static result, and Roblox runtime
+behavior only shows up in Studio. See [docs/roadmap.md](docs/roadmap.md).
 
 ## License
 
