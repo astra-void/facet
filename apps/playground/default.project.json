@@ -13,7 +13,19 @@
           "$path": "node_modules/@lattice-ui"
         },
         "@rbxts": {
-          "$path": "node_modules/@rbxts"
+          "$className": "Folder",
+          "react": {
+            "$path": "node_modules/@rbxts/react"
+          },
+          "react-roblox": {
+            "$path": "node_modules/@rbxts/react-roblox"
+          },
+          "services": {
+            "$path": "node_modules/@rbxts/services"
+          }
+        },
+        "@rbxts-js": {
+          "$path": "node_modules/@rbxts-js"
         }
       },
       "TS": {

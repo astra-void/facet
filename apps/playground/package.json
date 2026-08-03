@@ -15,15 +15,33 @@
   "dependencies": {
     "@facet-ui/react-variants": "workspace:*",
     "@lattice-ui/react-runtime": "^0.7.0",
+    "@rbxts-js/boolean": "^1.2.3-ts.1",
+    "@rbxts-js/collections": "^1.2.3-ts.1",
+    "@rbxts-js/console": "^1.2.3-ts.1",
+    "@rbxts-js/es7-types": "^1.2.3-ts.1",
+    "@rbxts-js/instance-of": "^1.2.3-ts.1",
+    "@rbxts-js/luau-polyfill": "^1.2.3-ts.1",
+    "@rbxts-js/math": "^1.2.3-ts.1",
+    "@rbxts-js/number": "^1.2.3-ts.1",
+    "@rbxts-js/react": "^17.3.7-ts.1",
+    "@rbxts-js/react-globals": "^17.3.7-ts.1",
+    "@rbxts-js/react-reconciler": "^17.3.7-ts.1",
+    "@rbxts-js/react-roblox": "^17.3.7-ts.1",
+    "@rbxts-js/roblox-lua-promise": "^3.5.0-ts.2",
+    "@rbxts-js/safe-flags": "^17.3.7-ts.1",
+    "@rbxts-js/scheduler": "^17.3.7-ts.1",
+    "@rbxts-js/shared": "^17.3.7-ts.1",
+    "@rbxts-js/string": "^1.2.3-ts.1",
+    "@rbxts-js/symbol-luau": "^1.0.0-ts.1",
+    "@rbxts-js/timers": "^1.2.3-ts.1",
     "@rbxts/react": "17.3.7-ts.1",
     "@rbxts/react-roblox": "17.3.7-ts.1",
     "@rbxts/services": "^1.6.0"
   },
   "devDependencies": {
-    "@facet-ui/theme": "workspace:*",
     "@rbxts/compiler-types": "3.0.0-types.0",
     "@rbxts/types": "^1.0.938",
     "roblox-ts": "^3.0.0",
-    "vela-rbxts": "^0.6.0"
+    "vela-rbxts": "^0.7.0"
   }
 }
