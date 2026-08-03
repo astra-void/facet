@@ -2,7 +2,7 @@ import { mkdir, readFile, rm, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import type { FacetConfig } from "../packages/tools/cli/src/core/config.js";
-import { ITEM_TYPE_ALIAS } from "../packages/tools/cli/src/core/registry/schema.js";
+import { destinationFor } from "../packages/tools/cli/src/core/registry/destination.js";
 import { rewriteImports } from "../packages/tools/cli/src/core/transform/rewriteImports.js";
 import registry from "../registry/registry";
 
@@ -37,12 +37,11 @@ async function main(): Promise<void> {
   let count = 0;
   for (const item of registry) {
     for (const file of item.files) {
-      const alias = ITEM_TYPE_ALIAS[file.type];
-      const destinationDir = CONFIG.aliases[alias].dir;
+      const destination = destinationFor(CONFIG, file);
       const source = await readFile(path.join(SOURCE_DIR, file.path), "utf8");
-      const rewritten = rewriteImports(source, CONFIG, destinationDir);
+      const rewritten = rewriteImports(source, CONFIG, destination.dir);
 
-      const target = path.join(PLAYGROUND, destinationDir, path.basename(file.path));
+      const target = path.join(PLAYGROUND, destination.path);
       await mkdir(path.dirname(target), { recursive: true });
       await writeFile(target, rewritten, "utf8");
       count += 1;

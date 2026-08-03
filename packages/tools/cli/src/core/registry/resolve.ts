@@ -1,6 +1,7 @@
+import { FacetError } from "../errors.js";
 import type { RegistryIndex, RegistryIndexEntry } from "./schema.js";
 
-export class RegistryResolutionError extends Error {}
+export class RegistryResolutionError extends FacetError {}
 
 /**
  * Expands the requested item names into the full install set, in dependency

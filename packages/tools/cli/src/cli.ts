@@ -28,7 +28,7 @@ const HELP = `
     --overwrite          (add) replace files that already exist
     --dry-run            (add) resolve and report, write nothing
     --no-deps            (add) skip npm install
-    --force              (remove) delete even if locally modified
+    --force              (init) overwrite facet.json; (remove) delete anyway
     --yes, -y            (init) accept every default
     --version, -v
     --help, -h
@@ -69,7 +69,13 @@ export async function run(argv: string[]): Promise<number> {
   try {
     switch (command) {
       case "init":
-        await init({ cwd, yes: values.yes === true });
+        await init({
+          cwd,
+          registry,
+          yes: values.yes === true,
+          force: values.force === true,
+          noDeps: values["no-deps"] === true,
+        });
         break;
       case "add":
         if (rest.length === 0) {

@@ -1,6 +1,7 @@
 import { readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 import type { FacetBase, FacetMode } from "@facet-ui/theme";
+import { FacetError } from "./errors.js";
 
 export const CONFIG_FILENAME = "facet.json";
 
@@ -47,15 +48,17 @@ export const DEFAULT_CONFIG: FacetConfig = {
     base: "zinc",
     mode: "dark",
   },
+  // No `import` specifiers by default: relative imports need no tsconfig
+  // `paths`, so they work in a roblox-ts project nobody configured for this.
   aliases: {
-    ui: { dir: "src/shared/ui", import: "shared/ui" },
-    lib: { dir: "src/shared/lib", import: "shared/lib" },
-    hooks: { dir: "src/shared/hooks", import: "shared/hooks" },
+    ui: { dir: "src/shared/ui" },
+    lib: { dir: "src/shared/lib" },
+    hooks: { dir: "src/shared/hooks" },
   },
   velaConfig: "vela.config.ts",
 };
 
-export class MissingConfigError extends Error {
+export class MissingConfigError extends FacetError {
   constructor() {
     super(`No ${CONFIG_FILENAME} found. Run \`facet init\` first.`);
   }
