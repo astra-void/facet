@@ -58,7 +58,7 @@ export type RegistryIndexEntry = Omit<RegistryItem, "files"> & {
 export type RegistryIndex = {
   /** Registry format version. Bumped when these types change incompatibly. */
   version: 1;
-  /** Version of the `facet-ui` release that produced this index. */
+  /** Version of the `facet-rbxts` release that produced this index. */
   generatedBy: string;
   items: RegistryIndexEntry[];
 };

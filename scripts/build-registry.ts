@@ -82,10 +82,10 @@ function landingPage(index: RegistryIndex): string {
   <h1>Facet registry</h1>
   <p>Copy-in UI components for roblox-ts, built on Lattice UI and Vela.
      This host serves the JSON the CLI reads; it is not documentation.</p>
-  <pre><code>npx facet-ui init
-npx facet-ui add button</code></pre>
+  <pre><code>npx facet-rbxts init
+npx facet-rbxts add button</code></pre>
   <p>Index: <a href="r/index.json"><code>r/index.json</code></a> &middot;
-     format version ${index.version} &middot; built from facet-ui ${escapeHtml(index.generatedBy)}</p>
+     format version ${index.version} &middot; built from facet-rbxts ${escapeHtml(index.generatedBy)}</p>
   <table>
 ${rows}
   </table>

@@ -5,7 +5,16 @@
   "access": "public",
   "baseBranch": "main",
   "updateInternalDependencies": "patch",
-  "ignore": ["@facet-ui/registry", "@facet-ui/playground"],
-  "fixed": [["@facet-ui/react-variants", "@facet-ui/theme", "facet-ui"]],
+  "ignore": [
+    "@facet-ui/registry",
+    "@facet-ui/playground"
+  ],
+  "fixed": [
+    [
+      "@facet-ui/react-variants",
+      "@facet-ui/theme",
+      "facet-rbxts"
+    ]
+  ],
   "linked": []
 }

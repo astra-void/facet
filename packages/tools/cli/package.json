@@ -1,5 +1,5 @@
 {
-  "name": "facet-ui",
+  "name": "facet-rbxts",
   "version": "0.1.0",
   "private": false,
   "type": "module",
@@ -9,13 +9,13 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "bin": {
-    "facet-ui": "dist/index.js",
-    "facet": "dist/index.js"
+    "facet": "dist/index.js",
+    "facet-rbxts": "dist/index.js"
   },
   "files": [
     "dist",
-    "templates",
-    "README.md"
+    "README.md",
+    "LICENSE"
   ],
   "engines": {
     "node": ">=20"
@@ -34,5 +34,15 @@
   },
   "dependencies": {
     "@facet-ui/theme": "workspace:*"
-  }
+  },
+  "keywords": [
+    "roblox",
+    "roblox-ts",
+    "rbxts",
+    "ui",
+    "components",
+    "facet",
+    "shadcn",
+    "cli"
+  ]
 }

@@ -7,7 +7,7 @@ This repository is the Facet monorepo: copy-in UI components for roblox-ts, buil
 
 - `packages/react/variants` — `@facet-ui/react-variants`, rbxts runtime, built by `rbxtsc`
 - `packages/tools/theme` — `@facet-ui/theme`, Node, produces a Vela config preset
-- `packages/tools/cli` — `facet-ui`, Node CLI that ships the built registry
+- `packages/tools/cli` — `facet-rbxts`, the CLI; published as `facet-rbxts`, invoked as `facet`
 - `registry/` — the authored registry: manifest plus the component sources that get copied. This
   workspace type-checks them in place, `~/` aliases and all
 - `apps/playground` — Roblox app that consumes a synced copy (`pnpm sync:playground`) and builds it

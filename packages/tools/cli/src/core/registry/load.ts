@@ -54,7 +54,7 @@ export async function loadIndex(source: RegistrySource): Promise<RegistryIndex> 
 
   if (index.version !== 1) {
     throw new FacetError(
-      `The registry at ${describeSource(source)} is format version ${index.version}, which this CLI does not understand. Upgrade facet-ui.`,
+      `The registry at ${describeSource(source)} is format version ${index.version}, which this CLI does not understand. Upgrade facet-rbxts.`,
     );
   }
 
