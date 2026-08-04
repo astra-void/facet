@@ -144,12 +144,13 @@ export function Button(props: ButtonProps) {
       error("[Button] `asChild` requires a child element.");
     }
 
-    // Verified in Studio: Vela's class-to-prop lowering does survive `Slot` and
-    // lands on the child. What does not work yet is the rest of the recipe —
-    // `rounded-md` and `flex-row` lower to modifier *children*, and Lattice's
-    // `Slot` matches those by lowercase JSX tag name while roblox-ts React
-    // labels them `UICorner` / `UIListLayout`, so each reads as a second target
-    // and `Slot` errors. Upstream fix; see docs/roadmap.md.
+    // Verified in Studio against a bare `<textbutton>`: the recipe crosses `Slot`
+    // whole — background, size, automatic sizing, the hover variant, and the
+    // `UICorner`/`UIListLayout`/`UIPadding` re-parented under the child.
+    //
+    // The label does not come with it. `TextSlot` never renders on this path, so
+    // the child draws its own text at Roblox's 8px near-black default unless the
+    // consumer styles it. `buttonLabelVariants` is exported for that.
     return (
       <Slot className={className} {...toSlotProps(passthrough)} {...behaviorProps}>
         {props.children}

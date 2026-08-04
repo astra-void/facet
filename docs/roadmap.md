@@ -62,24 +62,25 @@ with a model), `billboard`, `surface`, `player-list`, `hotbar`.
 
 ## Open questions
 
-- **Does `className` survive `asChild`?** **Yes — and `asChild` is still broken, for an unrelated
-  reason.** Verified in Studio against a bare `<textbutton>` child:
-  `<Slot className="h-8 w-fit bg-secondary">` resolved onto the child as `BackgroundColor3`
-  0.153/0.153/0.165, `Size` `{0,0},{0,32}`, `AutomaticSize.X`. Class-to-prop lowering crosses `Slot`
-  intact.
+- **Does `className` survive `asChild`?** **Yes, and `asChild` works** as of Lattice 0.8.0.
+  Verified in Studio against a bare `<textbutton>` child, which carries no styling of its own: the
+  cloned instance came out with `BackgroundColor3` 0.153/0.153/0.165 (`bg-secondary`), `Size`
+  `{0,0},{0,32}` and `AutomaticSize.X` (`h-8 w-fit`), `bg-secondary/80` on hover, and
+  `UIListLayout`, `UICorner` and `UIPadding` re-parented underneath it.
 
-  Adding one class that lowers to a modifier *child* — `rounded-md`, `flex-row`, `px-3` — fails with
-  `[Slot] expected exactly one child element besides any UI modifiers.` The cause is a case mismatch
-  in Lattice, not in Vela or here: `slot.luau`'s `UI_MODIFIER_TAGS` is keyed by lowercase JSX tag
-  names (`uicorner`, `uilistlayout`), and `isUiModifierElement` looks the element's `type` up in it
-  directly — but roblox-ts React elements carry the Roblox class name. An instrumented probe printed
-  `UIListLayout`, `UICorner`, `UIPadding`, `TextButton`. Every modifier therefore reads as a second
-  target candidate.
+  It was broken for a reason unrelated to `className`: Lattice keyed its UI modifier table by the
+  lowercase JSX tag, while roblox-ts labels a host element with its Roblox class name, so
+  `<uicorner />` arrived as `"UICorner"`, missed the lookup, and counted as a second slot target.
+  Every Facet recipe emits at least a `UIListLayout` or a `UICorner`, so no component could use
+  `asChild` at all. Fixed upstream in `@lattice-ui/react-runtime` 0.8.0.
 
-  Every Facet recipe emits at least a `UIListLayout` or a `UICorner`, so this is not a corner case:
-  `asChild` cannot work on any of them until Lattice's lookup is case-correct. Report it upstream;
-  the fix is the tag table, and nothing in the registry needs to change to receive it. `Button` keeps
-  its `asChild` branch in the meantime — the code is right, the dependency is not.
+  **What `asChild` does not carry is the label.** The chrome comes from the recipe, but the child
+  draws its own text and `TextSlot` never renders, so `buttonLabelVariants` — colour, size, weight
+  — is not applied and the text falls back to Roblox's 8px near-black default. On a dark surface it
+  is invisible. This is §3 of [registry-design.md](registry-design.md) again: nothing inherits, so a
+  consumer reaching for `asChild` states the text styling on their own element. Whether the registry
+  should make that easier — exporting the label recipe, or documenting the pairing — is open.
+
 Settled, with the reasoning kept where it can be argued with:
 
 - **Text is a prop, not children** — [decisions/text-api.md](decisions/text-api.md). `Text?: string`
