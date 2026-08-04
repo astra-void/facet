@@ -16,8 +16,11 @@ function Buttons() {
       <Button variant="destructive" Text="Destructive" />
       <Button variant="ghost" Text="Ghost" />
       <Button disabled Text="Disabled" />
-      {/* No `asChild` case here on purpose: it errors at runtime until Lattice's
-          `Slot` recognises modifier siblings. See docs/roadmap.md. */}
+      {/* The bare child carries no styling of its own, so anything it ends up
+          wearing came through `Slot` from the recipe. */}
+      <Button asChild variant="secondary" size="sm">
+        <textbutton key="AsChild" Text="AsChild" />
+      </Button>
     </frame>
   );
 }

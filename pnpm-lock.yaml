@@ -54,8 +54,8 @@ importers:
         specifier: workspace:*
         version: link:../../packages/react/variants
       '@lattice-ui/react-runtime':
-        specifier: ^0.7.0
-        version: 0.7.0(@rbxts/react-roblox@17.3.7-ts.1(@rbxts/react@17.3.7-ts.1))(@rbxts/react@17.3.7-ts.1)
+        specifier: ^0.8.0
+        version: 0.8.0(@rbxts/react-roblox@17.3.7-ts.1(@rbxts/react@17.3.7-ts.1))(@rbxts/react@17.3.7-ts.1)
       '@rbxts-js/boolean':
         specifier: ^1.2.3-ts.1
         version: 1.2.3-ts.1
@@ -161,8 +161,8 @@ importers:
         version: link:../packages/react/variants
     devDependencies:
       '@lattice-ui/react-runtime':
-        specifier: ^0.7.0
-        version: 0.7.0(@rbxts/react-roblox@17.3.7-ts.1(@rbxts/react@17.3.7-ts.1))(@rbxts/react@17.3.7-ts.1)
+        specifier: ^0.8.0
+        version: 0.8.0(@rbxts/react-roblox@17.3.7-ts.1(@rbxts/react@17.3.7-ts.1))(@rbxts/react@17.3.7-ts.1)
       '@rbxts/react':
         specifier: 17.3.7-ts.1
         version: 17.3.7-ts.1
@@ -465,8 +465,8 @@ packages:
   '@jridgewell/sourcemap-codec@1.5.5':
     resolution: {integrity: sha512-cYQ9310grqxueWbl+WuIUIaiUaDcj7WOq5fVhEljNVgRfOUhY9fy2zTvfoqWsnebh8Sl70VScFbICvJnLKB0Og==}
 
-  '@lattice-ui/react-runtime@0.7.0':
-    resolution: {integrity: sha512-cYx9wUhgIXxqeVs2sf1wjUHRyfloxouhBYMe1d4TOIeE2yaGjmVEJ3Y3aRnI468ccyaHL4U0xUU3OKPqpnQ68Q==}
+  '@lattice-ui/react-runtime@0.8.0':
+    resolution: {integrity: sha512-83P19pFTY3IGstGrezVUGDGTy/3vRHdHHOpSVktnQfEIVghUQYRaIwTo7JL+55zzcJqk48X2KIaTlz8bU/jLyQ==}
     peerDependencies:
       '@rbxts/react': ^17.3.7-ts.1
       '@rbxts/react-roblox': ^17.3.7-ts.1
@@ -1817,7 +1817,7 @@ snapshots:
 
   '@jridgewell/sourcemap-codec@1.5.5': {}
 
-  '@lattice-ui/react-runtime@0.7.0(@rbxts/react-roblox@17.3.7-ts.1(@rbxts/react@17.3.7-ts.1))(@rbxts/react@17.3.7-ts.1)':
+  '@lattice-ui/react-runtime@0.8.0(@rbxts/react-roblox@17.3.7-ts.1(@rbxts/react@17.3.7-ts.1))(@rbxts/react@17.3.7-ts.1)':
     dependencies:
       '@rbxts/react': 17.3.7-ts.1
       '@rbxts/react-roblox': 17.3.7-ts.1(@rbxts/react@17.3.7-ts.1)

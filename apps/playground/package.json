@@ -14,7 +14,7 @@
   },
   "dependencies": {
     "@facet-ui/react-variants": "workspace:*",
-    "@lattice-ui/react-runtime": "^0.7.0",
+    "@lattice-ui/react-runtime": "^0.8.0",
     "@rbxts-js/boolean": "^1.2.3-ts.1",
     "@rbxts-js/collections": "^1.2.3-ts.1",
     "@rbxts-js/console": "^1.2.3-ts.1",
