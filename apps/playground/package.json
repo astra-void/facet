@@ -42,6 +42,6 @@
     "@rbxts/compiler-types": "3.0.0-types.0",
     "@rbxts/types": "^1.0.938",
     "roblox-ts": "^3.0.0",
-    "vela-rbxts": "^0.7.0"
+    "vela-rbxts": "^0.9.0"
   }
 }
