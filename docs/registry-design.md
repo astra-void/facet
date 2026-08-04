@@ -28,8 +28,13 @@ lowering for a long time — `flex-*`, `items-*`, `justify-*`, `fit`/`auto`, `te
 `text-<align>` and `font-<weight>` all silently did nothing, which is how the first `button` shipped
 zero pixels wide and every label sat on Roblox's 8px default.
 
-Vela 0.7.0 closed that set, and **full parity is being implemented now**. So this is a moving line,
-not a design constraint — do not encode it as one.
+Vela 0.8.0 closed the last of it — `opacity-*`, `whitespace-*` and `leading-*` were the final
+holdouts, and no component carries a workaround for a missing family any more.
+
+**The floor is 0.9.0, not 0.8.0.** 0.8.0 grew the inlined runtime past Luau's 200-register limit, so
+`card` stopped compiling at all — `Out of local registers`, pointing at generated code nobody wrote.
+0.9.0 scopes the runtime into one initializer and the emitted files now sit around 24 module-scope
+locals rather than 106.
 
 The rule that outlives it: **when a class does nothing, suspect the dynamic path before suspecting
 your class.** Check what the emitted runtime actually resolves:
@@ -39,17 +44,6 @@ grep -o 'startsWith(token, "[a-z0-9-]*")' apps/playground/out/shared/ui/button.l
 ```
 
 Whatever is missing there is missing at runtime, whatever the static path or the docs say.
-
-### Accommodations still in place
-
-Each is a workaround for a family the runtime path has not reached yet, and each should be deleted
-when it does:
-
-| Where | Workaround | Wanted |
-| --- | --- | --- |
-| `card` | `TextWrapped` instance prop | `whitespace-normal` |
-| `button` | `disabled && "bg-muted"` + muted label | `opacity-50` |
-| `card` | — | `leading-*` to tighten description line height |
 
 ## 2. `AutomaticSize` is a chain, and it breaks at the first weak link
 

@@ -15,24 +15,30 @@ import { type ClassName, cn } from "~/lib/utils";
  * LegacyArial — a different typeface at a visibly different size from the
  * SourceSansPro every other label here resolves to.
  */
-export const cardVariants = fv("flex-col w-full h-fit rounded-lg border border-border bg-card");
-export const cardHeaderVariants = fv("flex-col w-full h-fit gap-1 p-6");
-export const cardTitleVariants = fv("w-full h-fit text-left text-xl font-semibold text-card-foreground");
-export const cardDescriptionVariants = fv("w-full h-fit text-left text-xs font-normal text-muted-foreground");
-export const cardContentVariants = fv("flex-col w-full h-fit gap-2 px-6 pb-6");
-export const cardFooterVariants = fv("flex-row items-center w-full h-fit gap-2 px-6 pb-6");
+/**
+ * One object rather than six exported recipes, and it is not a style choice:
+ * Vela inlines its whole runtime into every file with a computed `className`,
+ * which leaves a component only a slice of Luau's 200-register limit for its own
+ * module-scope locals. Six separate `export const`s put this file over it and
+ * the module stopped loading entirely — "Out of local registers when trying to
+ * allocate CardHeader". Each exported name costs a register; one object costs
+ * one. See docs/decisions/luau-register-limit.md.
+ */
+export const cardVariants = {
+  root: fv("flex-col w-full h-fit rounded-lg border border-border bg-card"),
+  header: fv("flex-col w-full h-fit gap-1 p-6"),
+  title: fv("w-full h-fit whitespace-normal text-left text-xl font-semibold text-card-foreground"),
+  description: fv("w-full h-fit whitespace-normal leading-tight text-left text-xs font-normal text-muted-foreground"),
+  content: fv("flex-col w-full h-fit gap-2 px-6 pb-6"),
+  footer: fv("flex-row items-center w-full h-fit gap-2 px-6 pb-6"),
+};
 
+// Wrapping and alignment are classes: Roblox centres text and leaves it on one
+// line by default, so `text-left` and `whitespace-normal` correct both. Text and
+// frame parts share these, so one table serves both.
 const NEUTRAL_PROPS = {
   BackgroundTransparency: 1,
   BorderSizePixel: 0,
-};
-
-// `TextWrapped` has no class: Vela lowers no `whitespace-*` family on the
-// runtime path, and a card's copy has to wrap inside a fixed width. Alignment
-// is a class again — Roblox centres text by default, `text-left` corrects it.
-const TEXT_PROPS = {
-  ...NEUTRAL_PROPS,
-  TextWrapped: true,
 };
 
 const FRAME_OWN_PROPS = ["className", "children"] as const;
@@ -44,7 +50,7 @@ export type CardTextProps = { className?: ClassName; Text?: string } & Passthrou
 export function Card(props: CardProps) {
   return (
     <frame
-      className={cn(cardVariants({ className: props.className }))}
+      className={cn(cardVariants.root({ className: props.className }))}
       {...NEUTRAL_PROPS}
       {...getPassthroughProps<Frame>(props, FRAME_OWN_PROPS)}
     >
@@ -56,7 +62,7 @@ export function Card(props: CardProps) {
 export function CardHeader(props: CardProps) {
   return (
     <frame
-      className={cn(cardHeaderVariants({ className: props.className }))}
+      className={cn(cardVariants.header({ className: props.className }))}
       {...NEUTRAL_PROPS}
       {...getPassthroughProps<Frame>(props, FRAME_OWN_PROPS)}
     >
@@ -68,9 +74,9 @@ export function CardHeader(props: CardProps) {
 export function CardTitle(props: CardTextProps) {
   return (
     <textlabel
-      className={cn(cardTitleVariants({ className: props.className }))}
+      className={cn(cardVariants.title({ className: props.className }))}
       Text={props.Text ?? ""}
-      {...TEXT_PROPS}
+      {...NEUTRAL_PROPS}
       {...getPassthroughProps<TextLabel>(props, TEXT_OWN_PROPS)}
     />
   );
@@ -79,9 +85,9 @@ export function CardTitle(props: CardTextProps) {
 export function CardDescription(props: CardTextProps) {
   return (
     <textlabel
-      className={cn(cardDescriptionVariants({ className: props.className }))}
+      className={cn(cardVariants.description({ className: props.className }))}
       Text={props.Text ?? ""}
-      {...TEXT_PROPS}
+      {...NEUTRAL_PROPS}
       {...getPassthroughProps<TextLabel>(props, TEXT_OWN_PROPS)}
     />
   );
@@ -90,7 +96,7 @@ export function CardDescription(props: CardTextProps) {
 export function CardContent(props: CardProps) {
   return (
     <frame
-      className={cn(cardContentVariants({ className: props.className }))}
+      className={cn(cardVariants.content({ className: props.className }))}
       {...NEUTRAL_PROPS}
       {...getPassthroughProps<Frame>(props, FRAME_OWN_PROPS)}
     >
@@ -102,7 +108,7 @@ export function CardContent(props: CardProps) {
 export function CardFooter(props: CardProps) {
   return (
     <frame
-      className={cn(cardFooterVariants({ className: props.className }))}
+      className={cn(cardVariants.footer({ className: props.className }))}
       {...NEUTRAL_PROPS}
       {...getPassthroughProps<Frame>(props, FRAME_OWN_PROPS)}
     >

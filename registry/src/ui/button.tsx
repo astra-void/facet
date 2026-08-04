@@ -95,8 +95,7 @@ export function Button(props: ButtonProps) {
   const disabled = props.disabled === true;
 
   // Vela has no `disabled:` variant — disabled is our state, not the host's —
-  // and no `opacity-*` on the runtime class path either, so the dimming has to
-  // come from colour tokens rather than transparency.
+  // so the dimming is applied here rather than selected by one.
   //
   // It goes *inside* the recipe's className slot, ahead of the consumer's:
   // resolution is last-token-wins, so anything appended after `props.className`
@@ -104,7 +103,7 @@ export function Button(props: ButtonProps) {
   const className = buttonVariants({
     variant: props.variant,
     size: props.size,
-    className: cn(disabled && "bg-muted", props.className),
+    className: cn(disabled && "opacity-50", props.className),
   });
 
   const handleActivated = React.useCallback(() => {
@@ -124,6 +123,8 @@ export function Button(props: ButtonProps) {
   const content = (
     <TextSlot
       Text={props.Text}
+      // Not `opacity-50`: a muted token says "disabled" more plainly than a
+      // faded one — see docs/decisions/opacity-does-not-cascade.md.
       className={buttonLabelVariants({
         variant: props.variant,
         size: props.size,
