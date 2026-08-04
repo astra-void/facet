@@ -63,9 +63,20 @@ overlapping siblings darken where they overlap — and that is the price paid in
 
 Apply the dimming once, at the top of what should fade, and let it fall through.
 
-`button` dims itself with `opacity-50`; its own label fades with it now. Its `props.children` do
-not, so a component that renders children into a faded surface still states the dimming on them —
-which is what the warning asks for.
+`button` dims itself with `opacity-50`, and its label states the same fade **as an instance prop**.
+Both halves of that were measured in Studio rather than assumed:
+
+- The button's alpha does not reach the label. It is drawn by `TextSlot`, and a component child is
+  exactly the case above that the walk cannot see. Left alone, the button sat at
+  `BackgroundTransparency` 0.5 with its label at `TextTransparency` 0 — half a faded button.
+- Putting `opacity-50` on the label's own recipe does not fix it either. The class resolves against
+  `__velaTag = TextSlot`, and the runtime cannot know which instance a component will render, so it
+  drops the text-only half and keeps only a background that was already invisible. The emitted Luau
+  carried the token; the label still measured 0.
+
+So this is the one place a class genuinely cannot express the intent, in either direction, and
+`TextTransparency={disabled ? 0.5 : 0}` says it instead. `props.children` are unreachable for the
+same reason, and a component that renders children onto a faded surface has to state it there too.
 
 Where the fade has to cross a component boundary, the rule from §3 of
 [registry-design.md](../registry-design.md) still holds: nothing inherits, so every instance states

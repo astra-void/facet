@@ -123,12 +123,16 @@ export function Button(props: ButtonProps) {
   const content = (
     <TextSlot
       Text={props.Text}
-      // Not `opacity-50`: a muted token says "disabled" more plainly than a
-      // faded one — see docs/decisions/opacity-does-not-cascade.md.
+      // The label states its own fade, and states it as a prop. `opacity-50`
+      // cannot cross this boundary in either direction: the button's alpha stops
+      // at a component child, and a class on `TextSlot` resolves against a tag
+      // the runtime cannot identify, so it drops `TextTransparency` and leaves
+      // only a background that was already invisible.
+      // See docs/decisions/opacity-does-not-cascade.md.
+      TextTransparency={disabled ? 0.5 : 0}
       className={buttonLabelVariants({
         variant: props.variant,
         size: props.size,
-        className: disabled && "text-muted-foreground",
       })}
     >
       {props.children}
