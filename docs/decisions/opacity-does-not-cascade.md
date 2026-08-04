@@ -78,6 +78,13 @@ So this is the one place a class genuinely cannot express the intent, in either 
 `TextTransparency={disabled ? 0.5 : 0}` says it instead. `props.children` are unreachable for the
 same reason, and a component that renders children onto a faded surface has to state it there too.
 
+The label fades rather than merely recolouring because that is what `opacity` does on the web: CSS
+fades an element and its text together, so a shadcn `disabled:opacity-50` button dims its label too.
+Recolouring it to `text-muted-foreground` and leaving it solid is the more legible option and was
+what this file first argued for — but it makes `disabled` mean two different things depending on
+which component you are looking at. Parity won; legibility is the price, and it is worth revisiting
+if a disabled label ever proves hard to read at small sizes.
+
 Where the fade has to cross a component boundary, the rule from §3 of
 [registry-design.md](../registry-design.md) still holds: nothing inherits, so every instance states
 its own appearance.
