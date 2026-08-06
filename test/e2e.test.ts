@@ -6,6 +6,7 @@ import { fileURLToPath } from "node:url";
 import { promisify } from "node:util";
 import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 import { add } from "../packages/tools/cli/src/commands/add";
+import { diff } from "../packages/tools/cli/src/commands/diff";
 import { doctor } from "../packages/tools/cli/src/commands/doctor";
 import { init } from "../packages/tools/cli/src/commands/init";
 import { remove } from "../packages/tools/cli/src/commands/remove";
@@ -210,6 +211,71 @@ describe("facet remove", () => {
   it("refuses a name the registry does not have", async () => {
     await setUp();
     await expect(remove(["carrd"], { cwd: fixture.root, registry: registryDir })).rejects.toThrow(
+      /Unknown component "carrd"/,
+    );
+  });
+});
+
+describe("facet diff", () => {
+  it("says a freshly copied component matches", async () => {
+    await setUp();
+    await add(["label"], { cwd: fixture.root, noDeps: true, registry: registryDir });
+
+    await diff(undefined, { cwd: fixture.root, registry: registryDir });
+    expect(printed()).toContain("match the registry");
+  });
+
+  it("shows the change, in the direction that makes `+` the project's", async () => {
+    await setUp();
+    await add(["label"], { cwd: fixture.root, noDeps: true, registry: registryDir });
+    const source = await fixture.read("src/shared/ui/label.tsx");
+    await fixture.write("src/shared/ui/label.tsx", source.replace("text-sm", "text-lg"));
+
+    await diff(undefined, { cwd: fixture.root, registry: registryDir });
+    expect(printed()).toContain("-export const labelVariants");
+    expect(printed()).toContain("text-lg");
+    expect(printed()).toContain("src/shared/ui/label.tsx");
+  });
+
+  it("refuses to say which side moved, because it cannot know", async () => {
+    await setUp();
+    await add(["label"], { cwd: fixture.root, noDeps: true, registry: registryDir });
+    await fixture.write("src/shared/ui/label.tsx", "// nothing like the original\n");
+
+    await diff(undefined, { cwd: fixture.root, registry: registryDir });
+    expect(printed()).toContain("your edit, a change");
+    expect(printed()).toContain("Facet cannot tell them apart");
+  });
+
+  it("does not report the alias rewrite `add` performed as a difference", async () => {
+    // The file on disk imports `../lib/utils`; the registry source says
+    // `~/lib/utils`. Comparing without replaying the rewrite would report every
+    // component as changed the moment it was copied.
+    await setUp();
+    await add(["button"], { cwd: fixture.root, noDeps: true, registry: registryDir });
+
+    await diff("button", { cwd: fixture.root, registry: registryDir });
+    expect(printed()).not.toContain("~/lib/utils");
+    expect(printed()).toContain("match the registry");
+  });
+
+  it("walks only what the project has", async () => {
+    await setUp();
+    await add(["label"], { cwd: fixture.root, noDeps: true, registry: registryDir });
+
+    await diff(undefined, { cwd: fixture.root, registry: registryDir });
+    expect(printed()).not.toContain("card");
+  });
+
+  it("says so for a component that is not installed", async () => {
+    await setUp();
+    await diff("card", { cwd: fixture.root, registry: registryDir });
+    expect(printed()).toContain("card is not installed");
+  });
+
+  it("refuses a name the registry does not have", async () => {
+    await setUp();
+    await expect(diff("carrd", { cwd: fixture.root, registry: registryDir })).rejects.toThrow(
       /Unknown component "carrd"/,
     );
   });

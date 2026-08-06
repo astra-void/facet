@@ -19,7 +19,7 @@ const HELP = `
     add <names...>       copy components into the project
     remove <names...>    delete copied components
     list                 show every component in the registry
-    diff [name]          show upstream changes since a component was copied
+    diff [name]          show how copied components differ from the registry
     doctor               check the project matches what components assume
 
   Options
@@ -99,7 +99,7 @@ export async function run(argv: string[]): Promise<number> {
         await list({ registry });
         break;
       case "diff":
-        await diff(rest[0], { cwd });
+        await diff(rest[0], { cwd, registry });
         break;
       case "doctor":
         await doctor({ cwd, registry });
