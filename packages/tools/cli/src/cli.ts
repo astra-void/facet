@@ -102,7 +102,7 @@ export async function run(argv: string[]): Promise<number> {
         await diff(rest[0], { cwd });
         break;
       case "doctor":
-        await doctor({ cwd });
+        await doctor({ cwd, registry });
         break;
       default:
         throw new FacetError(`Unknown command "${command}". Run \`facet --help\`.`);

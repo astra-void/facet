@@ -5,7 +5,10 @@ import type { FacetConfig } from "../config.js";
 export type WiringState =
   | { kind: "missing"; content: string }
   | { kind: "wired" }
-  | { kind: "unwired"; snippet: string };
+  // `source` is the config as written. A project that spells Facet's tokens out
+  // by hand instead of spreading `facetTheme` is unwired but not necessarily
+  // broken, and reading the text is the only way to tell those apart.
+  | { kind: "unwired"; snippet: string; source: string };
 
 export function velaConfigTemplate(config: FacetConfig): string {
   return `import { facetTheme } from "@facet-ui/theme";
@@ -47,5 +50,7 @@ export async function inspectVelaConfig(root: string, config: FacetConfig): Prom
     return { kind: "missing", content: velaConfigTemplate(config) };
   }
 
-  return source.includes("@facet-ui/theme") ? { kind: "wired" } : { kind: "unwired", snippet: snippetFor(config) };
+  return source.includes("@facet-ui/theme")
+    ? { kind: "wired" }
+    : { kind: "unwired", snippet: snippetFor(config), source };
 }
