@@ -93,7 +93,7 @@ export async function run(argv: string[]): Promise<number> {
         if (rest.length === 0) {
           throw new FacetError("Nothing to remove. Name at least one component.");
         }
-        await remove(rest, { cwd, force: values.force === true });
+        await remove(rest, { cwd, registry, force: values.force === true });
         break;
       case "list":
         await list({ registry });
