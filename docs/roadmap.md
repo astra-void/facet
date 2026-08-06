@@ -8,7 +8,9 @@
 - [x] `facet doctor` — the checks `init` and `add` currently only warn about, plus the one neither
       could make: whether the packages under the copied files still meet the floors those files
       need. That is the check that catches a project set up by an older CLI
-- [ ] `facet remove`, `facet diff`
+- [ ] `facet remove`, `facet diff` — neither is blocked on anything; `diff` compares against the
+      registry as it stands today and says in its own output that it cannot tell "I edited this"
+      apart from "upstream changed"
 - [x] publish `@facet-ui/react-variants`, `@facet-ui/theme`, and `facet-rbxts`
 - [x] verified end to end from npm: install the CLI in a bare project, `init`, `add button`, and
       `rbxtsc` emits Luau with the semantic tokens resolved
@@ -55,8 +57,6 @@ with a model), `billboard`, `surface`, `player-list`, `hotbar`.
 
 ## Later — the parts that need a decision first
 
-- **`facet diff`** blocks on provenance. A `facet.lock` recording the content hash of each file at
-  copy time is the obvious answer; decide before shipping `add`, because `add` is what would write it.
 - **Runtime theming** — see [decisions/runtime-theming.md](decisions/runtime-theming.md).
 - **Icons.** shadcn leans on lucide. Roblox has no icon font; icons are image assets or a sprite
   sheet. Facet needs a position on this before any component that wants a chevron.
@@ -97,3 +97,7 @@ Settled, with the reasoning kept where it can be argued with:
   discipline instead: nothing lands after the consumer's `className`.
 - **One registry style** — [decisions/registry-styles.md](decisions/registry-styles.md). The field
   stays in `facet.json`; a second style does not arrive.
+- **Nothing is recorded at copy time** — no `facet.lock`, no content hashes, the same position
+  shadcn/ui takes. A copied file is the consumer's, and recording its hash would be Facet claiming
+  to know which edits are theirs. The cost lands on `facet diff`, which therefore reports drift
+  without attributing it; the reasoning is in `commands/diff.ts`, not yet in a decision doc.
