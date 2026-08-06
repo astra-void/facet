@@ -8,9 +8,12 @@
 - [x] `facet doctor` — the checks `init` and `add` currently only warn about, plus the one neither
       could make: whether the packages under the copied files still meet the floors those files
       need. That is the check that catches a project set up by an older CLI
-- [ ] `facet remove`, `facet diff` — neither is blocked on anything; `diff` compares against the
-      registry as it stands today and says in its own output that it cannot tell "I edited this"
-      apart from "upstream changed"
+- [x] `facet remove` — refuses a file that differs from the registry without `--force`, and a file
+      another installed component still imports at all. The second check runs to a fixed point: a
+      dependency that looked free stops being free once the component importing it is kept back
+- [ ] `facet diff` — not blocked on anything. It compares against the registry as it stands today
+      and has to say in its own output that it cannot tell "I edited this" apart from "upstream
+      changed"
 - [x] publish `@facet-ui/react-variants`, `@facet-ui/theme`, and `facet-rbxts`
 - [x] verified end to end from npm: install the CLI in a bare project, `init`, `add button`, and
       `rbxtsc` emits Luau with the semantic tokens resolved
