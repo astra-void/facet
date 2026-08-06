@@ -11,9 +11,9 @@
 - [x] `facet remove` — refuses a file that differs from the registry without `--force`, and a file
       another installed component still imports at all. The second check runs to a fixed point: a
       dependency that looked free stops being free once the component importing it is kept back
-- [ ] `facet diff` — not blocked on anything. It compares against the registry as it stands today
-      and has to say in its own output that it cannot tell "I edited this" apart from "upstream
-      changed"
+- [x] `facet diff` — compares against the registry as it stands today, replaying the `~/` rewrite
+      first so a project's own alias and directory choices are not reported as changes. It says in
+      its own output that it cannot tell "I edited this" apart from "upstream changed"
 - [x] publish `@facet-ui/react-variants`, `@facet-ui/theme`, and `facet-rbxts`
 - [x] verified end to end from npm: install the CLI in a bare project, `init`, `add button`, and
       `rbxtsc` emits Luau with the semantic tokens resolved
