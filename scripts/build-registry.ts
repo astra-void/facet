@@ -19,10 +19,22 @@ import registry from "../registry/registry";
  */
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const SOURCE_DIR = path.join(ROOT, "registry", "src");
-const SITE_DIR = path.join(ROOT, "site");
-const OUT_DIR = path.join(SITE_DIR, "r");
 
 const checkOnly = process.argv.includes("--check");
+
+/**
+ * `--out <dir>` puts the site somewhere other than `site/`. The Pages workflow
+ * takes the default; the end-to-end test builds a registry into a temporary
+ * directory so that it neither depends on nor clobbers a local build.
+ */
+function outputDir(): string {
+  const flag = process.argv.indexOf("--out");
+  const value = flag === -1 ? undefined : process.argv[flag + 1];
+  return value === undefined ? path.join(ROOT, "site") : path.resolve(value);
+}
+
+const SITE_DIR = outputDir();
+const OUT_DIR = path.join(SITE_DIR, "r");
 
 /**
  * Must match `DEFAULT_REGISTRY_URL`'s host in the CLI. Deploying from an Actions
