@@ -16,7 +16,12 @@
       label resolves to SourceSansPro at its recipe's size. Reading the emitted Luau was not enough —
       `card`'s description had no `font-*`, so it kept Roblox's LegacyArial default and was the only
       thing on screen in another typeface
-- [ ] a fixture project the CLI runs against in CI, so that end-to-end check stops being manual
+- [x] a fixture project the CLI runs against in CI, so that end-to-end check stops being manual.
+      `test/e2e.test.ts` builds a registry into a temporary directory and puts a project through
+      `init`, `add` and `doctor` against it, offline — packages are faked into `node_modules` at
+      chosen versions, which is the only way to assert on a project sitting below a floor. What it
+      does not cover is `rbxtsc` compiling the result; the playground build is what checks that,
+      and `ci.yml` now runs both on every branch and pull request rather than only on a deploy
 
 `init` creates a Vela config when there is none but never rewrites one that exists, and only reports
 on tsconfig rather than editing it. Both files belong to the consumer and are routinely JSONC or
