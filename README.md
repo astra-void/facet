@@ -96,8 +96,9 @@ exactly one mode — see [docs/decisions/runtime-theming.md](docs/decisions/runt
 
 Early, but the whole chain works. All three packages are on npm and the registry is live, so
 `npm i -D facet-rbxts` → `facet init` → `facet add button` → `rbxtsc` compiles in a project set up
-from scratch. `doctor`, `remove`, and `diff` are specified but not written, and the registry holds
-only `button` and `utils`.
+from scratch. `list`, `init`, `add`, and `doctor` are written; `remove` and `diff` are specified but
+not. The registry holds `button`, `badge`, `card`, `label`, `separator`, and the `utils` and `text`
+helpers they import.
 
 What has *not* been checked is how any of it looks: compiling is a static result, and Roblox runtime
 behavior only shows up in Studio. See [docs/roadmap.md](docs/roadmap.md).

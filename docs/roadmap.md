@@ -5,7 +5,9 @@
 - [x] `facet list` — reads the published registry
 - [x] `facet init` — writes `facet.json`, creates `vela.config.ts`, installs build deps, adds `utils`
 - [x] `facet add` — resolves transitively, rewrites `~/`, writes as one transaction
-- [ ] `facet doctor` — the checks `init` and `add` currently only warn about
+- [x] `facet doctor` — the checks `init` and `add` currently only warn about, plus the one neither
+      could make: whether the packages under the copied files still meet the floors those files
+      need. That is the check that catches a project set up by an older CLI
 - [ ] `facet remove`, `facet diff`
 - [x] publish `@facet-ui/react-variants`, `@facet-ui/theme`, and `facet-rbxts`
 - [x] verified end to end from npm: install the CLI in a bare project, `init`, `add button`, and
