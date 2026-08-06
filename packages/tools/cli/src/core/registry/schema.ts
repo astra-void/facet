@@ -80,14 +80,30 @@ export type ValidationIssue = {
 };
 
 /**
+ * Splits `name@range` without eating a scoped package's leading `@`. Local to
+ * this module on purpose: the CLI has the same function in `core/pkgspec.ts`,
+ * but this file is the published format and is imported by `registry.ts`, so it
+ * stays free of anything that would drag the rest of the CLI in with it.
+ */
+function specName(spec: string): string {
+  const at = spec.lastIndexOf("@");
+  return at > 0 ? spec.slice(0, at) : spec;
+}
+
+/**
  * Structural validation of an authored registry: name uniqueness, known item
- * types, resolvable `registryDependencies`, and no file claimed by two items.
+ * types, resolvable `registryDependencies`, no file claimed by two items, and
+ * one spec per npm package across the whole registry.
  * Runs in `pnpm registry:check` so a broken registry fails CI, not `facet add`.
  */
 export function validateRegistry(registry: Registry): ValidationIssue[] {
   const issues: ValidationIssue[] = [];
   const names = new Set<string>();
   const claimedFiles = new Map<string, string>();
+  // `facet add` unions dependency strings across the install set, so
+  // `@lattice-ui/react-runtime` and `@lattice-ui/react-runtime@^0.8.0` in two
+  // items survive as two entries and both reach the package manager.
+  const specs = new Map<string, { spec: string; item: string }>();
 
   for (const item of registry) {
     if (names.has(item.name)) {
@@ -109,6 +125,19 @@ export function validateRegistry(registry: Registry): ValidationIssue[] {
         issues.push({ item: item.name, message: `file "${file.path}" is already owned by "${owner}"` });
       } else {
         claimedFiles.set(file.path, item.name);
+      }
+    }
+
+    for (const spec of [...(item.dependencies ?? []), ...(item.devDependencies ?? [])]) {
+      const name = specName(spec);
+      const seen = specs.get(name);
+      if (seen === undefined) {
+        specs.set(name, { spec, item: item.name });
+      } else if (seen.spec !== spec) {
+        issues.push({
+          item: item.name,
+          message: `depends on "${spec}" while "${seen.item}" depends on "${seen.spec}" — one spec per package`,
+        });
       }
     }
   }
