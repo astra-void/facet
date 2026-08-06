@@ -1,0 +1,46 @@
+name: ci
+
+# The other two workflows run on a push to main and on a tag, so until now the
+# first thing to check a change was the deploy that shipped it. This runs the
+# same checks on a branch and on a pull request, before either.
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+
+      # Must satisfy pnpm 11's own floor of Node >=22.13, which is stricter than
+      # the >=20 the published CLI supports. This is the build toolchain, not
+      # the support matrix.
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      # Lint, typecheck, registry validation, and the tests — including the
+      # end-to-end one that builds a registry and puts a fixture project through
+      # `init`, `add` and `doctor` against it.
+      - run: pnpm run check
+
+      # The playground is the only place a copied component is compiled the way
+      # a consumer compiles it: `rbxtsc` through the Vela transformer, after a
+      # sync that copies and rewrites exactly as `facet add` does. A rewriting
+      # bug surfaces here rather than in someone's project.
+      - run: pnpm run build
