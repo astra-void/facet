@@ -1,4 +1,4 @@
-import { RAMPS } from "@facet-ui/theme";
+import type { FacetBase, FacetMode } from "@facet-ui/theme";
 import { DEFAULT_CONFIG, type FacetConfig } from "./config.js";
 
 /**
@@ -15,6 +15,18 @@ import { DEFAULT_CONFIG, type FacetConfig } from "./config.js";
 
 /** One entry per key of `FacetConfig`. Required, so a new field cannot be forgotten. */
 type PropertySchemas = { [K in keyof Required<FacetConfig>]: Record<string, unknown> };
+
+/**
+ * The enums, listed as maps over their unions so the compiler insists on every
+ * member. A new ramp in `@facet-ui/theme` does not build until it appears here.
+ *
+ * Listed rather than read off `RAMPS` at runtime on purpose: the site build
+ * imports this module through `tsx`, and a value import from `@facet-ui/theme`
+ * would make `registry:check` depend on that package having been compiled
+ * first. Type imports erase; this keeps the registry deploy free of the build.
+ */
+const BASES: Record<FacetBase, null> = { zinc: null, slate: null, stone: null, neutral: null };
+const MODES: Record<FacetMode, null> = { light: null, dark: null };
 
 const aliasSchema = (what: string) => ({
   type: "object",
@@ -51,13 +63,11 @@ const properties: PropertySchemas = {
     additionalProperties: false,
     properties: {
       base: {
-        // Straight off the theme package, so a new ramp is describable the day
-        // it exists rather than the day someone remembers this file.
-        enum: Object.keys(RAMPS),
+        enum: Object.keys(BASES),
         description: "Neutral ramp the semantic tokens are drawn from.",
       },
       mode: {
-        enum: ["light", "dark"],
+        enum: Object.keys(MODES),
         description: "Which side of the ramp tokens resolve to. Vela resolves at compile time, so a build has one.",
       },
     },
