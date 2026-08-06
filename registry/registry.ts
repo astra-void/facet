@@ -8,6 +8,10 @@ import { defineRegistry } from "../packages/tools/cli/src/core/registry/schema";
  *  - `dependencies` lists npm packages the source imports, exactly. A component
  *    that imports a Lattice primitive must say so, or `facet add` installs a
  *    file that cannot compile.
+ *  - A dependency carries a floor when the source needs behavior a specific
+ *    version introduced, and the same package carries the *same* spec in every
+ *    entry — `facet add` unions these strings, so two spellings of one package
+ *    would both be handed to the package manager. `registry:check` enforces it.
  *  - `registryDependencies` lists other entries, never files. `utils` is a
  *    dependency of everything that imports `~/lib/utils`.
  *  - `tokens` lists the semantic tokens the classes name, so `facet doctor` can
@@ -19,14 +23,14 @@ export default defineRegistry([
     type: "registry:lib",
     description: "cn — class composition helper every component imports",
     files: [{ path: "lib/utils.ts", type: "registry:lib" }],
-    dependencies: ["@facet-ui/react-variants"],
+    dependencies: ["@facet-ui/react-variants@^0.1.1"],
   },
   {
     name: "text",
     type: "registry:lib",
     description: "TextSlot — wraps string children in a styled textlabel",
     files: [{ path: "lib/text.tsx", type: "registry:lib" }],
-    dependencies: ["@lattice-ui/react-runtime"],
+    dependencies: ["@lattice-ui/react-runtime@^0.8.0"],
   },
   {
     name: "button",
@@ -34,7 +38,7 @@ export default defineRegistry([
     description: "Button with variant and size recipes",
     files: [{ path: "ui/button.tsx", type: "registry:ui" }],
     registryDependencies: ["utils", "text"],
-    dependencies: ["@facet-ui/react-variants", "@lattice-ui/react-runtime"],
+    dependencies: ["@facet-ui/react-variants@^0.1.1", "@lattice-ui/react-runtime@^0.8.0"],
     tokens: [
       "primary",
       "primary-foreground",
@@ -55,7 +59,7 @@ export default defineRegistry([
     description: "Form label",
     files: [{ path: "ui/label.tsx", type: "registry:ui" }],
     registryDependencies: ["utils"],
-    dependencies: ["@facet-ui/react-variants", "@lattice-ui/react-runtime"],
+    dependencies: ["@facet-ui/react-variants@^0.1.1", "@lattice-ui/react-runtime@^0.8.0"],
     tokens: ["foreground"],
   },
   {
@@ -64,7 +68,7 @@ export default defineRegistry([
     description: "One-pixel divider, horizontal or vertical",
     files: [{ path: "ui/separator.tsx", type: "registry:ui" }],
     registryDependencies: ["utils"],
-    dependencies: ["@facet-ui/react-variants", "@lattice-ui/react-runtime"],
+    dependencies: ["@facet-ui/react-variants@^0.1.1", "@lattice-ui/react-runtime@^0.8.0"],
     tokens: ["border"],
   },
   {
@@ -73,7 +77,7 @@ export default defineRegistry([
     description: "Small status pill that hugs its label",
     files: [{ path: "ui/badge.tsx", type: "registry:ui" }],
     registryDependencies: ["utils", "text"],
-    dependencies: ["@facet-ui/react-variants", "@lattice-ui/react-runtime"],
+    dependencies: ["@facet-ui/react-variants@^0.1.1", "@lattice-ui/react-runtime@^0.8.0"],
     tokens: [
       "primary",
       "primary-foreground",
@@ -91,7 +95,7 @@ export default defineRegistry([
     description: "Card with header, title, description, content, and footer parts",
     files: [{ path: "ui/card.tsx", type: "registry:ui" }],
     registryDependencies: ["utils"],
-    dependencies: ["@facet-ui/react-variants", "@lattice-ui/react-runtime"],
+    dependencies: ["@facet-ui/react-variants@^0.1.1", "@lattice-ui/react-runtime@^0.8.0"],
     tokens: ["card", "card-foreground", "border", "muted-foreground"],
   },
 ]);
