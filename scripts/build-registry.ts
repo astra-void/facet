@@ -1,6 +1,7 @@
 import { mkdir, readFile, rm, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { facetConfigSchema } from "../packages/tools/cli/src/core/configSchema";
 import type {
   RegistryIndex,
   RegistryIndexEntry,
@@ -11,8 +12,9 @@ import registry from "../registry/registry";
 
 /**
  * Builds the static registry the CLI fetches at runtime. The output is a
- * GitHub Pages artifact: `site/r/index.json` plus one JSON per component, and a
- * landing page listing what is there.
+ * GitHub Pages artifact: `site/r/index.json` plus one JSON per component, a
+ * landing page listing what is there, and the `facet.json` schema every copied
+ * config points at.
  *
  * Nothing here is committed — the Pages workflow rebuilds it, so the published
  * site can never drift from `registry/`.
@@ -160,6 +162,9 @@ async function main(): Promise<void> {
   await writeFile(path.join(SITE_DIR, ".nojekyll"), "", "utf8");
   await writeFile(path.join(SITE_DIR, "CNAME"), `${CUSTOM_DOMAIN}\n`, "utf8");
   await writeFile(path.join(SITE_DIR, "index.html"), landingPage(index), "utf8");
+  // Every `facet.json` names this file in its own `$schema`, so it has to be at
+  // the site root and it has to ship with the same deploy as the registry.
+  await writeFile(path.join(SITE_DIR, "schema.json"), `${JSON.stringify(facetConfigSchema(), undefined, 2)}\n`, "utf8");
   await writeFile(path.join(OUT_DIR, "index.json"), `${JSON.stringify(index, undefined, 2)}\n`, "utf8");
   for (const payload of payloads) {
     await writeFile(path.join(OUT_DIR, `${payload.name}.json`), `${JSON.stringify(payload, undefined, 2)}\n`, "utf8");

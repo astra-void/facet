@@ -1,5 +1,5 @@
 import { execFile } from "node:child_process";
-import { mkdtemp, realpath, rm } from "node:fs/promises";
+import { mkdtemp, readFile, realpath, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
@@ -71,6 +71,19 @@ async function installFloors(): Promise<void> {
   await fixture.install("@facet-ui/react-variants", "0.2.0");
   await fixture.install("@lattice-ui/react-runtime", "0.8.0");
 }
+
+describe("registry build", () => {
+  it("puts the schema facet.json advertises at the site root", async () => {
+    // `$schema` in a written facet.json is an absolute URL at the site root, so
+    // the deploy that publishes the registry has to publish this too.
+    const site = path.dirname(registryDir);
+    const schema = JSON.parse(await readFile(path.join(site, "schema.json"), "utf8")) as { $id: string };
+
+    await setUp();
+    const config = JSON.parse(await fixture.read("facet.json")) as { $schema: string };
+    expect(schema.$id).toBe(config.$schema);
+  });
+});
 
 describe("facet init", () => {
   it("leaves a project that can take a component", async () => {

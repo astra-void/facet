@@ -12,9 +12,17 @@ site/
   .nojekyll         Pages runs Jekyll otherwise, which eats underscore-prefixed paths
   CNAME             facet.astra-void.xyz
   index.html        landing page listing what exists
+  schema.json       the JSON Schema every facet.json names in its own `$schema`
   r/index.json      the index the CLI reads first
   r/<name>.json     one payload per component, source text inlined
 ```
+
+`schema.json` is generated from `FacetConfig` rather than checked in, for the same reason the index
+is: it is published by the deploy that publishes the registry, so it cannot be a version behind the
+CLI that writes the files pointing at it. The generator is
+[core/configSchema.ts](../../packages/tools/cli/src/core/configSchema.ts), which lives next to the
+type and is typed to cover every key of it — a new config field does not compile until it is
+described.
 
 The `CNAME` file is generated rather than committed because deploying from an Actions artifact
 replaces the entire site. Without it in the artifact, GitHub can revert the custom domain to the
@@ -62,4 +70,6 @@ the first two means the CLI asks a host the site no longer claims.
   `facet diff`, which is the command that makes drift visible — and see
   [provenance.md](provenance.md), where addressable snapshots are what would let `diff` fetch the
   text a component was copied from instead of the consumer having to store it.
-- **`schema.json`.** `facet.json` advertises one at the site root; it is not generated yet.
+
+`schema.json` was the other open item here, and is generated now — see above. Versioning is what is
+left.
