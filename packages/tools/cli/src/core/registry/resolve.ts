@@ -3,6 +3,38 @@ import type { RegistryIndex, RegistryIndexEntry } from "./schema.js";
 
 export class RegistryResolutionError extends FacetError {}
 
+/** One wording for a name the registry does not have, wherever it is looked up. */
+function unknownItem(name: string, requiredBy: string | undefined): RegistryResolutionError {
+  const suffix = requiredBy === undefined ? "" : ` (required by "${requiredBy}")`;
+  return new RegistryResolutionError(`Unknown component "${name}"${suffix}. Run \`facet list\` to see what exists.`);
+}
+
+/**
+ * The named items and nothing else, deduplicated, in the order asked for.
+ *
+ * `facet remove` wants exactly what was named — pulling in dependencies here
+ * would delete `utils` because someone removed `button`.
+ */
+export function selectItems(index: RegistryIndex, names: string[]): RegistryIndexEntry[] {
+  const byName = new Map(index.items.map((item) => [item.name, item] as const));
+
+  const selected: RegistryIndexEntry[] = [];
+  const seen = new Set<string>();
+
+  for (const name of names) {
+    const item = byName.get(name);
+    if (item === undefined) {
+      throw unknownItem(name, undefined);
+    }
+    if (!seen.has(name)) {
+      seen.add(name);
+      selected.push(item);
+    }
+  }
+
+  return selected;
+}
+
 /**
  * Expands the requested item names into the full install set, in dependency
  * order (dependencies before dependents), deduplicated.
@@ -28,8 +60,7 @@ export function resolveItems(index: RegistryIndex, requested: string[]): Registr
 
     const item = byName.get(name);
     if (item === undefined) {
-      const suffix = trail.length > 0 ? ` (required by "${trail[trail.length - 1]}")` : "";
-      throw new RegistryResolutionError(`Unknown component "${name}"${suffix}. Run \`facet list\` to see what exists.`);
+      throw unknownItem(name, trail[trail.length - 1]);
     }
 
     visiting.add(name);
