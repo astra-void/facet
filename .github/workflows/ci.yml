@@ -34,6 +34,12 @@ jobs:
 
       - run: pnpm install --frozen-lockfile
 
+      # Before anything is built, because that is the state `pages.yml` runs
+      # `registry:check` in — nothing under `packages/` has a `dist/` yet. Run
+      # it only as part of `check` below and a value import into the build
+      # script passes here and fails the deploy.
+      - run: pnpm run registry:check
+
       # Lint, typecheck, registry validation, and the tests — including the
       # end-to-end one that builds a registry and puts a fixture project through
       # `init`, `add` and `doctor` against it.
