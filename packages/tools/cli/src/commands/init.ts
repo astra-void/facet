@@ -9,6 +9,7 @@ import { findProjectRoot } from "../core/project/findRoot.js";
 import { inspectTransformer, TRANSFORMER_SNIPPET } from "../core/project/tsconfig.js";
 import { inspectVelaConfig } from "../core/project/velaConfig.js";
 import { createPrompter } from "../core/prompt.js";
+import { BUILD_DEPENDENCIES } from "../core/requirements.js";
 import { add } from "./add.js";
 
 export type InitOptions = {
@@ -21,13 +22,6 @@ export type InitOptions = {
   noDeps?: boolean;
   registry?: string;
 };
-
-/** Needed to build the project, not to run it — only `vela.config.ts` imports them. */
-// Vela is pinned to a floor, not left open: registry components lean on
-// families Vela only resolves on the computed-className path — `w-fit` and
-// `font-<weight>` from 0.7.0, `opacity-*`, `whitespace-*` and `leading-*` from
-// 0.8.0. Below the floor they compile and then quietly do nothing.
-const BUILD_DEPENDENCIES = ["@facet-ui/theme", "vela-rbxts@^0.9.0"];
 
 async function exists(candidate: string): Promise<boolean> {
   try {
