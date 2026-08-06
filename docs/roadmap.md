@@ -97,7 +97,7 @@ Settled, with the reasoning kept where it can be argued with:
   discipline instead: nothing lands after the consumer's `className`.
 - **One registry style** — [decisions/registry-styles.md](decisions/registry-styles.md). The field
   stays in `facet.json`; a second style does not arrive.
-- **Nothing is recorded at copy time** — no `facet.lock`, no content hashes, the same position
-  shadcn/ui takes. A copied file is the consumer's, and recording its hash would be Facet claiming
-  to know which edits are theirs. The cost lands on `facet diff`, which therefore reports drift
-  without attributing it; the reasoning is in `commands/diff.ts`, not yet in a decision doc.
+- **Nothing is recorded at copy time** — [decisions/provenance.md](decisions/provenance.md). No
+  `facet.lock`, no content hashes: a hash answers whether a file changed, and a diff has to show
+  how, so the record that would satisfy `facet diff` is a second copy of every component in the
+  consumer's repo. The cost is that `diff` reports drift without attributing it.

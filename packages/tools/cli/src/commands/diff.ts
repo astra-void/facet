@@ -12,7 +12,7 @@ export type DiffOptions = {
  * show what a merge would involve. With no argument it walks everything the
  * registry knows about that also exists in the project.
  *
- * Facet records nothing at copy time (see docs/decisions/registry-hosting.md),
+ * Facet records nothing at copy time (see docs/decisions/provenance.md),
  * so this compares against the *current* registry source and therefore cannot
  * tell "I edited this" apart from "upstream changed". Both show up as a diff.
  * Say that in the output rather than implying the difference came from upstream.

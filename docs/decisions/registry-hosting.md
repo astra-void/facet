@@ -59,5 +59,7 @@ the first two means the CLI asks a host the site no longer claims.
 - **Versioning.** Right now `main` overwrites one live registry, so an edit to a component reaches
   everyone immediately, including projects that ran `facet add` months ago and will next run
   `facet diff`. A `r/v1/` prefix, or per-release snapshots, is the obvious hedge. Decide alongside
-  `facet diff`, which is the command that makes drift visible.
+  `facet diff`, which is the command that makes drift visible — and see
+  [provenance.md](provenance.md), where addressable snapshots are what would let `diff` fetch the
+  text a component was copied from instead of the consumer having to store it.
 - **`schema.json`.** `facet.json` advertises one at the site root; it is not generated yet.
