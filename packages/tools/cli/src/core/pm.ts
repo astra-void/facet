@@ -3,6 +3,7 @@ import { access, readFile } from "node:fs/promises";
 import path from "node:path";
 import { FacetError } from "./errors.js";
 import { logger } from "./logger.js";
+import { packageName } from "./pkgspec.js";
 
 export type PackageManager = "pnpm" | "npm" | "yarn" | "bun";
 
@@ -95,13 +96,25 @@ export async function installPackages(
 }
 
 /**
- * Splits `name@spec` into its name, leaving a scoped package's leading `@`
- * alone — `@facet-ui/theme` is a name, `vela-rbxts@^0.7.0` is a name and a
- * range, and both have to survive the same function.
+ * Every package the project declares, whichever section it declares it in,
+ * mapped to the range as written.
+ *
+ * An unreadable `package.json` is reported as declaring nothing — the callers
+ * treat that as "assume it is missing", which is the direction that ends in a
+ * redundant install rather than a missing dependency.
  */
-function packageName(spec: string): string {
-  const at = spec.lastIndexOf("@");
-  return at > 0 ? spec.slice(0, at) : spec;
+export async function declaredDependencies(root: string): Promise<Record<string, string>> {
+  try {
+    const raw = await readFile(path.join(root, "package.json"), "utf8");
+    const parsed = JSON.parse(raw) as {
+      dependencies?: Record<string, string>;
+      devDependencies?: Record<string, string>;
+      peerDependencies?: Record<string, string>;
+    };
+    return { ...parsed.dependencies, ...parsed.devDependencies, ...parsed.peerDependencies };
+  } catch {
+    return {};
+  }
 }
 
 /**
@@ -110,21 +123,10 @@ function packageName(spec: string): string {
  *
  * A declared dependency counts as present whatever version it is on, so a
  * version range here is a floor for *new* installs, not an upgrade instruction.
+ * `facet doctor` is what reports an existing install sitting below a floor.
  */
 export async function missingDependencies(root: string, packages: string[]): Promise<string[]> {
-  let declared: Record<string, unknown> = {};
-  try {
-    const raw = await readFile(path.join(root, "package.json"), "utf8");
-    const parsed = JSON.parse(raw) as {
-      dependencies?: Record<string, string>;
-      devDependencies?: Record<string, string>;
-      peerDependencies?: Record<string, string>;
-    };
-    declared = { ...parsed.dependencies, ...parsed.devDependencies, ...parsed.peerDependencies };
-  } catch {
-    return packages;
-  }
-
+  const declared = await declaredDependencies(root);
   return packages.filter((spec) => declared[packageName(spec)] === undefined);
 }
 
