@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { DEFAULT_CONFIG, type FacetConfig } from "../packages/tools/cli/src/core/config";
 import { destinationFor, destinationForIndexFile } from "../packages/tools/cli/src/core/registry/destination";
-import { collectDependencies, resolveItems } from "../packages/tools/cli/src/core/registry/resolve";
+import { collectDependencies, resolveItems, selectItems } from "../packages/tools/cli/src/core/registry/resolve";
 import type { Registry, RegistryIndex, RegistryIndexEntry } from "../packages/tools/cli/src/core/registry/schema";
 import { validateRegistry } from "../packages/tools/cli/src/core/registry/schema";
 
@@ -141,6 +141,27 @@ describe("resolveItems", () => {
 
   it("points a typo at `facet list` rather than at nothing", () => {
     expect(() => resolveItems(registry, ["buton"])).toThrow(/Unknown component "buton"\. Run `facet list`/);
+  });
+});
+
+describe("selectItems", () => {
+  const registry = index([
+    entry({ name: "utils", type: "registry:lib", files: ["lib/utils.ts"] }),
+    entry({ name: "button", registryDependencies: ["utils"] }),
+  ]);
+
+  it("takes the names asked for and nothing behind them", () => {
+    // The opposite of `resolveItems`: pulling dependencies in here would delete
+    // `utils` because someone removed `button`.
+    expect(selectItems(registry, ["button"]).map((item) => item.name)).toEqual(["button"]);
+  });
+
+  it("keeps a name asked for twice once", () => {
+    expect(selectItems(registry, ["button", "button"]).map((item) => item.name)).toEqual(["button"]);
+  });
+
+  it("rejects a name the registry does not have", () => {
+    expect(() => selectItems(registry, ["buton"])).toThrow(/Unknown component "buton"/);
   });
 });
 

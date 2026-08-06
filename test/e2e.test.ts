@@ -8,6 +8,7 @@ import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it, vi } 
 import { add } from "../packages/tools/cli/src/commands/add";
 import { doctor } from "../packages/tools/cli/src/commands/doctor";
 import { init } from "../packages/tools/cli/src/commands/init";
+import { remove } from "../packages/tools/cli/src/commands/remove";
 import { createProject, type Fixture, TSCONFIG_WITH_TRANSFORMER } from "./support/project";
 
 /**
@@ -125,6 +126,92 @@ describe("facet add", () => {
       /Unknown component "buton"/,
     );
     await expect(fixture.read("src/shared/ui/buton.tsx")).rejects.toThrow();
+  });
+});
+
+describe("facet remove", () => {
+  it("deletes a component it recognises as untouched", async () => {
+    await setUp();
+    await add(["card"], { cwd: fixture.root, noDeps: true, registry: registryDir });
+
+    await remove(["card"], { cwd: fixture.root, registry: registryDir });
+    await expect(fixture.read("src/shared/ui/card.tsx")).rejects.toThrow();
+    // `utils` came in behind `card` and stays: removing is not the inverse of
+    // adding, because something else may have arrived in the meantime.
+    await expect(fixture.read("src/shared/lib/utils.ts")).resolves.toContain("cn");
+  });
+
+  it("keeps a file another installed component still imports, force or not", async () => {
+    await setUp();
+    await add(["button"], { cwd: fixture.root, noDeps: true, registry: registryDir });
+
+    await remove(["utils"], { cwd: fixture.root, registry: registryDir });
+    expect(printed()).toContain("utils is still imported by button");
+    await expect(fixture.read("src/shared/lib/utils.ts")).resolves.toBeTruthy();
+
+    await remove(["utils"], { cwd: fixture.root, force: true, registry: registryDir });
+    await expect(fixture.read("src/shared/lib/utils.ts")).resolves.toBeTruthy();
+  });
+
+  it("keeps a component the project has edited, until told otherwise", async () => {
+    await setUp();
+    await add(["card"], { cwd: fixture.root, noDeps: true, registry: registryDir });
+    await fixture.write("src/shared/ui/card.tsx", `${await fixture.read("src/shared/ui/card.tsx")}// mine\n`);
+
+    await remove(["card"], { cwd: fixture.root, registry: registryDir });
+    expect(printed()).toContain("card differs from the registry");
+    await expect(fixture.read("src/shared/ui/card.tsx")).resolves.toContain("// mine");
+
+    await remove(["card"], { cwd: fixture.root, force: true, registry: registryDir });
+    await expect(fixture.read("src/shared/ui/card.tsx")).rejects.toThrow();
+  });
+
+  it("counts a component that only ever moved upstream as edited, and says so", async () => {
+    await setUp();
+    await add(["card"], { cwd: fixture.root, noDeps: true, registry: registryDir });
+    await fixture.write("src/shared/ui/card.tsx", "// upstream rewrote this, not me\n");
+
+    await remove(["card"], { cwd: fixture.root, registry: registryDir });
+    // Nothing is recorded at copy time, so this case is indistinguishable from
+    // an edit — see docs/decisions/provenance.md. The output must not claim it
+    // knows which happened.
+    expect(printed()).toContain("Upstream may have moved instead");
+  });
+
+  it("re-blocks a dependency when the component that imports it turns out to stay", async () => {
+    await setUp();
+    await add(["button"], { cwd: fixture.root, noDeps: true, registry: registryDir });
+    await fixture.write("src/shared/ui/button.tsx", `${await fixture.read("src/shared/ui/button.tsx")}// mine\n`);
+
+    // Both were asked for, so `utils` looks free — until `button` is kept for
+    // being modified, at which point it is importing `utils` again.
+    await remove(["button", "utils"], { cwd: fixture.root, registry: registryDir });
+    expect(printed()).toContain("utils is still imported by button");
+    await expect(fixture.read("src/shared/lib/utils.ts")).resolves.toBeTruthy();
+  });
+
+  it("removes a dependency once nothing is left importing it", async () => {
+    await setUp();
+    await add(["button"], { cwd: fixture.root, noDeps: true, registry: registryDir });
+
+    await remove(["button", "utils", "text"], { cwd: fixture.root, registry: registryDir });
+    await expect(fixture.read("src/shared/ui/button.tsx")).rejects.toThrow();
+    await expect(fixture.read("src/shared/lib/utils.ts")).rejects.toThrow();
+    await expect(fixture.read("src/shared/lib/text.tsx")).rejects.toThrow();
+  });
+
+  it("says a component is not installed rather than pretending to remove it", async () => {
+    await setUp();
+    await remove(["card"], { cwd: fixture.root, registry: registryDir });
+    expect(printed()).toContain("card is not installed");
+    expect(printed()).toContain("Nothing removed.");
+  });
+
+  it("refuses a name the registry does not have", async () => {
+    await setUp();
+    await expect(remove(["carrd"], { cwd: fixture.root, registry: registryDir })).rejects.toThrow(
+      /Unknown component "carrd"/,
+    );
   });
 });
 
