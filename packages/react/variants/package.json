@@ -1,6 +1,6 @@
 {
   "name": "@facet-ui/react-variants",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "private": false,
   "description": "Variant recipes and className composition for Facet components",
   "license": "MIT",
