@@ -2,17 +2,25 @@ name: registry
 
 # The registry is the product here: components ship by being published to this
 # site, not by releasing the CLI. Every push to main republishes it.
+#
+# `r/` is the moving registry every released CLI reads by default. Alongside it,
+# each push writes an immutable `r/<sha>/` that never changes again — see
+# docs/decisions/registry-versioning.md. Those accumulate on the `gh-pages`
+# branch, because a Pages artifact replaces the whole site and would otherwise
+# take the previous ones with it. The branch is storage; the deploy still
+# uploads one artifact, of the accumulated tree.
 on:
   push:
     branches: [main]
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
   pages: write
   id-token: write
 
-# Never cancel a deploy midway; queue instead.
+# Never cancel a deploy midway; queue instead. Two runs racing would also race
+# to push the branch.
 concurrency:
   group: pages
   cancel-in-progress: false
@@ -22,6 +30,19 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+
+      # The published tree so far. `continue-on-error` covers the first run,
+      # before the branch exists.
+      - name: check out the published site
+        id: published
+        continue-on-error: true
+        uses: actions/checkout@v4
+        with:
+          ref: gh-pages
+          path: published
+          # Full history: pushing from the shallow clone checkout defaults to is
+          # what GitHub rejects as a shallow update.
+          fetch-depth: 0
 
       - uses: pnpm/action-setup@v4
 
@@ -39,11 +60,41 @@ jobs:
       # no way to recover from a broken index.
       - run: pnpm run registry:check
 
-      - run: pnpm run registry:build
+      - name: build
+        run: |
+          revision="$(git rev-parse --short HEAD)"
+          echo "revision=$revision" >> "$GITHUB_ENV"
+          pnpm run registry:build -- --out built --revision "$revision"
+
+      - name: fold into the published tree
+        run: |
+          mkdir -p published
+          node --import tsx scripts/publish-site.ts \
+            --built built --into published --revision "$revision"
+
+      - name: commit the revision
+        working-directory: published
+        run: |
+          git init -q -b gh-pages 2>/dev/null || true
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git remote get-url origin >/dev/null 2>&1 || git remote add origin "${{ github.server_url }}/${{ github.repository }}"
+          git add -A
+          # Nothing to commit is a normal outcome: a push that did not touch
+          # registry/ rebuilds byte-identical output under the same revision.
+          git diff --cached --quiet || git commit -q -m "registry: $revision"
+          git push -q "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" HEAD:gh-pages
+
+      # The branch is storage, not content. Uploading its `.git` would publish
+      # the accumulator's own history as part of the site.
+      - name: drop the checkout's history
+        run: rm -rf published/.git
 
       - uses: actions/upload-pages-artifact@v3
         with:
-          path: site
+          # The accumulated tree, not just this build: the artifact is the whole
+          # site, and every revision has to survive the deploy.
+          path: published
 
   deploy:
     needs: build
