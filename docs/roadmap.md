@@ -44,10 +44,30 @@ Ordered by how much each depends on a Lattice primitive that already exists.
 `UIAspectRatioConstraint`, so the component would be a wrapper frame around one class — see
 [decisions/aspect-ratio.md](decisions/aspect-ratio.md).
 
-**One Lattice primitive**:
+**One Lattice primitive** — built, pending Studio verification: `avatar` · `checkbox` · `switch` ·
+`progress` · `slider` · `toggle-group` · `tabs` · `accordion` · `text-field` · `textarea` ·
+`radio-group` · `scroll-area`. All twelve compile through `rbxtsc` and render in the playground
+scenes; what Studio still has to answer is the geometry the type system cannot see — thumb travel,
+range fill, scrollbar placement, textarea growth.
 
-`avatar` · `checkbox` · `switch` · `progress` · `slider` · `toggle` · `toggle-group` · `tabs` ·
-`accordion` · `text-field` · `textarea` · `radio-group` · `scroll-area`
+Three things every one of them needed, written down once here rather than twelve times in the files:
+
+- **State a component styles by is mirrored, not reached for.** Lattice keeps its contexts private,
+  so a wrapper that colours a checked box or highlights a selected trigger holds the value itself
+  with `useControllableState` — the same hook the primitive uses — and drives the primitive
+  controlled. One copy of the state, and it lives in the Facet file.
+- **`className` on a primitive call site must be visible to the transformer.** Vela rewrites the
+  call sites it can see; a `className` tucked into a shared spread reaches the primitive as a raw
+  prop and is silently dropped. Write it as an attribute.
+- **Forwarded props cross a component boundary widened.** The typed passthrough bag collides with
+  the runtime host's `ref` and with primitives that type `children` as a single element; `toSlotProps`
+  (and, where the primitive's `children` is a single element, a local `forwardProps`) is the
+  crossing point.
+
+`toggle` came off this list without being built: `@lattice-ui/react-toggle` does not exist, and a
+standalone pressed state is exactly the controlled/uncontrolled logic the layer boundaries say
+belongs in Lattice, not here. It returns when the primitive does — or a consumer can reach for a
+one-item `toggle-group` today.
 
 **Layered — needs portals, focus trapping, or popper**:
 

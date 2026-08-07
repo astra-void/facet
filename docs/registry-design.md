@@ -197,9 +197,13 @@ conventions above get proven before anything complicated depends on them.
 (`aspect-ratio` was on this list. Vela lowers `aspect-*` onto `UIAspectRatioConstraint`, so it is a
 class rather than a component — [decisions/aspect-ratio.md](decisions/aspect-ratio.md).)
 
-**One Lattice primitive**:
-`avatar` · `checkbox` · `switch` · `progress` · `slider` · `toggle` · `toggle-group` · `tabs` ·
+**One Lattice primitive** — built, pending Studio verification:
+`avatar` · `checkbox` · `switch` · `progress` · `slider` · `toggle-group` · `tabs` ·
 `accordion` · `text-field` · `textarea` · `radio-group` · `scroll-area`
+
+(`toggle` waits on a `@lattice-ui/react-toggle` that does not exist yet — a standalone pressed
+state is Lattice's controlled/uncontrolled logic, not Facet's. A one-item `toggle-group` covers it
+meanwhile.)
 
 **Layered — portals, focus trapping, popper**:
 `dialog` · `alert-dialog` · `popover` · `tooltip` · `dropdown-menu` · `context-menu` · `select` ·
