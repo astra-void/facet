@@ -35,8 +35,27 @@ function outputDir(): string {
   return value === undefined ? path.join(ROOT, "site") : path.resolve(value);
 }
 
+/**
+ * `--revision <id>` also writes the whole registry a second time, under
+ * `r/<id>/`, byte for byte identical to `r/`.
+ *
+ * That copy is what makes a registry pinnable: `r/` is a moving target by
+ * design — every push to main republishes it — and a project that wants a
+ * registry that does not move under it points `registry` in its `facet.json` at
+ * a revision instead. See docs/decisions/registry-versioning.md.
+ *
+ * Only the publish workflow passes one, and it passes the commit SHA. A local
+ * build has nothing immutable to name, so it produces `r/` alone.
+ */
+function revision(): string | undefined {
+  const flag = process.argv.indexOf("--revision");
+  const value = flag === -1 ? undefined : process.argv[flag + 1];
+  return value === undefined || value === "" ? undefined : value;
+}
+
 const SITE_DIR = outputDir();
 const OUT_DIR = path.join(SITE_DIR, "r");
+const REVISION = revision();
 
 /**
  * Must match `DEFAULT_REGISTRY_URL`'s host in the CLI. Deploying from an Actions
@@ -165,12 +184,32 @@ async function main(): Promise<void> {
   // Every `facet.json` names this file in its own `$schema`, so it has to be at
   // the site root and it has to ship with the same deploy as the registry.
   await writeFile(path.join(SITE_DIR, "schema.json"), `${JSON.stringify(facetConfigSchema(), undefined, 2)}\n`, "utf8");
-  await writeFile(path.join(OUT_DIR, "index.json"), `${JSON.stringify(index, undefined, 2)}\n`, "utf8");
-  for (const payload of payloads) {
-    await writeFile(path.join(OUT_DIR, `${payload.name}.json`), `${JSON.stringify(payload, undefined, 2)}\n`, "utf8");
+  const registryFiles: [name: string, content: string][] = [
+    ["index.json", `${JSON.stringify(index, undefined, 2)}\n`],
+    ...payloads.map((payload): [string, string] => [
+      `${payload.name}.json`,
+      `${JSON.stringify(payload, undefined, 2)}\n`,
+    ]),
+  ];
+
+  for (const [name, content] of registryFiles) {
+    await writeFile(path.join(OUT_DIR, name), content, "utf8");
   }
 
-  console.log(`✓ built ${payloads.length} components into ${path.relative(ROOT, SITE_DIR)}`);
+  if (REVISION !== undefined) {
+    const revisionDir = path.join(OUT_DIR, REVISION);
+    await mkdir(revisionDir, { recursive: true });
+    for (const [name, content] of registryFiles) {
+      await writeFile(path.join(revisionDir, name), content, "utf8");
+    }
+  }
+
+  const where = path.relative(ROOT, SITE_DIR);
+  console.log(
+    REVISION === undefined
+      ? `✓ built ${payloads.length} components into ${where}`
+      : `✓ built ${payloads.length} components into ${where}, and pinned them as ${REVISION}`,
+  );
 }
 
 // Not top-level await: the workspace root is CommonJS, so tsx transforms
