@@ -12,7 +12,19 @@
     "@facet-ui/react-variants": "workspace:*"
   },
   "devDependencies": {
+    "@lattice-ui/react-accordion": "^0.8.0",
+    "@lattice-ui/react-avatar": "^0.8.0",
+    "@lattice-ui/react-checkbox": "^0.8.0",
+    "@lattice-ui/react-progress": "^0.8.0",
+    "@lattice-ui/react-radio-group": "^0.8.0",
     "@lattice-ui/react-runtime": "^0.8.0",
+    "@lattice-ui/react-scroll-area": "^0.8.0",
+    "@lattice-ui/react-slider": "^0.8.0",
+    "@lattice-ui/react-switch": "^0.8.0",
+    "@lattice-ui/react-tabs": "^0.8.0",
+    "@lattice-ui/react-text-field": "^0.8.0",
+    "@lattice-ui/react-textarea": "^0.8.0",
+    "@lattice-ui/react-toggle-group": "^0.8.0",
     "@rbxts/react": "17.3.7-ts.1",
     "vela-rbxts": "^0.9.0"
   }
