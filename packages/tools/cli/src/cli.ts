@@ -96,7 +96,7 @@ export async function run(argv: string[]): Promise<number> {
         await remove(rest, { cwd, registry, force: values.force === true });
         break;
       case "list":
-        await list({ registry });
+        await list({ cwd, registry });
         break;
       case "diff":
         await diff(rest[0], { cwd, registry });

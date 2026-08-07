@@ -9,6 +9,7 @@ import { add } from "../packages/tools/cli/src/commands/add";
 import { diff } from "../packages/tools/cli/src/commands/diff";
 import { doctor } from "../packages/tools/cli/src/commands/doctor";
 import { init } from "../packages/tools/cli/src/commands/init";
+import { list } from "../packages/tools/cli/src/commands/list";
 import { remove } from "../packages/tools/cli/src/commands/remove";
 import { createProject, type Fixture, TSCONFIG_WITH_TRANSFORMER } from "./support/project";
 
@@ -98,6 +99,29 @@ describe("facet init", () => {
     // `cn` is what every component imports, so it is part of being set up
     // rather than something to discover on the first failed build.
     expect(await fixture.read("src/shared/lib/utils.ts")).toContain('cn } from "@facet-ui/react-variants"');
+  });
+});
+
+describe("facet list", () => {
+  it("reads the registry the project pinned, not the default", async () => {
+    await setUp();
+    // A pin is the `registry` field, so listing has to honour it — offering
+    // components a pinned `add` could not fetch would be worse than useless.
+    await fixture.write(
+      "facet.json",
+      JSON.stringify({ ...JSON.parse(await fixture.read("facet.json")), registry: registryDir }),
+    );
+
+    await list({ cwd: fixture.root });
+    expect(printed()).toContain(registryDir);
+    expect(printed()).toContain("button");
+  });
+
+  it("works outside a project, which is what it is for", async () => {
+    // No facet.json at all: this is the `npx facet-rbxts list` someone runs
+    // before deciding to `init`.
+    await list({ cwd: fixture.root, registry: registryDir });
+    expect(printed()).toContain("components. Add one with");
   });
 });
 
