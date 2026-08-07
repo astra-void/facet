@@ -11,7 +11,7 @@
     "build": "turbo run build",
     "watch": "turbo run watch",
     "typecheck": "turbo run typecheck",
-    "test": "vitest run --passWithNoTests",
+    "test": "turbo run build --filter=@facet-ui/theme && vitest run --passWithNoTests",
     "lint": "turbo run lint && pnpm -w biome check scripts test",
     "lint:fix": "turbo run lint:fix && pnpm -w biome check scripts test --write --unsafe",
     "format": "pnpm -w biome format . --write",
