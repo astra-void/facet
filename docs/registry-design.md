@@ -191,8 +191,11 @@ appearance but never behavior.
 Grouped by what each one needs underneath it. Earlier groups are not just easier — they are how the
 conventions above get proven before anything complicated depends on them.
 
-**No primitive underneath** — pure recipe plus a host element:
-`badge` · `card` · `separator` · `skeleton` · `label` · `alert` · `kbd` · `aspect-ratio`
+**No primitive underneath** — pure recipe plus a host element, and all of them are built:
+`badge` · `card` · `separator` · `skeleton` · `label` · `alert` · `kbd`
+
+(`aspect-ratio` was on this list. Vela lowers `aspect-*` onto `UIAspectRatioConstraint`, so it is a
+class rather than a component — [decisions/aspect-ratio.md](decisions/aspect-ratio.md).)
 
 **One Lattice primitive**:
 `avatar` · `checkbox` · `switch` · `progress` · `slider` · `toggle` · `toggle-group` · `tabs` ·

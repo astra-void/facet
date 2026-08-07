@@ -37,9 +37,12 @@ Revisit only with a real parser, not a smarter regex.
 
 Ordered by how much each depends on a Lattice primitive that already exists.
 
-**Nothing beneath them** (pure recipe + host element):
+**Nothing beneath them** (pure recipe + host element) — done: `badge` · `card` · `separator` ·
+`skeleton` · `label` · `kbd` · `alert`.
 
-`badge` · `card` · `separator` · `skeleton` · `label` · `kbd` · `alert` · `aspect-ratio`
+`aspect-ratio` came off this list rather than getting built: Vela lowers `aspect-*` onto
+`UIAspectRatioConstraint`, so the component would be a wrapper frame around one class — see
+[decisions/aspect-ratio.md](decisions/aspect-ratio.md).
 
 **One Lattice primitive**:
 
@@ -61,10 +64,9 @@ with a model), `billboard`, `surface`, `player-list`, `hotbar`.
 ## Later — the parts that need a decision first
 
 - **Runtime theming** — see [decisions/runtime-theming.md](decisions/runtime-theming.md).
-- **Icons.** shadcn leans on lucide. Roblox has no icon font; icons are image assets or a sprite
-  sheet. Facet needs a position on this before any component that wants a chevron.
 - **Registry versioning.** Open in [decisions/registry-hosting.md](decisions/registry-hosting.md);
-  settle it alongside `facet diff`, which is what makes drift visible.
+  settle it alongside [decisions/provenance.md](decisions/provenance.md), which is where addressable
+  snapshots turn out to be what `facet diff` actually wants. The only genuinely open item here.
 - **Docs site.** `facet.astra-void.xyz` currently serves the registry and a bare index. Real docs
   belong on the same host, with live previews if the Loom preview surface can render registry
   components.
@@ -100,6 +102,14 @@ Settled, with the reasoning kept where it can be argued with:
   discipline instead: nothing lands after the consumer's `className`.
 - **One registry style** — [decisions/registry-styles.md](decisions/registry-styles.md). The field
   stays in `facet.json`; a second style does not arrive.
+- **Icons are text glyphs, replaceable by slot** — [registry-design.md](registry-design.md) §7.
+  Roblox has no icon font and shipping images means owning the upload, the moderation and the
+  licensing forever, so components draw `▾`, `✓`, `✕` as text and expose the slot for a project that
+  has its own artwork. This was listed as blocking the layered components; it does not.
+- **Ratio is a class, not a component** — [decisions/aspect-ratio.md](decisions/aspect-ratio.md).
+- **One recipe object per component file** — [decisions/luau-register-limit.md](decisions/luau-register-limit.md).
+  Vela inlines its runtime per file and Luau allows 200 module-scope locals, so every export costs a
+  register. `card` stopped loading over exactly this.
 - **Nothing is recorded at copy time** — [decisions/provenance.md](decisions/provenance.md). No
   `facet.lock`, no content hashes: a hash answers whether a file changed, and a diff has to show
   how, so the record that would satisfy `facet diff` is a second copy of every component in the
