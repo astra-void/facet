@@ -64,12 +64,9 @@ with a model), `billboard`, `surface`, `player-list`, `hotbar`.
 ## Later — the parts that need a decision first
 
 - **Runtime theming** — see [decisions/runtime-theming.md](decisions/runtime-theming.md).
-- **Registry versioning.** Open in [decisions/registry-hosting.md](decisions/registry-hosting.md);
-  settle it alongside [decisions/provenance.md](decisions/provenance.md), which is where addressable
-  snapshots turn out to be what `facet diff` actually wants. The only genuinely open item here.
-- **Docs site.** `facet.astra-void.xyz` currently serves the registry and a bare index. Real docs
-  belong on the same host, with live previews if the Loom preview surface can render registry
-  components.
+- **Docs site.** `facet.astra-void.xyz` serves the registry, its revisions, the config schema and a
+  bare index. Real docs belong on the same host, with live previews if the Loom preview surface can
+  render registry components. The one item on this list with nothing decided and nothing built.
 - **`facet create`** — scaffold a new roblox-ts project preconfigured for Facet, as Lattice's CLI does.
 
 ## Open questions
@@ -102,6 +99,10 @@ Settled, with the reasoning kept where it can be argued with:
   discipline instead: nothing lands after the consumer's `className`.
 - **One registry style** — [decisions/registry-styles.md](decisions/registry-styles.md). The field
   stays in `facet.json`; a second style does not arrive.
+- **A revision is a commit, and pinning is a field that existed** —
+  [decisions/registry-versioning.md](decisions/registry-versioning.md). Every push publishes an
+  immutable `r/<sha>/` beside the moving `r/`; `registry` in `facet.json` points at one. No CLI
+  change and no format change, so a CLI released months ago can pin today.
 - **Icons are text glyphs, replaceable by slot** — [registry-design.md](registry-design.md) §7.
   Roblox has no icon font and shipping images means owning the upload, the moderation and the
   licensing forever, so components draw `▾`, `✓`, `✕` as text and expose the slot for a project that

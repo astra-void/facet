@@ -13,8 +13,10 @@ site/
   CNAME             facet.astra-void.xyz
   index.html        landing page listing what exists
   schema.json       the JSON Schema every facet.json names in its own `$schema`
+  revisions.json    which immutable revisions exist, and which one `r/` mirrors
   r/index.json      the index the CLI reads first
   r/<name>.json     one payload per component, source text inlined
+  r/<sha>/…         the same files, frozen, one directory per push
 ```
 
 `schema.json` is generated from `FacetConfig` rather than checked in, for the same reason the index
@@ -62,14 +64,13 @@ Resolution order, most specific first — see `core/registry/source.ts`:
 `CUSTOM_DOMAIN` in `scripts/build-registry.ts`. They must agree; a mismatch between the last one and
 the first two means the CLI asks a host the site no longer claims.
 
-## Open
+## Settled since
 
-- **Versioning.** Right now `main` overwrites one live registry, so an edit to a component reaches
-  everyone immediately, including projects that ran `facet add` months ago and will next run
-  `facet diff`. A `r/v1/` prefix, or per-release snapshots, is the obvious hedge. Decide alongside
-  `facet diff`, which is the command that makes drift visible — and see
-  [provenance.md](provenance.md), where addressable snapshots are what would let `diff` fetch the
-  text a component was copied from instead of the consumer having to store it.
+- **Versioning** — [registry-versioning.md](registry-versioning.md). `main` still overwrites `r/`,
+  which is what `facet add` should read; alongside it every push writes an immutable `r/<sha>/`, and
+  a project pins one through the `registry` field it already had. That is also what would let a
+  future `diff` fetch the text a component was copied from rather than making the consumer store it
+  — see [provenance.md](provenance.md).
+- **`schema.json`** — generated now, see above.
 
-`schema.json` was the other open item here, and is generated now — see above. Versioning is what is
-left.
+Nothing is open here.

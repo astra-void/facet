@@ -74,6 +74,18 @@ facet add button --registry https://example.com/r   # a fork or private registry
 FACET_REGISTRY_DIR=site/r facet list                # a local build
 ```
 
+`r/` moves — every push to `main` republishes it. Every push also writes an immutable `r/<sha>/`
+that never changes again, so a project that wants a registry that does not move under it pins one in
+`facet.json`:
+
+```json
+{ "registry": "https://facet.astra-void.xyz/r/a1b2c3d" }
+```
+
+`add`, `diff`, and `doctor` all read that field, and
+[revisions.json](https://facet.astra-void.xyz/revisions.json) lists what exists — see
+[docs/decisions/registry-versioning.md](docs/decisions/registry-versioning.md).
+
 ## Theming
 
 Roblox has no CSS variables, so the indirection that makes shadcn/ui themeable lives one layer down,
