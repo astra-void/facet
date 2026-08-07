@@ -1,0 +1,22 @@
+{
+  "name": "separator",
+  "type": "registry:ui",
+  "description": "One-pixel divider, horizontal or vertical",
+  "files": [
+    {
+      "path": "ui/separator.tsx",
+      "type": "registry:ui",
+      "content": "import { fv, type VariantProps } from \"@facet-ui/react-variants\";\nimport { getPassthroughProps, type PassthroughProps, React } from \"@lattice-ui/react-runtime\";\nimport { cn } from \"~/lib/utils\";\n\n// Both axes are concrete on each orientation, so this needs no `AutomaticSize`.\n// `h-px` is one pixel, not a spacing step.\nexport const separatorVariants = fv(\"bg-border\", {\n  variants: {\n    orientation: {\n      horizontal: \"w-full h-px\",\n      vertical: \"h-full w-px\",\n    },\n  },\n  defaultVariants: {\n    orientation: \"horizontal\",\n  },\n});\n\nexport type SeparatorProps = VariantProps<typeof separatorVariants> & PassthroughProps<Frame>;\n\nconst OWN_PROPS = [\"orientation\", \"className\"] as const;\n\n// No `BackgroundTransparency: 1` here — unlike every other component, the\n// background *is* the separator.\nconst NEUTRAL_PROPS = {\n  BorderSizePixel: 0,\n};\n\nexport function Separator(props: SeparatorProps) {\n  const passthrough = getPassthroughProps<Frame>(props, OWN_PROPS);\n\n  return (\n    <frame\n      className={cn(\n        separatorVariants({\n          orientation: props.orientation,\n          className: props.className,\n        }),\n      )}\n      {...NEUTRAL_PROPS}\n      {...passthrough}\n    />\n  );\n}\n"
+    }
+  ],
+  "registryDependencies": [
+    "utils"
+  ],
+  "dependencies": [
+    "@facet-ui/react-variants@^0.1.1",
+    "@lattice-ui/react-runtime@^0.8.0"
+  ],
+  "tokens": [
+    "border"
+  ]
+}

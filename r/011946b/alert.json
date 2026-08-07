@@ -1,0 +1,26 @@
+{
+  "name": "alert",
+  "type": "registry:ui",
+  "description": "Alert with title and description parts, default or destructive",
+  "files": [
+    {
+      "path": "ui/alert.tsx",
+      "type": "registry:ui",
+      "content": "import { fv, type VariantProps } from \"@facet-ui/react-variants\";\nimport { getPassthroughProps, type PassthroughProps, React } from \"@lattice-ui/react-runtime\";\nimport { type ClassName, cn } from \"~/lib/utils\";\n\n/**\n * One object rather than three exported recipes: every exported name costs a\n * Luau register, and Vela inlines its runtime into any file with a computed\n * `className`, leaving a component only a slice of the 200 available. `card`\n * stopped loading entirely over exactly this — see\n * docs/decisions/luau-register-limit.md.\n *\n * `w-full h-fit` all the way down, like `card`: width from the parent, height\n * from the content, and any part that fails to resolve a height collapses the\n * alert above it.\n */\nexport const alertVariants = {\n  root: fv(\"flex-col w-full h-fit gap-1 rounded-lg border p-4\", {\n    variants: {\n      variant: {\n        default: \"bg-card border-border\",\n        destructive: \"bg-card border-destructive\",\n      },\n    },\n    defaultVariants: { variant: \"default\" },\n  }),\n  title: fv(\"w-full h-fit whitespace-normal text-left text-sm font-medium\", {\n    variants: {\n      variant: {\n        default: \"text-card-foreground\",\n        destructive: \"text-destructive\",\n      },\n    },\n    defaultVariants: { variant: \"default\" },\n  }),\n  description: fv(\"w-full h-fit whitespace-normal leading-tight text-left text-xs font-normal\", {\n    variants: {\n      variant: {\n        default: \"text-muted-foreground\",\n        destructive: \"text-destructive\",\n      },\n    },\n    defaultVariants: { variant: \"default\" },\n  }),\n};\n\n/**\n * Each part takes its own `variant`, which is the thing to notice if you are\n * coming from shadcn. There it is set once on the root and a descendant\n * selector colours the title; here nothing inherits, so `variant` has to reach\n * every part that draws something:\n *\n * ```tsx\n * <Alert variant=\"destructive\">\n *   <AlertTitle variant=\"destructive\" Text=\"Kicked\" />\n *   <AlertDescription variant=\"destructive\" Text=\"You were removed from the server.\" />\n * </Alert>\n * ```\n *\n * Verbose on purpose. The alternative is a context, and a context is a thing\n * the consumer then owns and has to keep wired up through their own edits — for\n * a component whose whole body is three instances.\n */\nexport type AlertProps = VariantProps<typeof alertVariants.root> & {\n  className?: ClassName;\n  children?: React.ReactNode;\n} & PassthroughProps<Frame>;\n\nexport type AlertTextProps = VariantProps<typeof alertVariants.title> & {\n  className?: ClassName;\n  Text?: string;\n} & PassthroughProps<TextLabel>;\n\nconst NEUTRAL_PROPS = {\n  BackgroundTransparency: 1,\n  BorderSizePixel: 0,\n};\n\nconst FRAME_OWN_PROPS = [\"variant\", \"className\", \"children\"] as const;\nconst TEXT_OWN_PROPS = [\"variant\", \"className\", \"Text\"] as const;\n\nexport function Alert(props: AlertProps) {\n  return (\n    <frame\n      className={cn(alertVariants.root({ variant: props.variant, className: props.className }))}\n      // The border is the alert's own surface, so this one keeps its background\n      // and only drops Roblox's 1px border.\n      BorderSizePixel={0}\n      {...getPassthroughProps<Frame>(props, FRAME_OWN_PROPS)}\n    >\n      {props.children}\n    </frame>\n  );\n}\n\nexport function AlertTitle(props: AlertTextProps) {\n  return (\n    <textlabel\n      className={cn(alertVariants.title({ variant: props.variant, className: props.className }))}\n      Text={props.Text ?? \"\"}\n      {...NEUTRAL_PROPS}\n      {...getPassthroughProps<TextLabel>(props, TEXT_OWN_PROPS)}\n    />\n  );\n}\n\nexport function AlertDescription(props: AlertTextProps) {\n  return (\n    <textlabel\n      className={cn(alertVariants.description({ variant: props.variant, className: props.className }))}\n      Text={props.Text ?? \"\"}\n      {...NEUTRAL_PROPS}\n      {...getPassthroughProps<TextLabel>(props, TEXT_OWN_PROPS)}\n    />\n  );\n}\n"
+    }
+  ],
+  "registryDependencies": [
+    "utils"
+  ],
+  "dependencies": [
+    "@facet-ui/react-variants@^0.1.1",
+    "@lattice-ui/react-runtime@^0.8.0"
+  ],
+  "tokens": [
+    "card",
+    "card-foreground",
+    "border",
+    "destructive",
+    "muted-foreground"
+  ]
+}

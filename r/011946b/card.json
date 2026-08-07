@@ -1,0 +1,25 @@
+{
+  "name": "card",
+  "type": "registry:ui",
+  "description": "Card with header, title, description, content, and footer parts",
+  "files": [
+    {
+      "path": "ui/card.tsx",
+      "type": "registry:ui",
+      "content": "import { fv } from \"@facet-ui/react-variants\";\nimport { getPassthroughProps, type PassthroughProps, React } from \"@lattice-ui/react-runtime\";\nimport { type ClassName, cn } from \"~/lib/utils\";\n\n/**\n * Flat named exports rather than a `Card.Header` namespace: this is source you\n * paste and edit, and each part should read — and be deletable — on its own.\n *\n * Every part is `w-full h-fit`. That is the whole layout strategy: width comes\n * from the parent, height from the content, all the way down. Break the chain at\n * any level — a part with no resolved height — and the card above it collapses.\n *\n * `font-normal` on the description is not redundant: Vela leaves `FontFace`\n * alone when no `font-*` token appears, and Roblox's untouched default is\n * LegacyArial — a different typeface at a visibly different size from the\n * SourceSansPro every other label here resolves to.\n */\n/**\n * One object rather than six exported recipes, and it is not a style choice:\n * Vela inlines its whole runtime into every file with a computed `className`,\n * which leaves a component only a slice of Luau's 200-register limit for its own\n * module-scope locals. Six separate `export const`s put this file over it and\n * the module stopped loading entirely — \"Out of local registers when trying to\n * allocate CardHeader\". Each exported name costs a register; one object costs\n * one. See docs/decisions/luau-register-limit.md.\n */\nexport const cardVariants = {\n  root: fv(\"flex-col w-full h-fit rounded-lg border border-border bg-card\"),\n  header: fv(\"flex-col w-full h-fit gap-1 p-6\"),\n  title: fv(\"w-full h-fit whitespace-normal text-left text-xl font-semibold text-card-foreground\"),\n  description: fv(\"w-full h-fit whitespace-normal leading-tight text-left text-xs font-normal text-muted-foreground\"),\n  content: fv(\"flex-col w-full h-fit gap-2 px-6 pb-6\"),\n  footer: fv(\"flex-row items-center w-full h-fit gap-2 px-6 pb-6\"),\n};\n\n// Wrapping and alignment are classes: Roblox centres text and leaves it on one\n// line by default, so `text-left` and `whitespace-normal` correct both. Text and\n// frame parts share these, so one table serves both.\nconst NEUTRAL_PROPS = {\n  BackgroundTransparency: 1,\n  BorderSizePixel: 0,\n};\n\nconst FRAME_OWN_PROPS = [\"className\", \"children\"] as const;\nconst TEXT_OWN_PROPS = [\"className\", \"Text\"] as const;\n\nexport type CardProps = { className?: ClassName; children?: React.ReactNode } & PassthroughProps<Frame>;\nexport type CardTextProps = { className?: ClassName; Text?: string } & PassthroughProps<TextLabel>;\n\nexport function Card(props: CardProps) {\n  return (\n    <frame\n      className={cn(cardVariants.root({ className: props.className }))}\n      {...NEUTRAL_PROPS}\n      {...getPassthroughProps<Frame>(props, FRAME_OWN_PROPS)}\n    >\n      {props.children}\n    </frame>\n  );\n}\n\nexport function CardHeader(props: CardProps) {\n  return (\n    <frame\n      className={cn(cardVariants.header({ className: props.className }))}\n      {...NEUTRAL_PROPS}\n      {...getPassthroughProps<Frame>(props, FRAME_OWN_PROPS)}\n    >\n      {props.children}\n    </frame>\n  );\n}\n\nexport function CardTitle(props: CardTextProps) {\n  return (\n    <textlabel\n      className={cn(cardVariants.title({ className: props.className }))}\n      Text={props.Text ?? \"\"}\n      {...NEUTRAL_PROPS}\n      {...getPassthroughProps<TextLabel>(props, TEXT_OWN_PROPS)}\n    />\n  );\n}\n\nexport function CardDescription(props: CardTextProps) {\n  return (\n    <textlabel\n      className={cn(cardVariants.description({ className: props.className }))}\n      Text={props.Text ?? \"\"}\n      {...NEUTRAL_PROPS}\n      {...getPassthroughProps<TextLabel>(props, TEXT_OWN_PROPS)}\n    />\n  );\n}\n\nexport function CardContent(props: CardProps) {\n  return (\n    <frame\n      className={cn(cardVariants.content({ className: props.className }))}\n      {...NEUTRAL_PROPS}\n      {...getPassthroughProps<Frame>(props, FRAME_OWN_PROPS)}\n    >\n      {props.children}\n    </frame>\n  );\n}\n\nexport function CardFooter(props: CardProps) {\n  return (\n    <frame\n      className={cn(cardVariants.footer({ className: props.className }))}\n      {...NEUTRAL_PROPS}\n      {...getPassthroughProps<Frame>(props, FRAME_OWN_PROPS)}\n    >\n      {props.children}\n    </frame>\n  );\n}\n"
+    }
+  ],
+  "registryDependencies": [
+    "utils"
+  ],
+  "dependencies": [
+    "@facet-ui/react-variants@^0.1.1",
+    "@lattice-ui/react-runtime@^0.8.0"
+  ],
+  "tokens": [
+    "card",
+    "card-foreground",
+    "border",
+    "muted-foreground"
+  ]
+}
