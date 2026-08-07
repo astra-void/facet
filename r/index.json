@@ -1,0 +1,201 @@
+{
+  "version": 1,
+  "generatedBy": "0.3.0",
+  "items": [
+    {
+      "name": "utils",
+      "type": "registry:lib",
+      "description": "cn — class composition helper every component imports",
+      "files": [
+        "lib/utils.ts"
+      ],
+      "dependencies": [
+        "@facet-ui/react-variants@^0.1.1"
+      ]
+    },
+    {
+      "name": "text",
+      "type": "registry:lib",
+      "description": "TextSlot — wraps string children in a styled textlabel",
+      "files": [
+        "lib/text.tsx"
+      ],
+      "dependencies": [
+        "@lattice-ui/react-runtime@^0.8.0"
+      ]
+    },
+    {
+      "name": "button",
+      "type": "registry:ui",
+      "description": "Button with variant and size recipes",
+      "files": [
+        "ui/button.tsx"
+      ],
+      "registryDependencies": [
+        "utils",
+        "text"
+      ],
+      "dependencies": [
+        "@facet-ui/react-variants@^0.1.1",
+        "@lattice-ui/react-runtime@^0.8.0"
+      ],
+      "tokens": [
+        "primary",
+        "primary-foreground",
+        "destructive",
+        "destructive-foreground",
+        "secondary",
+        "secondary-foreground",
+        "accent",
+        "accent-foreground",
+        "background",
+        "input",
+        "foreground"
+      ]
+    },
+    {
+      "name": "label",
+      "type": "registry:ui",
+      "description": "Form label",
+      "files": [
+        "ui/label.tsx"
+      ],
+      "registryDependencies": [
+        "utils"
+      ],
+      "dependencies": [
+        "@facet-ui/react-variants@^0.1.1",
+        "@lattice-ui/react-runtime@^0.8.0"
+      ],
+      "tokens": [
+        "foreground"
+      ]
+    },
+    {
+      "name": "separator",
+      "type": "registry:ui",
+      "description": "One-pixel divider, horizontal or vertical",
+      "files": [
+        "ui/separator.tsx"
+      ],
+      "registryDependencies": [
+        "utils"
+      ],
+      "dependencies": [
+        "@facet-ui/react-variants@^0.1.1",
+        "@lattice-ui/react-runtime@^0.8.0"
+      ],
+      "tokens": [
+        "border"
+      ]
+    },
+    {
+      "name": "badge",
+      "type": "registry:ui",
+      "description": "Small status pill that hugs its label",
+      "files": [
+        "ui/badge.tsx"
+      ],
+      "registryDependencies": [
+        "utils",
+        "text"
+      ],
+      "dependencies": [
+        "@facet-ui/react-variants@^0.1.1",
+        "@lattice-ui/react-runtime@^0.8.0"
+      ],
+      "tokens": [
+        "primary",
+        "primary-foreground",
+        "secondary",
+        "secondary-foreground",
+        "destructive",
+        "destructive-foreground",
+        "input",
+        "foreground"
+      ]
+    },
+    {
+      "name": "card",
+      "type": "registry:ui",
+      "description": "Card with header, title, description, content, and footer parts",
+      "files": [
+        "ui/card.tsx"
+      ],
+      "registryDependencies": [
+        "utils"
+      ],
+      "dependencies": [
+        "@facet-ui/react-variants@^0.1.1",
+        "@lattice-ui/react-runtime@^0.8.0"
+      ],
+      "tokens": [
+        "card",
+        "card-foreground",
+        "border",
+        "muted-foreground"
+      ]
+    },
+    {
+      "name": "skeleton",
+      "type": "registry:ui",
+      "description": "Placeholder block for content that has not arrived",
+      "files": [
+        "ui/skeleton.tsx"
+      ],
+      "registryDependencies": [
+        "utils"
+      ],
+      "dependencies": [
+        "@facet-ui/react-variants@^0.1.1",
+        "@lattice-ui/react-runtime@^0.8.0"
+      ],
+      "tokens": [
+        "muted"
+      ]
+    },
+    {
+      "name": "kbd",
+      "type": "registry:ui",
+      "description": "Key cap for a keyboard shortcut",
+      "files": [
+        "ui/kbd.tsx"
+      ],
+      "registryDependencies": [
+        "utils",
+        "text"
+      ],
+      "dependencies": [
+        "@facet-ui/react-variants@^0.1.1",
+        "@lattice-ui/react-runtime@^0.8.0"
+      ],
+      "tokens": [
+        "border",
+        "muted",
+        "muted-foreground"
+      ]
+    },
+    {
+      "name": "alert",
+      "type": "registry:ui",
+      "description": "Alert with title and description parts, default or destructive",
+      "files": [
+        "ui/alert.tsx"
+      ],
+      "registryDependencies": [
+        "utils"
+      ],
+      "dependencies": [
+        "@facet-ui/react-variants@^0.1.1",
+        "@lattice-ui/react-runtime@^0.8.0"
+      ],
+      "tokens": [
+        "card",
+        "card-foreground",
+        "border",
+        "destructive",
+        "muted-foreground"
+      ]
+    }
+  ]
+}

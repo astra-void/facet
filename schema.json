@@ -1,0 +1,101 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://facet.astra-void.xyz/schema.json",
+  "title": "Facet configuration",
+  "description": "facet.json — what `facet add` copies, where it lands, and which theme it is written against.",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "$schema": {
+      "type": "string",
+      "description": "This schema."
+    },
+    "style": {
+      "enum": [
+        "default"
+      ],
+      "description": "Registry style variant. Only `default` exists."
+    },
+    "theme": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "base": {
+          "enum": [
+            "zinc",
+            "slate",
+            "stone",
+            "neutral"
+          ],
+          "description": "Neutral ramp the semantic tokens are drawn from."
+        },
+        "mode": {
+          "enum": [
+            "light",
+            "dark"
+          ],
+          "description": "Which side of the ramp tokens resolve to. Vela resolves at compile time, so a build has one."
+        }
+      }
+    },
+    "aliases": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "ui": {
+          "type": "object",
+          "description": "Where components land, and how other copied files import them.",
+          "additionalProperties": false,
+          "properties": {
+            "dir": {
+              "type": "string",
+              "description": "Directory from the project root. A real path: roblox-ts projects are laid out by Rojo."
+            },
+            "import": {
+              "type": "string",
+              "description": "Specifier other copied files use to reach this directory, e.g. `shared/ui`. Omit for relative imports, which need no tsconfig `paths` and so work anywhere."
+            }
+          }
+        },
+        "lib": {
+          "type": "object",
+          "description": "Where helpers land, and how other copied files import them.",
+          "additionalProperties": false,
+          "properties": {
+            "dir": {
+              "type": "string",
+              "description": "Directory from the project root. A real path: roblox-ts projects are laid out by Rojo."
+            },
+            "import": {
+              "type": "string",
+              "description": "Specifier other copied files use to reach this directory, e.g. `shared/ui`. Omit for relative imports, which need no tsconfig `paths` and so work anywhere."
+            }
+          }
+        },
+        "hooks": {
+          "type": "object",
+          "description": "Where hooks land, and how other copied files import them.",
+          "additionalProperties": false,
+          "properties": {
+            "dir": {
+              "type": "string",
+              "description": "Directory from the project root. A real path: roblox-ts projects are laid out by Rojo."
+            },
+            "import": {
+              "type": "string",
+              "description": "Specifier other copied files use to reach this directory, e.g. `shared/ui`. Omit for relative imports, which need no tsconfig `paths` and so work anywhere."
+            }
+          }
+        }
+      }
+    },
+    "velaConfig": {
+      "type": "string",
+      "description": "Path to the project's Vela config, relative to the project root."
+    },
+    "registry": {
+      "type": "string",
+      "description": "Registry to read components from. Omit for the published one; set it to pin a fork or a version."
+    }
+  }
+}

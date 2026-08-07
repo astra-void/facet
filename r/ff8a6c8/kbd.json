@@ -1,0 +1,25 @@
+{
+  "name": "kbd",
+  "type": "registry:ui",
+  "description": "Key cap for a keyboard shortcut",
+  "files": [
+    {
+      "path": "ui/kbd.tsx",
+      "type": "registry:ui",
+      "content": "import { fv } from \"@facet-ui/react-variants\";\nimport { getPassthroughProps, type PassthroughProps, React } from \"@lattice-ui/react-runtime\";\nimport { TextSlot } from \"~/lib/text\";\nimport { type ClassName, cn } from \"~/lib/utils\";\n\n/**\n * A key cap — `Ctrl`, `⌘`, `E`.\n *\n * `size-fit` with padding rather than a fixed square: a cap has to hold `Ctrl`\n * as readily as `E`, and Roblox will not infer that width for us.\n */\nexport const kbdVariants = fv(\n  \"flex-row items-center justify-center size-fit rounded-md border border-border bg-muted px-1.5 py-0.5\",\n);\n\n/**\n * `font-mono` is a family here, not a weight — Vela resolves it to RobotoMono\n * against `theme.fontFamily`, where the weights resolve against something else\n * entirely. It is the one place in the registry where the mandatory `font-*`\n * (see registry-design.md §4) is picking a typeface on purpose rather than\n * naming a weight to avoid Roblox's LegacyArial default.\n */\nexport const kbdLabelVariants = fv(\"text-xs font-mono text-muted-foreground\");\n\nexport type KbdProps = { className?: ClassName; Text?: string; children?: React.ReactNode } & PassthroughProps<Frame>;\n\nconst OWN_PROPS = [\"className\", \"Text\", \"children\"] as const;\n\nconst NEUTRAL_PROPS = {\n  BackgroundTransparency: 1,\n  BorderSizePixel: 0,\n};\n\nexport function Kbd(props: KbdProps) {\n  return (\n    <frame\n      className={cn(kbdVariants({ className: props.className }))}\n      {...NEUTRAL_PROPS}\n      {...getPassthroughProps<Frame>(props, OWN_PROPS)}\n    >\n      <TextSlot Text={props.Text} className={kbdLabelVariants()}>\n        {props.children}\n      </TextSlot>\n    </frame>\n  );\n}\n"
+    }
+  ],
+  "registryDependencies": [
+    "utils",
+    "text"
+  ],
+  "dependencies": [
+    "@facet-ui/react-variants@^0.1.1",
+    "@lattice-ui/react-runtime@^0.8.0"
+  ],
+  "tokens": [
+    "border",
+    "muted",
+    "muted-foreground"
+  ]
+}

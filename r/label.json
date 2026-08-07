@@ -1,0 +1,22 @@
+{
+  "name": "label",
+  "type": "registry:ui",
+  "description": "Form label",
+  "files": [
+    {
+      "path": "ui/label.tsx",
+      "type": "registry:ui",
+      "content": "import { fv, type VariantProps } from \"@facet-ui/react-variants\";\nimport { getPassthroughProps, type PassthroughProps, React } from \"@lattice-ui/react-runtime\";\nimport { cn } from \"~/lib/utils\";\n\nexport const labelVariants = fv(\"text-foreground text-sm font-medium\");\n\nexport type LabelProps = VariantProps<typeof labelVariants> & {\n  Text?: string;\n} & PassthroughProps<TextLabel>;\n\nconst OWN_PROPS = [\"className\", \"Text\"] as const;\n\nconst NEUTRAL_PROPS = {\n  BackgroundTransparency: 1,\n  BorderSizePixel: 0,\n};\n\n/**\n * A leaf, so it draws its own `Text` rather than delegating to `TextSlot` —\n * there is nothing to compose around.\n */\nexport function Label(props: LabelProps) {\n  const passthrough = getPassthroughProps<TextLabel>(props, OWN_PROPS);\n\n  return (\n    <textlabel\n      className={cn(labelVariants({ className: props.className }))}\n      Text={props.Text ?? \"\"}\n      {...NEUTRAL_PROPS}\n      AutomaticSize={Enum.AutomaticSize.XY}\n      {...passthrough}\n    />\n  );\n}\n"
+    }
+  ],
+  "registryDependencies": [
+    "utils"
+  ],
+  "dependencies": [
+    "@facet-ui/react-variants@^0.1.1",
+    "@lattice-ui/react-runtime@^0.8.0"
+  ],
+  "tokens": [
+    "foreground"
+  ]
+}

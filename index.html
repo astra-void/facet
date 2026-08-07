@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Facet registry</title>
+<style>
+  :root { color-scheme: light dark; --fg: #18181b; --dim: #71717a; --bg: #fff; --line: #e4e4e7; }
+  @media (prefers-color-scheme: dark) {
+    :root { --fg: #fafafa; --dim: #a1a1aa; --bg: #09090b; --line: #27272a; }
+  }
+  body { margin: 0 auto; padding: 4rem 1.5rem; max-width: 46rem; background: var(--bg); color: var(--fg);
+         font: 16px/1.6 ui-sans-serif, system-ui, sans-serif; }
+  h1 { font-size: 1.5rem; margin: 0 0 .5rem; }
+  p { color: var(--dim); }
+  pre { background: color-mix(in srgb, var(--fg) 5%, transparent); padding: .75rem 1rem; border-radius: .5rem;
+        overflow-x: auto; }
+  table { border-collapse: collapse; width: 100%; margin-top: 2rem; }
+  td { border-top: 1px solid var(--line); padding: .6rem .5rem; vertical-align: top; }
+  td:first-child { white-space: nowrap; }
+  td:last-child { color: var(--dim); }
+  a { color: inherit; }
+</style>
+</head>
+<body>
+  <h1>Facet registry</h1>
+  <p>Copy-in UI components for roblox-ts, built on Lattice UI and Vela.
+     This host serves the JSON the CLI reads; it is not documentation.</p>
+  <pre><code>npx facet-rbxts init
+npx facet-rbxts add button</code></pre>
+  <p>Index: <a href="r/index.json"><code>r/index.json</code></a> &middot;
+     format version 1 &middot; built from facet-rbxts 0.3.0</p>
+  <table>
+      <tr><td><a href="r/alert.json"><code>alert</code></a></td><td>Alert with title and description parts, default or destructive</td></tr>
+      <tr><td><a href="r/badge.json"><code>badge</code></a></td><td>Small status pill that hugs its label</td></tr>
+      <tr><td><a href="r/button.json"><code>button</code></a></td><td>Button with variant and size recipes</td></tr>
+      <tr><td><a href="r/card.json"><code>card</code></a></td><td>Card with header, title, description, content, and footer parts</td></tr>
+      <tr><td><a href="r/kbd.json"><code>kbd</code></a></td><td>Key cap for a keyboard shortcut</td></tr>
+      <tr><td><a href="r/label.json"><code>label</code></a></td><td>Form label</td></tr>
+      <tr><td><a href="r/separator.json"><code>separator</code></a></td><td>One-pixel divider, horizontal or vertical</td></tr>
+      <tr><td><a href="r/skeleton.json"><code>skeleton</code></a></td><td>Placeholder block for content that has not arrived</td></tr>
+      <tr><td><a href="r/text.json"><code>text</code></a></td><td>TextSlot — wraps string children in a styled textlabel</td></tr>
+      <tr><td><a href="r/utils.json"><code>utils</code></a></td><td>cn — class composition helper every component imports</td></tr>
+  </table>
+</body>
+</html>
