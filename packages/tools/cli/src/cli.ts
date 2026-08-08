@@ -29,7 +29,7 @@ const HELP = `
     --dry-run            (add) resolve and report, write nothing
     --no-deps            (add) skip npm install
     --force              (init) overwrite facet.json; (remove) delete anyway
-    --yes, -y            (init) accept every default
+    --yes, -y            (init) accept every default; (add) wire providers without asking
     --version, -v
     --help, -h
 `;
@@ -87,6 +87,7 @@ export async function run(argv: string[]): Promise<number> {
           overwrite: values.overwrite === true,
           dryRun: values["dry-run"] === true,
           noDeps: values["no-deps"] === true,
+          yes: values.yes === true,
         });
         break;
       case "remove":

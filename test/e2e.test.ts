@@ -65,6 +65,21 @@ async function setUp(): Promise<void> {
   await init({ cwd: fixture.root, yes: true, noDeps: true, registry: registryDir });
 }
 
+/** A client entry with the two things provider wiring looks for: one render call and a PlayerGui. */
+const CLIENT_ENTRY = `import { StrictMode } from "@rbxts/react";
+import { createRoot } from "@rbxts/react-roblox";
+import { Players } from "@rbxts/services";
+
+const playerGui = Players.LocalPlayer.WaitForChild("PlayerGui");
+const root = createRoot(new Instance("Folder"));
+
+root.render(
+  <StrictMode>
+    <App />
+  </StrictMode>,
+);
+`;
+
 /** The versions the registry's floors ask for, as though they had been installed. */
 async function installFloors(): Promise<void> {
   await fixture.install("@facet-ui/theme", "0.2.0");
@@ -164,6 +179,37 @@ describe("facet add", () => {
       /Unknown component "buton"/,
     );
     await expect(fixture.read("src/shared/ui/buton.tsx")).rejects.toThrow();
+  });
+
+  it("wraps the client entry in the provider a component declares", async () => {
+    await setUp();
+    await fixture.write("src/client/main.client.tsx", CLIENT_ENTRY);
+
+    await add(["dialog"], { cwd: fixture.root, noDeps: true, yes: true, registry: registryDir });
+
+    const entry = await fixture.read("src/client/main.client.tsx");
+    expect(entry).toContain('import { PortalProvider } from "@lattice-ui/react-layer";');
+    expect(entry).toContain("<PortalProvider container={playerGui as BasePlayerGui}>");
+    expect(entry).toContain("</PortalProvider>");
+  });
+
+  it("prints the snippet instead of guessing when there is no entry to edit", async () => {
+    await setUp();
+    await add(["dialog"], { cwd: fixture.root, noDeps: true, yes: true, registry: registryDir });
+
+    expect(printed()).toContain("no file under src/ mounts a React tree");
+    expect(printed()).toContain('import { PortalProvider } from "@lattice-ui/react-layer";');
+  });
+
+  it("does not touch the entry a second time", async () => {
+    await setUp();
+    await fixture.write("src/client/main.client.tsx", CLIENT_ENTRY);
+
+    await add(["dialog"], { cwd: fixture.root, noDeps: true, yes: true, registry: registryDir });
+    const once = await fixture.read("src/client/main.client.tsx");
+
+    await add(["dialog"], { cwd: fixture.root, noDeps: true, yes: true, overwrite: true, registry: registryDir });
+    expect(await fixture.read("src/client/main.client.tsx")).toBe(once);
   });
 });
 
@@ -327,6 +373,33 @@ describe("facet doctor", () => {
     await expect(doctor({ cwd: fixture.root, registry: registryDir })).resolves.toBeUndefined();
     expect(printed()).toContain("This project is set up the way components assume");
     expect(printed()).toContain("installed: utils, text, button, card");
+  });
+
+  // The one failure in this list that does not happen at build time: a dialog
+  // with no PortalProvider above it compiles, ships, and throws when a player
+  // opens it.
+  it("catches a component whose provider never made it into the entry", async () => {
+    await setUp();
+    await fixture.write("src/client/main.client.tsx", CLIENT_ENTRY);
+    await add(["dialog"], { cwd: fixture.root, noDeps: true, registry: registryDir });
+    await installFloors();
+    await fixture.install("@lattice-ui/react-dialog", "0.8.0");
+    await fixture.install("@lattice-ui/react-layer", "0.8.0");
+
+    await expect(doctor({ cwd: fixture.root, registry: registryDir })).rejects.toThrow(/1 check failed/);
+    expect(printed()).toContain("is not wrapped in PortalProvider");
+  });
+
+  it("passes once the entry is wrapped", async () => {
+    await setUp();
+    await fixture.write("src/client/main.client.tsx", CLIENT_ENTRY);
+    await add(["dialog"], { cwd: fixture.root, noDeps: true, yes: true, registry: registryDir });
+    await installFloors();
+    await fixture.install("@lattice-ui/react-dialog", "0.8.0");
+    await fixture.install("@lattice-ui/react-layer", "0.8.0");
+
+    await expect(doctor({ cwd: fixture.root, registry: registryDir })).resolves.toBeUndefined();
+    expect(printed()).toContain("PortalProvider wraps");
   });
 
   it("catches the Vela that cannot build what was just copied into the project", async () => {

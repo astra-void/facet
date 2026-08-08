@@ -5,12 +5,14 @@ import { CONFIG_FILENAME, type FacetConfig, readConfig } from "../core/config.js
 import { FacetError, isUserFacing } from "../core/errors.js";
 import { logger } from "../core/logger.js";
 import { compareVersions, minimumVersion, parseSpec } from "../core/pkgspec.js";
+import { findClientEntry, planProvider, providerSnippet } from "../core/project/entry.js";
 import { findProjectRoot } from "../core/project/findRoot.js";
 import { inspectPackages, type PackageReport } from "../core/project/packages.js";
 import { inspectAliasPath, inspectTransformer, TRANSFORMER_SNIPPET } from "../core/project/tsconfig.js";
 import { inspectVelaConfig } from "../core/project/velaConfig.js";
 import { destinationForIndexFile } from "../core/registry/destination.js";
 import { loadIndex } from "../core/registry/load.js";
+import { collectProviders } from "../core/registry/resolve.js";
 import type { RegistryIndex, RegistryIndexEntry } from "../core/registry/schema.js";
 import { describeSource, resolveRegistrySource } from "../core/registry/source.js";
 import { BUILD_DEPENDENCIES } from "../core/requirements.js";
@@ -369,9 +371,54 @@ export async function doctor(options: DoctorOptions = {}): Promise<void> {
         });
       }
     }
+
+    // 7. Providers. The failure this catches happens at runtime rather than at
+    //    build time: a `dialog` with no `PortalProvider` above it compiles,
+    //    ships, and throws the first time a player opens it. Nothing in the
+    //    copied file can prevent that, because the wiring lives in a file Facet
+    //    does not own.
+    const providers = collectProviders(states.map((state) => state.entry));
+    if (providers.length === 0) {
+      checks.push({ severity: "ok", label: "providers", detail: "nothing installed needs one" });
+    } else {
+      const entries = await findClientEntry(root);
+      const entry = entries[0];
+      const names = providers.map((provider) => provider.name).join(", ");
+
+      if (entries.length !== 1 || entry === undefined) {
+        checks.push({
+          severity: "warn",
+          label: "providers",
+          detail: `could not tell whether ${names} wraps your app`,
+          notes: [
+            entries.length === 0
+              ? "no file under src/ mounts a React tree, so there was nothing to look at"
+              : `several files under src/ mount one: ${entries.map((entry) => entry.path).join(", ")}`,
+            "check it yourself — installed components need it at runtime, not at build time",
+          ],
+        });
+      } else {
+        const missing = providers.filter((provider) => planProvider(entry, provider).kind !== "present");
+
+        if (missing.length === 0) {
+          checks.push({ severity: "ok", label: "providers", detail: `${names} wraps ${entry.path}` });
+        } else {
+          checks.push({
+            severity: "fail",
+            label: "providers",
+            detail: `${entry.path} is not wrapped in ${missing.map((provider) => provider.name).join(", ")}`,
+            notes: [
+              ...missing.map((provider) => `${provider.name}: ${provider.reason}`),
+              "`facet add <component>` offers to write this, or paste:",
+              ...missing.flatMap((provider) => providerSnippet(provider).split("\n")),
+            ],
+          });
+        }
+      }
+    }
   }
 
-  // 7. Packages, last because the registry is what fills most of the list. This
+  // 8. Packages, last because the registry is what fills most of the list. This
   //    is the check that catches a project set up by an older CLI: the copied
   //    files are current and the versions under them are not.
   const reports = await inspectPackages(

@@ -33,7 +33,22 @@ The package installs as `facet-rbxts` and the command is `facet`.
 | `--dry-run` | (add) Resolve and report, write nothing |
 | `--no-deps` | Skip package installs |
 | `--force` | (init) Overwrite `facet.json` |
-| `--yes`, `-y` | (init) Accept every default |
+| `--yes`, `-y` | (init) Accept every default; (add) wire providers without asking |
+
+## Providers
+
+Some components need a context provider above your whole app — `dialog` portals through Lattice's
+`PortalProvider`, and throws when it opens without one. `facet add` finds the file under `src/` that
+mounts your React tree, offers to wrap it, and prints the lines to paste when it is not sure:
+
+```
+PortalProvider has to wrap your app — Lattice reads the portal target from it
+  Add it to src/client/main.client.tsx? (Y/n)
+```
+
+It parses the file rather than pattern-matching it, and refuses to edit anything ambiguous — two
+render calls, no `PlayerGui` to pass, no entry it can find. `facet doctor` reports a provider that
+went missing afterwards.
 
 ## Requirements
 

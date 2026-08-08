@@ -1,5 +1,5 @@
 import { FacetError } from "../errors.js";
-import type { RegistryIndex, RegistryIndexEntry } from "./schema.js";
+import type { RegistryIndex, RegistryIndexEntry, RegistryProvider } from "./schema.js";
 
 export class RegistryResolutionError extends FacetError {}
 
@@ -78,6 +78,26 @@ export function resolveItems(index: RegistryIndex, requested: string[]): Registr
   }
 
   return resolved;
+}
+
+/**
+ * Union of the providers an install set needs, deduplicated by package and
+ * name — `dialog` and `popover` both want the one `PortalProvider`, and the
+ * consumer's app is wrapped in it once.
+ */
+export function collectProviders(items: RegistryIndexEntry[]): RegistryProvider[] {
+  const providers = new Map<string, RegistryProvider>();
+
+  for (const item of items) {
+    for (const provider of item.providers ?? []) {
+      const key = `${provider.package}#${provider.name}`;
+      if (!providers.has(key)) {
+        providers.set(key, provider);
+      }
+    }
+  }
+
+  return [...providers.values()];
 }
 
 /** Union of npm dependencies across an install set, deduplicated. */
