@@ -5,9 +5,14 @@ import { type ClassName, cn } from "~/lib/utils";
 
 /**
  * The root deliberately carries no `flex-*`: the scrollbar is pinned to an edge
- * with inset classes, and a `UIListLayout` would pull it into the flow. Give
- * the root a height through `className` — a scroll area that hugs its content
- * has nothing to scroll.
+ * with inset classes, and a `UIListLayout` would pull it into the flow.
+ *
+ * **The height comes from the parent.** A scroll area that hugs its content has
+ * nothing to scroll, so something has to state a size — and it cannot be a
+ * `className` at the call site. Vela resolves that class where it is written and
+ * the recipe below, which names `Size` on both axes, is emitted after the props
+ * it arrives as. So `<ScrollArea className="h-32" />` inside a 200px parent
+ * renders 200px tall. Put the height on a frame around it, or edit `root` here.
  *
  * The viewport hides Roblox's native scrollbar (`scrollbar-none`) because the
  * visible one is drawn by `ScrollBar` below: Lattice sizes and positions the
