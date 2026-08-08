@@ -62,6 +62,15 @@ importers:
       '@lattice-ui/react-checkbox':
         specifier: ^0.8.0
         version: 0.8.0(@rbxts/react-roblox@17.3.7-ts.1(@rbxts/react@17.3.7-ts.1))(@rbxts/react@17.3.7-ts.1)
+      '@lattice-ui/react-focus':
+        specifier: ^0.8.0
+        version: 0.8.0(@rbxts/react-roblox@17.3.7-ts.1(@rbxts/react@17.3.7-ts.1))(@rbxts/react@17.3.7-ts.1)
+      '@lattice-ui/react-layer':
+        specifier: ^0.8.0
+        version: 0.8.0(@rbxts/react-roblox@17.3.7-ts.1(@rbxts/react@17.3.7-ts.1))(@rbxts/react@17.3.7-ts.1)
+      '@lattice-ui/react-motion':
+        specifier: ^0.8.0
+        version: 0.8.0(@rbxts/react-roblox@17.3.7-ts.1(@rbxts/react@17.3.7-ts.1))(@rbxts/react@17.3.7-ts.1)
       '@lattice-ui/react-progress':
         specifier: ^0.8.0
         version: 0.8.0(@rbxts/react-roblox@17.3.7-ts.1(@rbxts/react@17.3.7-ts.1))(@rbxts/react@17.3.7-ts.1)
