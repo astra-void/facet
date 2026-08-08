@@ -1,0 +1,25 @@
+{
+  "name": "checkbox",
+  "type": "registry:ui",
+  "description": "Checkbox with checked, indeterminate, and disabled states",
+  "files": [
+    {
+      "path": "ui/checkbox.tsx",
+      "type": "registry:ui",
+      "content": "import { fv } from \"@facet-ui/react-variants\";\nimport { Checkbox as CheckboxPrimitive, type CheckedState } from \"@lattice-ui/react-checkbox\";\nimport {\n  getPassthroughProps,\n  type PassthroughProps,\n  React,\n  toSlotProps,\n  useControllableState,\n} from \"@lattice-ui/react-runtime\";\nimport { type ClassName, cn } from \"~/lib/utils\";\n\n/**\n * The checked state is mirrored here with `useControllableState` — the same\n * hook the primitive uses — because Lattice keeps its context private and the\n * box's border and fill change with it. The primitive is then driven controlled,\n * so there is exactly one copy of the state and it lives in this file.\n *\n * One recipe object rather than three exports: every exported name costs a\n * Luau register once Vela inlines its runtime. See\n * docs/decisions/luau-register-limit.md.\n */\nexport const checkboxVariants = {\n  root: fv(\"size-4 rounded-sm border border-input transition duration-150\"),\n  indicator: fv(\"size-full flex-row items-center justify-center\"),\n  // The glyph is a text instance of its own, and nothing inherits: without a\n  // `font-*` it would render in LegacyArial, not in the theme's typeface.\n  glyph: fv(\"size-fit text-xs font-bold text-primary-foreground text-center\"),\n};\n\nexport type CheckboxProps = {\n  checked?: CheckedState;\n  defaultChecked?: CheckedState;\n  onCheckedChange?: (checked: CheckedState) => void;\n  disabled?: boolean;\n  className?: ClassName;\n} & PassthroughProps<TextButton>;\n\nconst OWN_PROPS = [\"checked\", \"defaultChecked\", \"onCheckedChange\", \"disabled\", \"className\"] as const;\n\nexport function Checkbox(props: CheckboxProps) {\n  const [checked, setChecked] = useControllableState<CheckedState>({\n    value: props.checked,\n    defaultValue: props.defaultChecked ?? false,\n    onChange: props.onCheckedChange,\n  });\n\n  const disabled = props.disabled === true;\n\n  // State classes sit inside the recipe's className slot, ahead of the\n  // consumer's: resolution is last-token-wins, so anything appended after\n  // `props.className` would be an override the consumer cannot undo.\n  const className = checkboxVariants.root({\n    className: cn(checked !== false && \"border-primary bg-primary\", disabled && \"opacity-50\", props.className),\n  });\n\n  return (\n    <CheckboxPrimitive.Root\n      checked={checked}\n      className={className}\n      disabled={disabled}\n      onCheckedChange={setChecked}\n      {...toSlotProps(getPassthroughProps<TextButton>(props, OWN_PROPS))}\n    >\n      <CheckboxPrimitive.Indicator className={cn(checkboxVariants.indicator())}>\n        {/* An icon font does not exist on Roblox, so the mark is a text glyph —\n            replace this label to use your own artwork. */}\n        <textlabel\n          className={cn(checkboxVariants.glyph())}\n          Text={checked === \"indeterminate\" ? \"–\" : \"✓\"}\n          BackgroundTransparency={1}\n          BorderSizePixel={0}\n        />\n      </CheckboxPrimitive.Indicator>\n    </CheckboxPrimitive.Root>\n  );\n}\n"
+    }
+  ],
+  "registryDependencies": [
+    "utils"
+  ],
+  "dependencies": [
+    "@facet-ui/react-variants@^0.1.1",
+    "@lattice-ui/react-runtime@^0.8.0",
+    "@lattice-ui/react-checkbox@^0.8.0"
+  ],
+  "tokens": [
+    "input",
+    "primary",
+    "primary-foreground"
+  ]
+}

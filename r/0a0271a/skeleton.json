@@ -1,0 +1,22 @@
+{
+  "name": "skeleton",
+  "type": "registry:ui",
+  "description": "Placeholder block for content that has not arrived",
+  "files": [
+    {
+      "path": "ui/skeleton.tsx",
+      "type": "registry:ui",
+      "content": "import { fv } from \"@facet-ui/react-variants\";\nimport { getPassthroughProps, type PassthroughProps, React } from \"@lattice-ui/react-runtime\";\nimport { type ClassName, cn } from \"~/lib/utils\";\n\n/**\n * A placeholder for content that has not arrived.\n *\n * shadcn's is `animate-pulse rounded-md bg-muted`. This is the same thing minus\n * the pulse: Vela has no `animate-*` family, and the families it does have —\n * `transition-*`, `duration-*`, `ease-*` — animate a change rather than loop,\n * so a pulse would have to be driven by the component. That is a `useEffect`\n * and a tween in a file that is otherwise a recipe and a frame, and it is\n * runtime behaviour nobody can check by reading it. It stays out until Facet\n * has an animation primitive worth putting under it.\n *\n * The default size is a line of text. Both axes are declared because everything\n * here declares both axes, and a consumer overriding one of them lands after\n * this in `className`, so `<Skeleton className=\"h-32 w-32\" />` wins.\n */\nexport const skeletonVariants = fv(\"w-full h-4 rounded-md bg-muted\");\n\nexport type SkeletonProps = { className?: ClassName } & PassthroughProps<Frame>;\n\nconst OWN_PROPS = [\"className\"] as const;\n\n// No `BackgroundTransparency: 1`: like `separator`, the background is the\n// component.\nconst NEUTRAL_PROPS = {\n  BorderSizePixel: 0,\n};\n\nexport function Skeleton(props: SkeletonProps) {\n  return (\n    <frame\n      className={cn(skeletonVariants({ className: props.className }))}\n      {...NEUTRAL_PROPS}\n      {...getPassthroughProps<Frame>(props, OWN_PROPS)}\n    />\n  );\n}\n"
+    }
+  ],
+  "registryDependencies": [
+    "utils"
+  ],
+  "dependencies": [
+    "@facet-ui/react-variants@^0.1.1",
+    "@lattice-ui/react-runtime@^0.8.0"
+  ],
+  "tokens": [
+    "muted"
+  ]
+}

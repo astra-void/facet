@@ -1,0 +1,24 @@
+{
+  "name": "radio-group",
+  "type": "registry:ui",
+  "description": "Radio group where exactly one item is checked",
+  "files": [
+    {
+      "path": "ui/radio-group.tsx",
+      "type": "registry:ui",
+      "content": "import { fv } from \"@facet-ui/react-variants\";\nimport { type RadioGroupOrientation, RadioGroup as RadioGroupPrimitive } from \"@lattice-ui/react-radio-group\";\nimport { React, useControllableState } from \"@lattice-ui/react-runtime\";\nimport { type ClassName, cn } from \"~/lib/utils\";\n\n/**\n * The selected value is mirrored here with `useControllableState` — the same\n * hook the primitive uses — because Lattice keeps its context private and an\n * item's border changes with whether it is the checked one. The dot inside\n * needs no mirror at all: `RadioGroup.Indicator` mounts and unmounts it from\n * the primitive's own state.\n *\n * One recipe object rather than four exports: every exported name costs a\n * Luau register once Vela inlines its runtime. See\n * docs/decisions/luau-register-limit.md.\n */\nexport const radioGroupVariants = {\n  root: fv(\"flex-col gap-2 w-fit h-fit\"),\n  item: fv(\"size-4 rounded-full border border-input transition duration-150\"),\n  indicator: fv(\"size-full flex-row items-center justify-center\"),\n  dot: fv(\"size-2 rounded-full bg-primary\"),\n};\n\nconst RadioGroupContext = React.createContext<{ value?: string; disabled: boolean } | undefined>(undefined);\n\nexport type RadioGroupProps = {\n  value?: string;\n  defaultValue?: string;\n  onValueChange?: (value: string) => void;\n  disabled?: boolean;\n  orientation?: RadioGroupOrientation;\n  className?: ClassName;\n  children?: React.ReactNode;\n};\n\nexport type RadioGroupItemProps = {\n  value: string;\n  disabled?: boolean;\n  className?: ClassName;\n};\n\nexport function RadioGroup(props: RadioGroupProps) {\n  const [value, setValue] = useControllableState<string | undefined>({\n    value: props.value,\n    defaultValue: props.defaultValue,\n    onChange: props.onValueChange as (value: string | undefined) => void,\n  });\n\n  const disabled = props.disabled === true;\n  const contextValue = React.useMemo(() => ({ value, disabled }), [disabled, value]);\n\n  return (\n    <RadioGroupPrimitive.Root\n      disabled={disabled}\n      onValueChange={setValue}\n      orientation={props.orientation}\n      value={value}\n    >\n      <RadioGroupContext.Provider value={contextValue}>\n        <frame\n          className={radioGroupVariants.root({\n            className: cn(props.orientation === \"horizontal\" && \"flex-row\", props.className),\n          })}\n          BackgroundTransparency={1}\n        >\n          {props.children}\n        </frame>\n      </RadioGroupContext.Provider>\n    </RadioGroupPrimitive.Root>\n  );\n}\n\nexport function RadioGroupItem(props: RadioGroupItemProps) {\n  const group = React.useContext(RadioGroupContext);\n  if (group === undefined) {\n    error(\"[RadioGroupItem] must be rendered inside a RadioGroup.\");\n  }\n\n  const checked = group.value === props.value;\n  const disabled = group.disabled || props.disabled === true;\n\n  return (\n    <RadioGroupPrimitive.Item\n      className={radioGroupVariants.item({\n        className: cn(checked && \"border-primary\", disabled && \"opacity-50\", props.className),\n      })}\n      disabled={props.disabled}\n      value={props.value}\n    >\n      <RadioGroupPrimitive.Indicator className={cn(radioGroupVariants.indicator())}>\n        <frame className={cn(radioGroupVariants.dot())} BorderSizePixel={0} />\n      </RadioGroupPrimitive.Indicator>\n    </RadioGroupPrimitive.Item>\n  );\n}\n"
+    }
+  ],
+  "registryDependencies": [
+    "utils"
+  ],
+  "dependencies": [
+    "@facet-ui/react-variants@^0.1.1",
+    "@lattice-ui/react-runtime@^0.8.0",
+    "@lattice-ui/react-radio-group@^0.8.0"
+  ],
+  "tokens": [
+    "input",
+    "primary"
+  ]
+}

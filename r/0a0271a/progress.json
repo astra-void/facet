@@ -1,0 +1,24 @@
+{
+  "name": "progress",
+  "type": "registry:ui",
+  "description": "Progress bar, determinate or indeterminate",
+  "files": [
+    {
+      "path": "ui/progress.tsx",
+      "type": "registry:ui",
+      "content": "import { fv } from \"@facet-ui/react-variants\";\nimport { Progress as ProgressPrimitive } from \"@lattice-ui/react-progress\";\nimport { getPassthroughProps, type PassthroughProps, React } from \"@lattice-ui/react-runtime\";\nimport { type ClassName, cn } from \"~/lib/utils\";\n\n/**\n * Lattice's `Progress.Root` renders no instance — it only turns `value`/`max`\n * into a ratio — so the track is drawn here. The indicator's width *is* that\n * ratio: motion owns its `Size`, animates it as the value moves, and sweeps it\n * back and forth when `indeterminate`. This file only says what both look like.\n */\nexport const progressVariants = {\n  root: fv(\"h-2 w-full rounded-full bg-secondary overflow-hidden\"),\n  indicator: fv(\"rounded-full bg-primary\"),\n};\n\nexport type ProgressProps = {\n  value?: number;\n  max?: number;\n  /** Sweep the indicator instead of mapping `value` — for work with no known end. */\n  indeterminate?: boolean;\n  className?: ClassName;\n} & PassthroughProps<Frame>;\n\nconst OWN_PROPS = [\"value\", \"max\", \"indeterminate\", \"className\"] as const;\n\nconst NEUTRAL_PROPS = {\n  BackgroundTransparency: 1,\n  BorderSizePixel: 0,\n};\n\nexport function Progress(props: ProgressProps) {\n  return (\n    <ProgressPrimitive.Root indeterminate={props.indeterminate} max={props.max} value={props.value}>\n      <frame\n        className={cn(progressVariants.root({ className: props.className }))}\n        {...NEUTRAL_PROPS}\n        {...getPassthroughProps<Frame>(props, OWN_PROPS)}\n      >\n        <ProgressPrimitive.Indicator className={cn(progressVariants.indicator())} />\n      </frame>\n    </ProgressPrimitive.Root>\n  );\n}\n"
+    }
+  ],
+  "registryDependencies": [
+    "utils"
+  ],
+  "dependencies": [
+    "@facet-ui/react-variants@^0.1.1",
+    "@lattice-ui/react-runtime@^0.8.0",
+    "@lattice-ui/react-progress@^0.8.0"
+  ],
+  "tokens": [
+    "secondary",
+    "primary"
+  ]
+}

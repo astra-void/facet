@@ -1,6 +1,11 @@
 {
-  "latest": "dfcd0d5",
+  "latest": "0a0271a",
   "revisions": [
+    {
+      "revision": "0a0271a",
+      "generatedBy": "0.4.0",
+      "components": 23
+    },
     {
       "revision": "dfcd0d5",
       "generatedBy": "0.4.0",

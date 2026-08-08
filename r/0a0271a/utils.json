@@ -1,0 +1,15 @@
+{
+  "name": "utils",
+  "type": "registry:lib",
+  "description": "cn — class composition helper every component imports",
+  "files": [
+    {
+      "path": "lib/utils.ts",
+      "type": "registry:lib",
+      "content": "export { type ClassValue as ClassName, cn } from \"@facet-ui/react-variants\";\n\n// This file is yours once copied. `cn` is re-exported rather than reimplemented\n// so upgrades stay cheap, but wrapping it here is a supported customization —\n// project-wide class conventions belong in this file, not in each component.\n//\n// `ClassValue` is re-exported as `ClassName` on purpose: Vela inlines its\n// runtime into every file it transforms, and that runtime declares its own\n// local `ClassValue`. Importing the original name into a component would be a\n// TS2440 name collision.\n"
+    }
+  ],
+  "dependencies": [
+    "@facet-ui/react-variants@^0.1.1"
+  ]
+}

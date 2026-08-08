@@ -1,0 +1,27 @@
+{
+  "name": "tabs",
+  "type": "registry:ui",
+  "description": "Tabs with list, triggers, and switched content panels",
+  "files": [
+    {
+      "path": "ui/tabs.tsx",
+      "type": "registry:ui",
+      "content": "import { fv } from \"@facet-ui/react-variants\";\nimport {\n  getPassthroughProps,\n  type PassthroughProps,\n  React,\n  toSlotProps,\n  useControllableState,\n} from \"@lattice-ui/react-runtime\";\nimport { Tabs as TabsPrimitive } from \"@lattice-ui/react-tabs\";\nimport { TextSlot } from \"~/lib/text\";\nimport { type ClassName, cn } from \"~/lib/utils\";\n\n/**\n * The selected value is mirrored here with `useControllableState` — the same\n * hook the primitive uses — because Lattice keeps its context private and a\n * trigger's surface changes with whether it is the selected one. The primitive\n * is then driven controlled, so there is exactly one copy of the state.\n *\n * Give `Tabs` a `defaultValue`: the mirror cannot see the primitive's own\n * first-enabled-trigger fallback, so without one no trigger styles as selected.\n *\n * One recipe object rather than five exports: every exported name costs a\n * Luau register once Vela inlines its runtime. See\n * docs/decisions/luau-register-limit.md.\n */\nexport const tabsVariants = {\n  root: fv(\"flex-col gap-2 w-full h-fit\"),\n  list: fv(\"flex-row items-center justify-center gap-1 w-fit h-9 rounded-lg bg-muted p-1\"),\n  trigger: fv(\"flex-row items-center justify-center h-7 w-fit px-3 rounded-md transition duration-150\"),\n  triggerLabel: fv(\"text-sm font-medium text-muted-foreground\"),\n  content: fv(\"flex-col gap-2 w-full h-fit\"),\n};\n\nconst TabsContext = React.createContext<{ value?: string } | undefined>(undefined);\n\nconst NEUTRAL_PROPS = {\n  BackgroundTransparency: 1,\n  BorderSizePixel: 0,\n};\n\nexport type TabsProps = {\n  value?: string;\n  defaultValue?: string;\n  onValueChange?: (value: string) => void;\n  className?: ClassName;\n  children?: React.ReactNode;\n} & PassthroughProps<Frame>;\n\nexport type TabsListProps = {\n  className?: ClassName;\n  children?: React.ReactNode;\n} & PassthroughProps<Frame>;\n\nexport type TabsTriggerProps = {\n  value: string;\n  disabled?: boolean;\n  Text?: string;\n  className?: ClassName;\n  children?: React.ReactNode;\n};\n\nexport type TabsContentProps = {\n  value: string;\n  className?: ClassName;\n  children?: React.ReactNode;\n} & PassthroughProps<Frame>;\n\nconst ROOT_OWN_PROPS = [\"value\", \"defaultValue\", \"onValueChange\", \"className\", \"children\"] as const;\nconst LIST_OWN_PROPS = [\"className\", \"children\"] as const;\nconst CONTENT_OWN_PROPS = [\"value\", \"className\", \"children\"] as const;\n\nexport function Tabs(props: TabsProps) {\n  const [value, setValue] = useControllableState<string | undefined>({\n    value: props.value,\n    defaultValue: props.defaultValue,\n    onChange: props.onValueChange as (value: string | undefined) => void,\n  });\n\n  const contextValue = React.useMemo(() => ({ value }), [value]);\n\n  return (\n    <TabsPrimitive.Root onValueChange={setValue} value={value}>\n      <TabsContext.Provider value={contextValue}>\n        <frame\n          className={cn(tabsVariants.root({ className: props.className }))}\n          {...NEUTRAL_PROPS}\n          {...getPassthroughProps<Frame>(props, ROOT_OWN_PROPS)}\n        >\n          {props.children}\n        </frame>\n      </TabsContext.Provider>\n    </TabsPrimitive.Root>\n  );\n}\n\nexport function TabsList(props: TabsListProps) {\n  return (\n    <TabsPrimitive.List\n      className={cn(tabsVariants.list({ className: props.className }))}\n      {...toSlotProps(getPassthroughProps<Frame>(props, LIST_OWN_PROPS))}\n    >\n      {props.children}\n    </TabsPrimitive.List>\n  );\n}\n\nexport function TabsTrigger(props: TabsTriggerProps) {\n  const tabs = React.useContext(TabsContext);\n  if (tabs === undefined) {\n    error(\"[TabsTrigger] must be rendered inside Tabs.\");\n  }\n\n  const selected = tabs.value === props.value;\n  const disabled = props.disabled === true;\n\n  return (\n    <TabsPrimitive.Trigger\n      className={tabsVariants.trigger({\n        className: cn(selected && \"bg-background\", disabled && \"opacity-50\", props.className),\n      })}\n      disabled={props.disabled}\n      value={props.value}\n    >\n      <TextSlot\n        Text={props.Text}\n        TextTransparency={disabled ? 0.5 : 0}\n        className={cn(tabsVariants.triggerLabel(), selected && \"text-foreground\")}\n      >\n        {props.children}\n      </TextSlot>\n    </TabsPrimitive.Trigger>\n  );\n}\n\nexport function TabsContent(props: TabsContentProps) {\n  return (\n    <TabsPrimitive.Content\n      className={cn(tabsVariants.content({ className: props.className }))}\n      value={props.value}\n      {...toSlotProps(getPassthroughProps<Frame>(props, CONTENT_OWN_PROPS))}\n    >\n      {props.children}\n    </TabsPrimitive.Content>\n  );\n}\n"
+    }
+  ],
+  "registryDependencies": [
+    "utils",
+    "text"
+  ],
+  "dependencies": [
+    "@facet-ui/react-variants@^0.1.1",
+    "@lattice-ui/react-runtime@^0.8.0",
+    "@lattice-ui/react-tabs@^0.8.0"
+  ],
+  "tokens": [
+    "muted",
+    "muted-foreground",
+    "background",
+    "foreground"
+  ]
+}
