@@ -17,6 +17,7 @@
     "@lattice-ui/react-accordion": "^0.8.0",
     "@lattice-ui/react-avatar": "^0.8.0",
     "@lattice-ui/react-checkbox": "^0.8.0",
+    "@lattice-ui/react-dialog": "^0.8.0",
     "@lattice-ui/react-focus": "^0.8.0",
     "@lattice-ui/react-layer": "^0.8.0",
     "@lattice-ui/react-motion": "^0.8.0",

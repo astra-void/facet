@@ -62,6 +62,9 @@ importers:
       '@lattice-ui/react-checkbox':
         specifier: ^0.8.0
         version: 0.8.0(@rbxts/react-roblox@17.3.7-ts.1(@rbxts/react@17.3.7-ts.1))(@rbxts/react@17.3.7-ts.1)
+      '@lattice-ui/react-dialog':
+        specifier: ^0.8.0
+        version: 0.8.0(@rbxts/react-roblox@17.3.7-ts.1(@rbxts/react@17.3.7-ts.1))(@rbxts/react@17.3.7-ts.1)
       '@lattice-ui/react-focus':
         specifier: ^0.8.0
         version: 0.8.0(@rbxts/react-roblox@17.3.7-ts.1(@rbxts/react@17.3.7-ts.1))(@rbxts/react@17.3.7-ts.1)
@@ -189,6 +192,9 @@ importers:
 
   packages/tools/cli:
     dependencies:
+      '@babel/parser':
+        specifier: ^7.29.8
+        version: 7.29.8
       '@facet-ui/theme':
         specifier: workspace:*
         version: link:../theme
@@ -212,6 +218,12 @@ importers:
         specifier: ^0.8.0
         version: 0.8.0(@rbxts/react-roblox@17.3.7-ts.1(@rbxts/react@17.3.7-ts.1))(@rbxts/react@17.3.7-ts.1)
       '@lattice-ui/react-checkbox':
+        specifier: ^0.8.0
+        version: 0.8.0(@rbxts/react-roblox@17.3.7-ts.1(@rbxts/react@17.3.7-ts.1))(@rbxts/react@17.3.7-ts.1)
+      '@lattice-ui/react-dialog':
+        specifier: ^0.8.0
+        version: 0.8.0(@rbxts/react-roblox@17.3.7-ts.1(@rbxts/react@17.3.7-ts.1))(@rbxts/react@17.3.7-ts.1)
+      '@lattice-ui/react-layer':
         specifier: ^0.8.0
         version: 0.8.0(@rbxts/react-roblox@17.3.7-ts.1(@rbxts/react@17.3.7-ts.1))(@rbxts/react@17.3.7-ts.1)
       '@lattice-ui/react-progress':
@@ -253,8 +265,25 @@ importers:
 
 packages:
 
+  '@babel/helper-string-parser@7.29.7':
+    resolution: {integrity: sha512-Pb5ijPrZ89GDH8223L4UP8i6QApWxs04RbPQJTeWDV0/keR2E36MeKnyr6LYmUUvqRRI+Iv87SuF1W6ErINzYw==}
+    engines: {node: '>=6.9.0'}
+
+  '@babel/helper-validator-identifier@7.29.7':
+    resolution: {integrity: sha512-qehxGkRj55h/ff8EMaJ+cYhyaKlHIxqYDn682wQD7RNp9UujOQsHog2uS0r2vzr4pW+sXf90NeeayjcNaX3fFg==}
+    engines: {node: '>=6.9.0'}
+
+  '@babel/parser@7.29.8':
+    resolution: {integrity: sha512-E8lTAYNB1KW+FH+VGJuZM1ioAx2E6oVlvQFRrf5P8ZZmsiJXYAD9vTFV7yyEURNzgh1dFqMZuO6tUwcARbqFCA==}
+    engines: {node: '>=6.0.0'}
+    hasBin: true
+
   '@babel/runtime@7.29.7':
     resolution: {integrity: sha512-Nq8OhGWiZIZGV6hLHoyAKLLcJihP/xFeBMGJoUrxTX2psI8dCifzLhZISFb+VWS3wFMRDmCGw5R+dOySCqPLhw==}
+    engines: {node: '>=6.9.0'}
+
+  '@babel/types@7.29.8':
+    resolution: {integrity: sha512-Vj1jF3cPfxg7OAfoI7QnVKLoILlm2JF9pnVHrX8qx7AHMiYWT+NDAA7jChlNgRS4WTLc/fD1lXLmPixluj+3Gg==}
     engines: {node: '>=6.9.0'}
 
   '@biomejs/biome@2.5.6':
@@ -560,6 +589,12 @@ packages:
 
   '@lattice-ui/react-checkbox@0.8.0':
     resolution: {integrity: sha512-N6MogSuxr4GabN1YbdB1cvvNkrxNKY5t3cmb8bdP++y6e0Oth90m5cqLjU3ZcT/WvLqlF57hOo0E82/Uvh8AQA==}
+    peerDependencies:
+      '@rbxts/react': ^17.3.7-ts.1
+      '@rbxts/react-roblox': ^17.3.7-ts.1
+
+  '@lattice-ui/react-dialog@0.8.0':
+    resolution: {integrity: sha512-xmUbSUnhKikkbtubkaAzv7CR8BzGky9w9k58RhqzWTI67tt2gqTO4GOSp2Qjw3iRcveQH8tEIVeHLbYZfICqWg==}
     peerDependencies:
       '@rbxts/react': ^17.3.7-ts.1
       '@rbxts/react-roblox': ^17.3.7-ts.1
@@ -1705,7 +1740,20 @@ packages:
 
 snapshots:
 
+  '@babel/helper-string-parser@7.29.7': {}
+
+  '@babel/helper-validator-identifier@7.29.7': {}
+
+  '@babel/parser@7.29.8':
+    dependencies:
+      '@babel/types': 7.29.8
+
   '@babel/runtime@7.29.7': {}
+
+  '@babel/types@7.29.8':
+    dependencies:
+      '@babel/helper-string-parser': 7.29.7
+      '@babel/helper-validator-identifier': 7.29.7
 
   '@biomejs/biome@2.5.6':
     optionalDependencies:
@@ -2005,6 +2053,15 @@ snapshots:
 
   '@lattice-ui/react-checkbox@0.8.0(@rbxts/react-roblox@17.3.7-ts.1(@rbxts/react@17.3.7-ts.1))(@rbxts/react@17.3.7-ts.1)':
     dependencies:
+      '@lattice-ui/react-layer': 0.8.0(@rbxts/react-roblox@17.3.7-ts.1(@rbxts/react@17.3.7-ts.1))(@rbxts/react@17.3.7-ts.1)
+      '@lattice-ui/react-motion': 0.8.0(@rbxts/react-roblox@17.3.7-ts.1(@rbxts/react@17.3.7-ts.1))(@rbxts/react@17.3.7-ts.1)
+      '@lattice-ui/react-runtime': 0.8.0(@rbxts/react-roblox@17.3.7-ts.1(@rbxts/react@17.3.7-ts.1))(@rbxts/react@17.3.7-ts.1)
+      '@rbxts/react': 17.3.7-ts.1
+      '@rbxts/react-roblox': 17.3.7-ts.1(@rbxts/react@17.3.7-ts.1)
+
+  '@lattice-ui/react-dialog@0.8.0(@rbxts/react-roblox@17.3.7-ts.1(@rbxts/react@17.3.7-ts.1))(@rbxts/react@17.3.7-ts.1)':
+    dependencies:
+      '@lattice-ui/react-focus': 0.8.0(@rbxts/react-roblox@17.3.7-ts.1(@rbxts/react@17.3.7-ts.1))(@rbxts/react@17.3.7-ts.1)
       '@lattice-ui/react-layer': 0.8.0(@rbxts/react-roblox@17.3.7-ts.1(@rbxts/react@17.3.7-ts.1))(@rbxts/react@17.3.7-ts.1)
       '@lattice-ui/react-motion': 0.8.0(@rbxts/react-roblox@17.3.7-ts.1(@rbxts/react@17.3.7-ts.1))(@rbxts/react@17.3.7-ts.1)
       '@lattice-ui/react-runtime': 0.8.0(@rbxts/react-roblox@17.3.7-ts.1(@rbxts/react@17.3.7-ts.1))(@rbxts/react@17.3.7-ts.1)

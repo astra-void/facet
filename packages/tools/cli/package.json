@@ -33,6 +33,7 @@
     "watch": "tsc -p tsconfig.json -w"
   },
   "dependencies": {
+    "@babel/parser": "^7.29.8",
     "@facet-ui/theme": "workspace:*"
   },
   "keywords": [
