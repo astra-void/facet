@@ -1,0 +1,491 @@
+{
+  "version": 1,
+  "generatedBy": "0.4.0",
+  "items": [
+    {
+      "name": "utils",
+      "type": "registry:lib",
+      "description": "cn — class composition helper every component imports",
+      "files": [
+        "lib/utils.ts"
+      ],
+      "dependencies": [
+        "@facet-ui/react-variants@^0.1.1"
+      ]
+    },
+    {
+      "name": "text",
+      "type": "registry:lib",
+      "description": "TextSlot — wraps string children in a styled textlabel",
+      "files": [
+        "lib/text.tsx"
+      ],
+      "dependencies": [
+        "@lattice-ui/react-runtime@^0.8.0"
+      ]
+    },
+    {
+      "name": "button",
+      "type": "registry:ui",
+      "description": "Button with variant and size recipes",
+      "files": [
+        "ui/button.tsx"
+      ],
+      "registryDependencies": [
+        "utils",
+        "text"
+      ],
+      "dependencies": [
+        "@facet-ui/react-variants@^0.1.1",
+        "@lattice-ui/react-runtime@^0.8.0"
+      ],
+      "tokens": [
+        "primary",
+        "primary-foreground",
+        "destructive",
+        "destructive-foreground",
+        "secondary",
+        "secondary-foreground",
+        "accent",
+        "accent-foreground",
+        "background",
+        "input",
+        "foreground"
+      ]
+    },
+    {
+      "name": "label",
+      "type": "registry:ui",
+      "description": "Form label",
+      "files": [
+        "ui/label.tsx"
+      ],
+      "registryDependencies": [
+        "utils"
+      ],
+      "dependencies": [
+        "@facet-ui/react-variants@^0.1.1",
+        "@lattice-ui/react-runtime@^0.8.0"
+      ],
+      "tokens": [
+        "foreground"
+      ]
+    },
+    {
+      "name": "separator",
+      "type": "registry:ui",
+      "description": "One-pixel divider, horizontal or vertical",
+      "files": [
+        "ui/separator.tsx"
+      ],
+      "registryDependencies": [
+        "utils"
+      ],
+      "dependencies": [
+        "@facet-ui/react-variants@^0.1.1",
+        "@lattice-ui/react-runtime@^0.8.0"
+      ],
+      "tokens": [
+        "border"
+      ]
+    },
+    {
+      "name": "badge",
+      "type": "registry:ui",
+      "description": "Small status pill that hugs its label",
+      "files": [
+        "ui/badge.tsx"
+      ],
+      "registryDependencies": [
+        "utils",
+        "text"
+      ],
+      "dependencies": [
+        "@facet-ui/react-variants@^0.1.1",
+        "@lattice-ui/react-runtime@^0.8.0"
+      ],
+      "tokens": [
+        "primary",
+        "primary-foreground",
+        "secondary",
+        "secondary-foreground",
+        "destructive",
+        "destructive-foreground",
+        "input",
+        "foreground"
+      ]
+    },
+    {
+      "name": "card",
+      "type": "registry:ui",
+      "description": "Card with header, title, description, content, and footer parts",
+      "files": [
+        "ui/card.tsx"
+      ],
+      "registryDependencies": [
+        "utils"
+      ],
+      "dependencies": [
+        "@facet-ui/react-variants@^0.1.1",
+        "@lattice-ui/react-runtime@^0.8.0"
+      ],
+      "tokens": [
+        "card",
+        "card-foreground",
+        "border",
+        "muted-foreground"
+      ]
+    },
+    {
+      "name": "skeleton",
+      "type": "registry:ui",
+      "description": "Placeholder block for content that has not arrived",
+      "files": [
+        "ui/skeleton.tsx"
+      ],
+      "registryDependencies": [
+        "utils"
+      ],
+      "dependencies": [
+        "@facet-ui/react-variants@^0.1.1",
+        "@lattice-ui/react-runtime@^0.8.0"
+      ],
+      "tokens": [
+        "muted"
+      ]
+    },
+    {
+      "name": "kbd",
+      "type": "registry:ui",
+      "description": "Key cap for a keyboard shortcut",
+      "files": [
+        "ui/kbd.tsx"
+      ],
+      "registryDependencies": [
+        "utils",
+        "text"
+      ],
+      "dependencies": [
+        "@facet-ui/react-variants@^0.1.1",
+        "@lattice-ui/react-runtime@^0.8.0"
+      ],
+      "tokens": [
+        "border",
+        "muted",
+        "muted-foreground"
+      ]
+    },
+    {
+      "name": "avatar",
+      "type": "registry:ui",
+      "description": "Avatar with image and text fallback parts",
+      "files": [
+        "ui/avatar.tsx"
+      ],
+      "registryDependencies": [
+        "utils"
+      ],
+      "dependencies": [
+        "@facet-ui/react-variants@^0.1.1",
+        "@lattice-ui/react-runtime@^0.8.0",
+        "@lattice-ui/react-avatar@^0.8.0"
+      ],
+      "tokens": [
+        "muted",
+        "muted-foreground"
+      ]
+    },
+    {
+      "name": "checkbox",
+      "type": "registry:ui",
+      "description": "Checkbox with checked, indeterminate, and disabled states",
+      "files": [
+        "ui/checkbox.tsx"
+      ],
+      "registryDependencies": [
+        "utils"
+      ],
+      "dependencies": [
+        "@facet-ui/react-variants@^0.1.1",
+        "@lattice-ui/react-runtime@^0.8.0",
+        "@lattice-ui/react-checkbox@^0.8.0"
+      ],
+      "tokens": [
+        "input",
+        "primary",
+        "primary-foreground"
+      ]
+    },
+    {
+      "name": "switch",
+      "type": "registry:ui",
+      "description": "Toggle switch with an animated thumb",
+      "files": [
+        "ui/switch.tsx"
+      ],
+      "registryDependencies": [
+        "utils"
+      ],
+      "dependencies": [
+        "@facet-ui/react-variants@^0.1.1",
+        "@lattice-ui/react-runtime@^0.8.0",
+        "@lattice-ui/react-switch@^0.8.0"
+      ],
+      "tokens": [
+        "primary",
+        "input",
+        "background"
+      ]
+    },
+    {
+      "name": "progress",
+      "type": "registry:ui",
+      "description": "Progress bar, determinate or indeterminate",
+      "files": [
+        "ui/progress.tsx"
+      ],
+      "registryDependencies": [
+        "utils"
+      ],
+      "dependencies": [
+        "@facet-ui/react-variants@^0.1.1",
+        "@lattice-ui/react-runtime@^0.8.0",
+        "@lattice-ui/react-progress@^0.8.0"
+      ],
+      "tokens": [
+        "secondary",
+        "primary"
+      ]
+    },
+    {
+      "name": "slider",
+      "type": "registry:ui",
+      "description": "Slider with track, range fill, and draggable thumb",
+      "files": [
+        "ui/slider.tsx"
+      ],
+      "registryDependencies": [
+        "utils"
+      ],
+      "dependencies": [
+        "@facet-ui/react-variants@^0.1.1",
+        "@lattice-ui/react-runtime@^0.8.0",
+        "@lattice-ui/react-slider@^0.8.0"
+      ],
+      "tokens": [
+        "secondary",
+        "primary",
+        "background"
+      ]
+    },
+    {
+      "name": "toggle-group",
+      "type": "registry:ui",
+      "description": "Group of two-state buttons, single or multiple pressed",
+      "files": [
+        "ui/toggle-group.tsx"
+      ],
+      "registryDependencies": [
+        "utils",
+        "text"
+      ],
+      "dependencies": [
+        "@facet-ui/react-variants@^0.1.1",
+        "@lattice-ui/react-runtime@^0.8.0",
+        "@lattice-ui/react-toggle-group@^0.8.0"
+      ],
+      "tokens": [
+        "muted",
+        "accent",
+        "accent-foreground",
+        "foreground"
+      ]
+    },
+    {
+      "name": "tabs",
+      "type": "registry:ui",
+      "description": "Tabs with list, triggers, and switched content panels",
+      "files": [
+        "ui/tabs.tsx"
+      ],
+      "registryDependencies": [
+        "utils",
+        "text"
+      ],
+      "dependencies": [
+        "@facet-ui/react-variants@^0.1.1",
+        "@lattice-ui/react-runtime@^0.8.0",
+        "@lattice-ui/react-tabs@^0.8.0"
+      ],
+      "tokens": [
+        "muted",
+        "muted-foreground",
+        "background",
+        "foreground"
+      ]
+    },
+    {
+      "name": "accordion",
+      "type": "registry:ui",
+      "description": "Accordion with collapsible items, single or multiple open",
+      "files": [
+        "ui/accordion.tsx"
+      ],
+      "registryDependencies": [
+        "utils",
+        "text"
+      ],
+      "dependencies": [
+        "@facet-ui/react-variants@^0.1.1",
+        "@lattice-ui/react-runtime@^0.8.0",
+        "@lattice-ui/react-accordion@^0.8.0"
+      ],
+      "tokens": [
+        "border",
+        "foreground",
+        "muted-foreground"
+      ]
+    },
+    {
+      "name": "text-field",
+      "type": "registry:ui",
+      "description": "Single-line input with label, description, and message parts",
+      "files": [
+        "ui/text-field.tsx"
+      ],
+      "registryDependencies": [
+        "utils"
+      ],
+      "dependencies": [
+        "@facet-ui/react-variants@^0.1.1",
+        "@lattice-ui/react-runtime@^0.8.0",
+        "@lattice-ui/react-text-field@^0.8.0"
+      ],
+      "tokens": [
+        "input",
+        "foreground",
+        "muted-foreground",
+        "ring",
+        "destructive"
+      ]
+    },
+    {
+      "name": "textarea",
+      "type": "registry:ui",
+      "description": "Multi-line input that grows with its text",
+      "files": [
+        "ui/textarea.tsx"
+      ],
+      "registryDependencies": [
+        "utils"
+      ],
+      "dependencies": [
+        "@facet-ui/react-variants@^0.1.1",
+        "@lattice-ui/react-runtime@^0.8.0",
+        "@lattice-ui/react-textarea@^0.8.0"
+      ],
+      "tokens": [
+        "input",
+        "foreground",
+        "muted-foreground",
+        "ring",
+        "destructive"
+      ]
+    },
+    {
+      "name": "radio-group",
+      "type": "registry:ui",
+      "description": "Radio group where exactly one item is checked",
+      "files": [
+        "ui/radio-group.tsx"
+      ],
+      "registryDependencies": [
+        "utils"
+      ],
+      "dependencies": [
+        "@facet-ui/react-variants@^0.1.1",
+        "@lattice-ui/react-runtime@^0.8.0",
+        "@lattice-ui/react-radio-group@^0.8.0"
+      ],
+      "tokens": [
+        "input",
+        "primary"
+      ]
+    },
+    {
+      "name": "scroll-area",
+      "type": "registry:ui",
+      "description": "Scroll container with a styled overlay scrollbar",
+      "files": [
+        "ui/scroll-area.tsx"
+      ],
+      "registryDependencies": [
+        "utils"
+      ],
+      "dependencies": [
+        "@facet-ui/react-variants@^0.1.1",
+        "@lattice-ui/react-runtime@^0.8.0",
+        "@lattice-ui/react-scroll-area@^0.8.0"
+      ],
+      "tokens": [
+        "border"
+      ]
+    },
+    {
+      "name": "dialog",
+      "type": "registry:ui",
+      "description": "Modal dialog with overlay, header, footer, and close parts",
+      "files": [
+        "ui/dialog.tsx"
+      ],
+      "registryDependencies": [
+        "utils"
+      ],
+      "dependencies": [
+        "@facet-ui/react-variants@^0.1.1",
+        "@lattice-ui/react-runtime@^0.8.0",
+        "@lattice-ui/react-dialog@^0.8.0",
+        "@lattice-ui/react-layer@^0.8.0"
+      ],
+      "providers": [
+        {
+          "name": "PortalProvider",
+          "package": "@lattice-ui/react-layer",
+          "props": {
+            "container": "player-gui"
+          },
+          "reason": "Lattice reads the portal target from it, and throws when a dialog opens without one"
+        }
+      ],
+      "tokens": [
+        "background",
+        "border",
+        "foreground",
+        "muted-foreground",
+        "accent"
+      ]
+    },
+    {
+      "name": "alert",
+      "type": "registry:ui",
+      "description": "Alert with title and description parts, default or destructive",
+      "files": [
+        "ui/alert.tsx"
+      ],
+      "registryDependencies": [
+        "utils"
+      ],
+      "dependencies": [
+        "@facet-ui/react-variants@^0.1.1",
+        "@lattice-ui/react-runtime@^0.8.0"
+      ],
+      "tokens": [
+        "card",
+        "card-foreground",
+        "border",
+        "destructive",
+        "muted-foreground"
+      ]
+    }
+  ]
+}
