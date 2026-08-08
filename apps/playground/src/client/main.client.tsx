@@ -1,3 +1,4 @@
+import { PortalProvider } from "@lattice-ui/react-layer";
 import React, { StrictMode } from "@rbxts/react";
 import { createPortal, createRoot } from "@rbxts/react-roblox";
 import { Players } from "@rbxts/services";
@@ -8,6 +9,16 @@ import { Badge } from "../shared/ui/badge";
 import { Button } from "../shared/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "../shared/ui/card";
 import { Checkbox } from "../shared/ui/checkbox";
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "../shared/ui/dialog";
 import { Kbd } from "../shared/ui/kbd";
 import { Label } from "../shared/ui/label";
 import { Progress } from "../shared/ui/progress";
@@ -267,6 +278,57 @@ function RadioGroups() {
 }
 
 /**
+ * The first layered scene, so it is the first one whose interesting parts are
+ * not on screen until something is clicked: the panel portals out of this tree
+ * into `PlayerGui` under its own `ScreenGui`, above the dim.
+ *
+ * Two of them, because the dismissal paths differ. The first takes every one —
+ * the corner ✕, the overlay, and a footer `DialogClose`. The second refuses the
+ * outside press and drops the ✕, so the footer button is the only way out.
+ */
+function Dialogs() {
+  return (
+    <frame className="w-full flex-row items-center gap-2" AutomaticSize={Enum.AutomaticSize.Y}>
+      <Dialog>
+        <DialogTrigger asChild>
+          <Button size="sm" variant="outline" Text="Open" />
+        </DialogTrigger>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle Text="Sell this item?" />
+            <DialogDescription Text="It leaves your inventory immediately. This cannot be undone." />
+          </DialogHeader>
+          <DialogFooter>
+            <DialogClose asChild>
+              <Button size="sm" variant="outline" Text="Cancel" />
+            </DialogClose>
+            <DialogClose asChild>
+              <Button size="sm" variant="destructive" Text="Sell" />
+            </DialogClose>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+      <Dialog>
+        <DialogTrigger asChild>
+          <Button size="sm" variant="outline" Text="Open (insistent)" />
+        </DialogTrigger>
+        <DialogContent showClose={false} onInteractOutside={(event) => event.preventDefault()}>
+          <DialogHeader>
+            <DialogTitle Text="Read this first" />
+            <DialogDescription Text="Clicking the dim does nothing here — the footer button is the only way out." />
+          </DialogHeader>
+          <DialogFooter>
+            <DialogClose asChild>
+              <Button size="sm" Text="Understood" />
+            </DialogClose>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    </frame>
+  );
+}
+
+/**
  * The page itself is the scroll-area scene: the column below outgrew the
  * screen, so the whole gallery scrolls through one `ScrollArea` — if this
  * renders and scrolls, the component works.
@@ -294,6 +356,7 @@ function Playground() {
           <TextFields />
           <Textareas />
           <RadioGroups />
+          <Dialogs />
           <Card>
             <CardHeader>
               <CardTitle Text="Shop" />
@@ -316,13 +379,18 @@ function Playground() {
 const playerGui = Players.LocalPlayer.WaitForChild("PlayerGui");
 const root = createRoot(new Instance("Folder"));
 
+// `PortalProvider` wraps everything rather than just the dialog: Lattice reads
+// it from a strict context to find the `BasePlayerGui` a layered component
+// portals into, and every layered component after this one needs the same one.
 root.render(
   <StrictMode>
-    {createPortal(
-      <screengui ResetOnSpawn={false} IgnoreGuiInset ZIndexBehavior={Enum.ZIndexBehavior.Sibling}>
-        <Playground />
-      </screengui>,
-      playerGui,
-    )}
+    <PortalProvider container={playerGui as BasePlayerGui}>
+      {createPortal(
+        <screengui ResetOnSpawn={false} IgnoreGuiInset ZIndexBehavior={Enum.ZIndexBehavior.Sibling}>
+          <Playground />
+        </screengui>,
+        playerGui,
+      )}
+    </PortalProvider>
   </StrictMode>,
 );
