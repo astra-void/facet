@@ -273,6 +273,36 @@ export default defineRegistry([
     tokens: ["border"],
   },
   {
+    name: "dialog",
+    type: "registry:ui",
+    description: "Modal dialog with overlay, header, footer, and close parts",
+    files: [{ path: "ui/dialog.tsx", type: "registry:ui" }],
+    registryDependencies: ["utils"],
+    // `react-layer` is a type-only import here — `LayerInteractEvent` — but
+    // listing it also puts the package physically in the consumer's project,
+    // which a portal-rendering component needs anyway: under an isolated node
+    // linker a transitive dependency never appears in the app's own
+    // `node_modules`, and Rojo can only sync what is there.
+    dependencies: [
+      "@facet-ui/react-variants@^0.1.1",
+      "@lattice-ui/react-runtime@^0.8.0",
+      "@lattice-ui/react-dialog@^0.8.0",
+      "@lattice-ui/react-layer@^0.8.0",
+    ],
+    // Lattice reads the portal target from a strict context, so this is not
+    // advice: without it the dialog throws the first time it opens. `facet add`
+    // offers to write it into the client entry.
+    providers: [
+      {
+        name: "PortalProvider",
+        package: "@lattice-ui/react-layer",
+        props: { container: "player-gui" },
+        reason: "Lattice reads the portal target from it, and throws when a dialog opens without one",
+      },
+    ],
+    tokens: ["background", "border", "foreground", "muted-foreground", "accent"],
+  },
+  {
     name: "alert",
     type: "registry:ui",
     description: "Alert with title and description parts, default or destructive",
