@@ -61,6 +61,13 @@ is Facet's own state, applied through `cn(disabled && "...")`.
   must sit physically under that app's own `node_modules`. That is why the workspace uses
   `nodeLinker: isolated` and rbxts apps set `preserveSymlinks: true` — resolving through pnpm's
   store would land outside the app and every import would fail as `noUnscopedModule`.
+- `isolated` also means transitive dependencies never appear in the app's own `node_modules`, and
+  Rojo can only sync what is physically there. A Lattice primitive a component reaches through —
+  `react-layer`, `react-motion`, `react-focus` — must be a direct dependency of the app, or Studio
+  fails at runtime with `Could not find module: <name>` even though the build and typecheck pass.
+- `rojo serve` snapshots `node_modules` when it starts and does not pick up links created after.
+  Restart it after every `pnpm add`; reconnecting the Studio plugin against a stale server re-syncs
+  the same missing tree and looks like the install never worked.
 - Lua tables cannot hold `nil` without leaving a hole, so roblox-ts rejects `undefined` as an array
   element type. Guard before pushing rather than typing the array as optional (see `ClassItem`).
 - Roblox instance defaults are themselves a look — a bare `textbutton` is an opaque grey box labelled
