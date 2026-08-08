@@ -205,9 +205,10 @@ class rather than a component — [decisions/aspect-ratio.md](decisions/aspect-r
 state is Lattice's controlled/uncontrolled logic, not Facet's. A one-item `toggle-group` covers it
 meanwhile.)
 
-**Layered — portals, focus trapping, popper**:
-`dialog` · `alert-dialog` · `popover` · `tooltip` · `dropdown-menu` · `context-menu` · `select` ·
-`combobox` · `toast` · `sheet` · `command`
+**Layered — portals, focus trapping, popper**. `dialog` is built, pending Studio verification; it
+needs a `PortalProvider` above the app and keeps its styled panel *inside* `Dialog.Content` rather
+than on it. Remaining: `alert-dialog` · `popover` · `tooltip` · `dropdown-menu` · `context-menu` ·
+`select` · `combobox` · `toast` · `sheet` · `command`
 
 **Blocks**, once the singles settle: `login-form` · `settings-panel` · `inventory-grid` · `shop-row`
 

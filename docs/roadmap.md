@@ -33,6 +33,18 @@ on tsconfig rather than editing it. Both files belong to the consumer and are ro
 non-trivial TypeScript; a pattern-matched edit that mangles one is worse than a printed snippet.
 Revisit only with a real parser, not a smarter regex.
 
+- [x] the one exception, and it came with the parser: `facet add` wraps the client entry in the
+      providers a component declares. `dialog` needs one, and a missing `PortalProvider` is the only
+      thing on this list that fails at *runtime* — it compiles, ships, and throws when a player
+      opens the dialog — so a printed snippet is not enough. `@babel/parser` answers where the
+      imports end and where the render call's argument starts; the edit is two string splices and
+      everything else comes out byte for byte identical. Two render calls, no `PlayerGui` to pass,
+      or no entry at all and it reports instead of guessing. Behind a prompt, `--yes` to skip it,
+      and never on a non-interactive run without one. Not `typescript`, for the record: roblox-ts
+      pins that to an exact version, so a caret range here is a second 24 MB copy rather than a
+      shared one. See
+      [decisions/provider-wiring.md](decisions/provider-wiring.md)
+
 ## Next — the registry itself
 
 Ordered by how much each depends on a Lattice primitive that already exists.
@@ -71,8 +83,39 @@ one-item `toggle-group` today.
 
 **Layered — needs portals, focus trapping, or popper**:
 
-`dialog` · `alert-dialog` · `popover` · `tooltip` · `dropdown-menu` · `context-menu` · `select` ·
-`combobox` · `toast` · `sheet` · `command`
+`dialog` is built, pending Studio verification. Remaining: `alert-dialog` · `popover` · `tooltip` ·
+`dropdown-menu` · `context-menu` · `select` · `combobox` · `toast` · `sheet` · `command`.
+(`dropdown-menu` will wrap `@lattice-ui/react-menu`; there is no `react-dropdown-menu`, and
+`alert-dialog` and `sheet` are both `react-dialog` again with different chrome.)
+
+Three things `dialog` established that the rest of this tier inherits:
+
+- **A `PortalProvider` has to be above the app.** `Dialog.Portal` reads a strict context for the
+  `BasePlayerGui` it renders into, so an app that mounts any layered component wraps its tree once
+  with `<PortalProvider container={playerGui}>`. Missing it throws on open rather than rendering
+  nowhere. The playground root does it for every scene, not just the dialog's — and the registry
+  entry declares it, so `facet add` offers to write it and `facet doctor` notices when it is gone.
+  The rest of this tier declares the same one and it is written once.
+- **The styled panel is a frame *inside* `Dialog.Content`, never `Dialog.Content` itself.** The
+  primitive forces `Size` on its own host so the layer spans the screen, and it takes the first host
+  element under it as the boundary an outside press is measured against. A `className` there fights
+  the first, and — through the `UICorner` Vela prepends for `rounded-*` — silently becomes the
+  second. The panel centres itself with `mx-auto my-auto`, which Vela lowers to `AnchorPoint` 0.5
+  plus `Position` 0.5.
+- **A class forwarded to another component has to reach one `className` expression.** Vela resolves
+  a `className` at the call site and hands the component the resolved *properties*, so a class
+  routed through a wrapper's `className` prop is overwritten by that wrapper's own recipe. This is
+  §4 of [registry-design.md](registry-design.md) — the `TextSlot` trap — one level up. `dialog`
+  spells the prop `overlayClassName` and merges it where the overlay actually resolves.
+
+What Studio still has to answer is the geometry: whether the panel lands centred, whether the dim
+covers the screen beneath it, and whether the close ✕ sits at the panel's right edge.
+
+**The corner ✕ is not a corner ✕.** shadcn floats it over the panel's top-right; a `UIListLayout`
+positions every child it has, so a floating child inside a `flex-col` panel is not expressible
+without a second frame purely to escape the layout — which is the wrapper §5 says not to add. It
+takes its own line at the top instead, pushed right by `self-end` (a `UIFlexItem`). `showClose`
+turns it off for a dialog whose only way out is a footer button.
 
 **Blocks** (multi-file compositions, once the singles settle):
 
@@ -128,6 +171,10 @@ Settled, with the reasoning kept where it can be argued with:
   licensing forever, so components draw `▾`, `✓`, `✕` as text and expose the slot for a project that
   has its own artwork. This was listed as blocking the layered components; it does not.
 - **Ratio is a class, not a component** — [decisions/aspect-ratio.md](decisions/aspect-ratio.md).
+- **The scrim is black, and it is the one class that names a colour** —
+  [decisions/overlay-scrim.md](decisions/overlay-scrim.md). Every role flips with the theme, so none
+  of them darkens in both modes; a token was not added for one class in one component.
+  `overlayClassName` is the way out.
 - **One recipe object per component file** — [decisions/luau-register-limit.md](decisions/luau-register-limit.md).
   Vela inlines its runtime per file and Luau allows 200 module-scope locals, so every export costs a
   register. `card` stopped loading over exactly this.

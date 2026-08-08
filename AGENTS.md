@@ -82,4 +82,8 @@ is Facet's own state, applied through `cn(disabled && "...")`.
 - Do not rename packages, restructure the registry, or redesign the CLI contracts unless the task is
   explicitly about that.
 - The registry schema in `packages/tools/cli/src/core/registry/schema.ts` is a published format.
-  Changing it is a breaking change and needs a version bump on `RegistryIndex.version`.
+  Removing a field, renaming one, or changing what an existing one means is a breaking change and
+  needs a version bump on `RegistryIndex.version`. Adding an *optional* field does not: `loadIndex`
+  rejects a version it does not know, so bumping is what breaks every CLI already installed, to
+  deliver a key those CLIs would ignore. See `providers`, and
+  [docs/decisions/provider-wiring.md](docs/decisions/provider-wiring.md).
