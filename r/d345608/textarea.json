@@ -1,0 +1,27 @@
+{
+  "name": "textarea",
+  "type": "registry:ui",
+  "description": "Multi-line input that grows with its text",
+  "files": [
+    {
+      "path": "ui/textarea.tsx",
+      "type": "registry:ui",
+      "content": "import { fv } from \"@facet-ui/react-variants\";\nimport { getPassthroughProps, type PassthroughProps, React, toSlotProps } from \"@lattice-ui/react-runtime\";\nimport { Textarea as TextareaPrimitive } from \"@lattice-ui/react-textarea\";\nimport { type ClassName, cn } from \"~/lib/utils\";\n\n/**\n * The input recipe declares only `w-full` — no height, which everywhere else\n * would collapse the frame. Here it is deliberate: Lattice's `Textarea.Input`\n * owns `Size.Y`, growing it line by line between `minRows` and `maxRows` as the\n * text wraps. Declaring a height class would just be overwritten on the next\n * keystroke.\n *\n * One recipe object rather than four exports: every exported name costs a\n * Luau register once Vela inlines its runtime. See\n * docs/decisions/luau-register-limit.md.\n */\nexport const textareaVariants = {\n  root: fv(\"flex-col gap-2 w-full h-fit\"),\n  input: fv(\n    \"w-full rounded-md border border-input px-3 py-2 text-left text-sm font-normal text-foreground placeholder-muted-foreground focus:border-ring\",\n  ),\n  label: fv(\"w-full h-fit text-left text-sm font-medium text-foreground\"),\n  description: fv(\"w-full h-fit whitespace-normal text-left text-xs font-normal text-muted-foreground\"),\n};\n\nexport type TextareaProps = {\n  value?: string;\n  defaultValue?: string;\n  onValueChange?: (value: string) => void;\n  /** Fires when the box loses focus, with the text as it stands. */\n  onValueCommit?: (value: string) => void;\n  disabled?: boolean;\n  readOnly?: boolean;\n  invalid?: boolean;\n  /** Grow with the text. On by default; the box then sizes between `minRows` and `maxRows`. */\n  autoResize?: boolean;\n  minRows?: number;\n  maxRows?: number;\n  className?: ClassName;\n  children?: React.ReactNode;\n} & PassthroughProps<Frame>;\n\nexport type TextareaInputProps = {\n  disabled?: boolean;\n  invalid?: boolean;\n  className?: ClassName;\n} & PassthroughProps<TextBox>;\n\nexport type TextareaTextProps = { Text?: string; className?: ClassName } & PassthroughProps<TextLabel>;\nexport type TextareaLabelProps = { Text?: string; className?: ClassName } & PassthroughProps<TextButton>;\n\n// The forwarded bag is widened by `toSlotProps` and then has `children`\n// dropped from its *type*: these parts type `children` as a single element\n// (what `asChild` merges onto), and the bag never actually carries one —\n// `children` is listed as an own prop — so only the type needs narrowing.\nfunction forwardProps(props: object, ownKeys: readonly string[]): { key?: React.Key } & { [index: string]: unknown } {\n  return toSlotProps(getPassthroughProps(props, ownKeys));\n}\n\nconst ROOT_OWN_PROPS = [\n  \"value\",\n  \"defaultValue\",\n  \"onValueChange\",\n  \"onValueCommit\",\n  \"disabled\",\n  \"readOnly\",\n  \"invalid\",\n  \"autoResize\",\n  \"minRows\",\n  \"maxRows\",\n  \"className\",\n  \"children\",\n] as const;\nconst INPUT_OWN_PROPS = [\"disabled\", \"invalid\", \"className\", \"children\"] as const;\nconst TEXT_OWN_PROPS = [\"Text\", \"className\", \"children\"] as const;\n\nconst NEUTRAL_PROPS = {\n  BackgroundTransparency: 1,\n  BorderSizePixel: 0,\n};\n\nexport function Textarea(props: TextareaProps) {\n  return (\n    <TextareaPrimitive.Root\n      autoResize={props.autoResize}\n      defaultValue={props.defaultValue}\n      disabled={props.disabled}\n      invalid={props.invalid}\n      maxRows={props.maxRows}\n      minRows={props.minRows}\n      onValueChange={props.onValueChange}\n      onValueCommit={props.onValueCommit}\n      readOnly={props.readOnly}\n      value={props.value}\n    >\n      <frame\n        className={cn(textareaVariants.root({ className: props.className }))}\n        {...NEUTRAL_PROPS}\n        {...getPassthroughProps<Frame>(props, ROOT_OWN_PROPS)}\n      >\n        {props.children}\n      </frame>\n    </TextareaPrimitive.Root>\n  );\n}\n\nexport function TextareaInput(props: TextareaInputProps) {\n  const disabled = props.disabled === true;\n\n  return (\n    <TextareaPrimitive.Input\n      className={textareaVariants.input({\n        className: cn(props.invalid === true && \"border-destructive\", disabled && \"opacity-50\", props.className),\n      })}\n      disabled={props.disabled}\n      {...forwardProps(props, INPUT_OWN_PROPS)}\n    />\n  );\n}\n\nexport function TextareaLabel(props: TextareaLabelProps) {\n  return (\n    <TextareaPrimitive.Label\n      className={cn(textareaVariants.label({ className: props.className }))}\n      Text={props.Text ?? \"\"}\n      {...forwardProps(props, TEXT_OWN_PROPS)}\n    />\n  );\n}\n\nexport function TextareaDescription(props: TextareaTextProps) {\n  return (\n    <TextareaPrimitive.Description\n      className={cn(textareaVariants.description({ className: props.className }))}\n      Text={props.Text ?? \"\"}\n      {...forwardProps(props, TEXT_OWN_PROPS)}\n    />\n  );\n}\n"
+    }
+  ],
+  "registryDependencies": [
+    "utils"
+  ],
+  "dependencies": [
+    "@facet-ui/react-variants@^0.1.1",
+    "@lattice-ui/react-runtime@^0.8.0",
+    "@lattice-ui/react-textarea@^0.8.0"
+  ],
+  "tokens": [
+    "input",
+    "foreground",
+    "muted-foreground",
+    "ring",
+    "destructive"
+  ]
+}

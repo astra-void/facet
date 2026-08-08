@@ -1,0 +1,25 @@
+{
+  "name": "slider",
+  "type": "registry:ui",
+  "description": "Slider with track, range fill, and draggable thumb",
+  "files": [
+    {
+      "path": "ui/slider.tsx",
+      "type": "registry:ui",
+      "content": "import { fv } from \"@facet-ui/react-variants\";\nimport { React } from \"@lattice-ui/react-runtime\";\nimport { type SliderOrientation, Slider as SliderPrimitive } from \"@lattice-ui/react-slider\";\nimport { type ClassName, cn } from \"~/lib/utils\";\n\n/**\n * The track deliberately carries no `flex-*`: a `UIListLayout` lays out every\n * child and would override the geometry Lattice owns — the range's fill and the\n * thumb's travel are both `Position`/`Size` on instances inside it. The thumb\n * rides the track directly (its anchor is centred by the primitive), so it\n * overhangs a thinner track the way a slider knob should.\n *\n * One recipe object rather than three exports: every exported name costs a\n * Luau register once Vela inlines its runtime. See\n * docs/decisions/luau-register-limit.md.\n */\nexport const sliderVariants = {\n  track: fv(\"h-2 w-full rounded-full bg-secondary\"),\n  range: fv(\"rounded-full bg-primary\"),\n  thumb: fv(\"size-4 rounded-full border border-primary bg-background\"),\n};\n\nexport type SliderProps = {\n  value?: number;\n  defaultValue?: number;\n  onValueChange?: (value: number) => void;\n  /** Fires once per gesture, when the drag or keypress lets go. */\n  onValueCommit?: (value: number) => void;\n  min?: number;\n  max?: number;\n  step?: number;\n  orientation?: SliderOrientation;\n  disabled?: boolean;\n  className?: ClassName;\n};\n\nexport function Slider(props: SliderProps) {\n  const disabled = props.disabled === true;\n\n  return (\n    <SliderPrimitive.Root\n      defaultValue={props.defaultValue}\n      disabled={disabled}\n      max={props.max}\n      min={props.min}\n      onValueChange={props.onValueChange}\n      onValueCommit={props.onValueCommit}\n      orientation={props.orientation}\n      step={props.step}\n      value={props.value}\n    >\n      <SliderPrimitive.Track\n        className={sliderVariants.track({ className: cn(disabled && \"opacity-50\", props.className) })}\n      >\n        <SliderPrimitive.Range className={cn(sliderVariants.range())} />\n        <SliderPrimitive.Thumb className={cn(sliderVariants.thumb(), disabled && \"opacity-50\")} />\n      </SliderPrimitive.Track>\n    </SliderPrimitive.Root>\n  );\n}\n"
+    }
+  ],
+  "registryDependencies": [
+    "utils"
+  ],
+  "dependencies": [
+    "@facet-ui/react-variants@^0.1.1",
+    "@lattice-ui/react-runtime@^0.8.0",
+    "@lattice-ui/react-slider@^0.8.0"
+  ],
+  "tokens": [
+    "secondary",
+    "primary",
+    "background"
+  ]
+}

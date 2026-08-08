@@ -1,0 +1,24 @@
+{
+  "name": "avatar",
+  "type": "registry:ui",
+  "description": "Avatar with image and text fallback parts",
+  "files": [
+    {
+      "path": "ui/avatar.tsx",
+      "type": "registry:ui",
+      "content": "import { fv } from \"@facet-ui/react-variants\";\nimport { Avatar as AvatarPrimitive } from \"@lattice-ui/react-avatar\";\nimport { getPassthroughProps, type PassthroughProps, React, toSlotProps } from \"@lattice-ui/react-runtime\";\nimport { type ClassName, cn } from \"~/lib/utils\";\n\n/**\n * Lattice's `Avatar.Root` renders no instance — it only tracks whether the\n * image loaded — so the circle itself is drawn here. The image and the fallback\n * both fill it and carry their own `rounded-full`: Roblox clips to a rectangle,\n * so rounding the parent alone would leave square corners poking out of the\n * circle whenever a child paints.\n *\n * One recipe object rather than three exports: every exported name costs a\n * Luau register once Vela inlines its runtime. See\n * docs/decisions/luau-register-limit.md.\n */\nexport const avatarVariants = {\n  root: fv(\"size-10 rounded-full bg-muted overflow-hidden\"),\n  image: fv(\"size-full rounded-full\"),\n  fallback: fv(\"size-full rounded-full bg-muted text-sm font-medium text-muted-foreground text-center\"),\n};\n\nconst NEUTRAL_PROPS = {\n  BackgroundTransparency: 1,\n  BorderSizePixel: 0,\n};\n\nconst ROOT_OWN_PROPS = [\"src\", \"delayMs\", \"className\", \"children\"] as const;\nconst IMAGE_OWN_PROPS = [\"className\", \"children\"] as const;\nconst FALLBACK_OWN_PROPS = [\"className\", \"Text\", \"children\"] as const;\n\nexport type AvatarProps = {\n  /** The image source — an `rbxassetid://` or `rbxthumb://` URL. */\n  src?: string;\n  /** How long to hold the fallback back while the image loads, in milliseconds. */\n  delayMs?: number;\n  className?: ClassName;\n  children?: React.ReactNode;\n} & PassthroughProps<Frame>;\n\nexport type AvatarImageProps = { className?: ClassName } & PassthroughProps<ImageLabel>;\nexport type AvatarFallbackProps = { className?: ClassName; Text?: string } & PassthroughProps<TextLabel>;\n\n// The forwarded bag is widened by `toSlotProps` and then has `children`\n// dropped from its *type*: these parts type `children` as a single element\n// (what `asChild` merges onto), and the bag never actually carries one —\n// `children` is listed as an own prop — so only the type needs narrowing.\nfunction forwardProps(props: object, ownKeys: readonly string[]): { key?: React.Key } & { [index: string]: unknown } {\n  return toSlotProps(getPassthroughProps(props, ownKeys));\n}\n\nexport function Avatar(props: AvatarProps) {\n  return (\n    <AvatarPrimitive.Root delayMs={props.delayMs} src={props.src}>\n      <frame\n        className={cn(avatarVariants.root({ className: props.className }))}\n        {...NEUTRAL_PROPS}\n        {...getPassthroughProps<Frame>(props, ROOT_OWN_PROPS)}\n      >\n        {props.children}\n      </frame>\n    </AvatarPrimitive.Root>\n  );\n}\n\nexport function AvatarImage(props: AvatarImageProps) {\n  return (\n    <AvatarPrimitive.Image\n      className={cn(avatarVariants.image({ className: props.className }))}\n      {...forwardProps(props, IMAGE_OWN_PROPS)}\n    />\n  );\n}\n\nexport function AvatarFallback(props: AvatarFallbackProps) {\n  return (\n    <AvatarPrimitive.Fallback\n      className={cn(avatarVariants.fallback({ className: props.className }))}\n      Text={props.Text ?? \"\"}\n      {...forwardProps(props, FALLBACK_OWN_PROPS)}\n    />\n  );\n}\n"
+    }
+  ],
+  "registryDependencies": [
+    "utils"
+  ],
+  "dependencies": [
+    "@facet-ui/react-variants@^0.1.1",
+    "@lattice-ui/react-runtime@^0.8.0",
+    "@lattice-ui/react-avatar@^0.8.0"
+  ],
+  "tokens": [
+    "muted",
+    "muted-foreground"
+  ]
+}

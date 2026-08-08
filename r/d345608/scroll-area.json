@@ -1,0 +1,23 @@
+{
+  "name": "scroll-area",
+  "type": "registry:ui",
+  "description": "Scroll container with a styled overlay scrollbar",
+  "files": [
+    {
+      "path": "ui/scroll-area.tsx",
+      "type": "registry:ui",
+      "content": "import { fv } from \"@facet-ui/react-variants\";\nimport { getPassthroughProps, type PassthroughProps, React, toSlotProps } from \"@lattice-ui/react-runtime\";\nimport { type ScrollAreaOrientation, ScrollArea as ScrollAreaPrimitive } from \"@lattice-ui/react-scroll-area\";\nimport { type ClassName, cn } from \"~/lib/utils\";\n\n/**\n * The root deliberately carries no `flex-*`: the scrollbar is pinned to an edge\n * with inset classes, and a `UIListLayout` would pull it into the flow. Give\n * the root a height through `className` — a scroll area that hugs its content\n * has nothing to scroll.\n *\n * The viewport hides Roblox's native scrollbar (`scrollbar-none`) because the\n * visible one is drawn by `ScrollBar` below: Lattice sizes and positions the\n * thumb from the scroll ratio and fades it after `scrollHideDelayMs`; this file\n * only says what it looks like.\n *\n * One recipe object rather than four exports: every exported name costs a\n * Luau register once Vela inlines its runtime. See\n * docs/decisions/luau-register-limit.md.\n */\nexport const scrollAreaVariants = {\n  root: fv(\"w-full h-full overflow-hidden\"),\n  viewport: fv(\"size-full scrollbar-none\"),\n  scrollbar: fv(\"rounded-full\"),\n  thumb: fv(\"rounded-full bg-border\"),\n};\n\nexport type ScrollAreaProps = {\n  /** `auto` shows the bar while scrolling, `always` keeps it, `scroll` matches the platform. */\n  type?: \"auto\" | \"always\" | \"scroll\";\n  scrollHideDelayMs?: number;\n  className?: ClassName;\n  children?: React.ReactNode;\n} & PassthroughProps<Frame>;\n\nexport type ScrollBarProps = {\n  orientation?: ScrollAreaOrientation;\n  className?: ClassName;\n} & PassthroughProps<Frame>;\n\nconst ROOT_OWN_PROPS = [\"type\", \"scrollHideDelayMs\", \"className\", \"children\"] as const;\nconst BAR_OWN_PROPS = [\"orientation\", \"className\", \"children\"] as const;\n\nconst NEUTRAL_PROPS = {\n  BackgroundTransparency: 1,\n  BorderSizePixel: 0,\n};\n\nexport function ScrollArea(props: ScrollAreaProps) {\n  return (\n    <ScrollAreaPrimitive.Root scrollHideDelayMs={props.scrollHideDelayMs} type={props.type}>\n      <frame\n        className={cn(scrollAreaVariants.root({ className: props.className }))}\n        {...NEUTRAL_PROPS}\n        {...getPassthroughProps<Frame>(props, ROOT_OWN_PROPS)}\n      >\n        <ScrollAreaPrimitive.Viewport className={cn(scrollAreaVariants.viewport())}>\n          {props.children}\n        </ScrollAreaPrimitive.Viewport>\n        <ScrollBar />\n      </frame>\n    </ScrollAreaPrimitive.Root>\n  );\n}\n\nexport function ScrollBar(props: ScrollBarProps) {\n  const orientation = props.orientation ?? \"vertical\";\n\n  return (\n    <ScrollAreaPrimitive.Scrollbar\n      className={scrollAreaVariants.scrollbar({\n        className: cn(\n          orientation === \"vertical\" ? \"right-0 top-0 h-full w-2\" : \"bottom-0 left-0 w-full h-2\",\n          props.className,\n        ),\n      })}\n      orientation={orientation}\n      {...toSlotProps(getPassthroughProps<Frame>(props, BAR_OWN_PROPS))}\n    >\n      <ScrollAreaPrimitive.Thumb\n        className={cn(scrollAreaVariants.thumb(), orientation === \"vertical\" ? \"w-full\" : \"h-full\")}\n        orientation={orientation}\n      />\n    </ScrollAreaPrimitive.Scrollbar>\n  );\n}\n"
+    }
+  ],
+  "registryDependencies": [
+    "utils"
+  ],
+  "dependencies": [
+    "@facet-ui/react-variants@^0.1.1",
+    "@lattice-ui/react-runtime@^0.8.0",
+    "@lattice-ui/react-scroll-area@^0.8.0"
+  ],
+  "tokens": [
+    "border"
+  ]
+}

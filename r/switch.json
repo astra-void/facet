@@ -1,0 +1,25 @@
+{
+  "name": "switch",
+  "type": "registry:ui",
+  "description": "Toggle switch with an animated thumb",
+  "files": [
+    {
+      "path": "ui/switch.tsx",
+      "type": "registry:ui",
+      "content": "import { fv } from \"@facet-ui/react-variants\";\nimport {\n  getPassthroughProps,\n  type PassthroughProps,\n  React,\n  toSlotProps,\n  useControllableState,\n} from \"@lattice-ui/react-runtime\";\nimport { Switch as SwitchPrimitive } from \"@lattice-ui/react-switch\";\nimport { type ClassName, cn } from \"~/lib/utils\";\n\n/**\n * The checked state is mirrored here with `useControllableState` — the same\n * hook the primitive uses — because Lattice keeps its context private and the\n * track's colour changes with it. The primitive is then driven controlled, so\n * there is exactly one copy of the state and it lives in this file.\n *\n * The thumb's travel is not styled here at all: Lattice's `Switch.Thumb` owns\n * `AnchorPoint` and `Position` and animates them between the track's edges for\n * any thumb size. This file only says what the thumb looks like.\n */\nexport const switchVariants = {\n  root: fv(\"h-5 w-9 rounded-full transition duration-150\"),\n  thumb: fv(\"size-4 rounded-full bg-background\"),\n};\n\nexport type SwitchProps = {\n  checked?: boolean;\n  defaultChecked?: boolean;\n  onCheckedChange?: (checked: boolean) => void;\n  disabled?: boolean;\n  className?: ClassName;\n} & PassthroughProps<TextButton>;\n\nconst OWN_PROPS = [\"checked\", \"defaultChecked\", \"onCheckedChange\", \"disabled\", \"className\"] as const;\n\nexport function Switch(props: SwitchProps) {\n  const [checked, setChecked] = useControllableState<boolean>({\n    value: props.checked,\n    defaultValue: props.defaultChecked ?? false,\n    onChange: props.onCheckedChange,\n  });\n\n  const disabled = props.disabled === true;\n\n  // State classes sit inside the recipe's className slot, ahead of the\n  // consumer's: resolution is last-token-wins, so anything appended after\n  // `props.className` would be an override the consumer cannot undo.\n  const className = switchVariants.root({\n    className: cn(checked ? \"bg-primary\" : \"bg-input\", disabled && \"opacity-50\", props.className),\n  });\n\n  return (\n    <SwitchPrimitive.Root\n      checked={checked}\n      className={className}\n      disabled={disabled}\n      onCheckedChange={setChecked}\n      {...toSlotProps(getPassthroughProps<TextButton>(props, OWN_PROPS))}\n    >\n      <SwitchPrimitive.Thumb className={cn(switchVariants.thumb())} />\n    </SwitchPrimitive.Root>\n  );\n}\n"
+    }
+  ],
+  "registryDependencies": [
+    "utils"
+  ],
+  "dependencies": [
+    "@facet-ui/react-variants@^0.1.1",
+    "@lattice-ui/react-runtime@^0.8.0",
+    "@lattice-ui/react-switch@^0.8.0"
+  ],
+  "tokens": [
+    "primary",
+    "input",
+    "background"
+  ]
+}

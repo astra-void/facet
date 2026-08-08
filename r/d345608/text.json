@@ -1,0 +1,15 @@
+{
+  "name": "text",
+  "type": "registry:lib",
+  "description": "TextSlot — wraps string children in a styled textlabel",
+  "files": [
+    {
+      "path": "lib/text.tsx",
+      "type": "registry:lib",
+      "content": "import { getPassthroughProps, type PassthroughProps, React } from \"@lattice-ui/react-runtime\";\n\nexport type TextSlotProps = {\n  /** The label to draw. When absent, `children` is rendered instead. */\n  Text?: string;\n  children?: React.ReactNode;\n} & PassthroughProps<TextLabel>;\n\nconst OWN_PROPS = [\"Text\", \"children\"] as const;\n\n/**\n * Draws `Text` as a styled `textlabel`, or renders `children` when there is none.\n *\n * Text arrives as a prop rather than as children because roblox-ts React's\n * `ReactNode` has no string member — host instances draw text from a `Text`\n * property, so `<Button>Save</Button>` is a `TS2747` no matter what the\n * component declares. The label is still a child *instance*, which is what lets\n * it be sized and coloured independently and sit beside an icon.\n *\n * The prop is spelled `Text` — uppercase, like the instance property it shadows\n * — on every Facet component, and listed in `OWN_PROPS` so it stops here instead\n * of reaching the host. See docs/decisions/text-api.md.\n *\n * There is deliberately no `className` prop. Vela lowers `className` at the call\n * site — `<TextSlot className={...}>` becomes a runtime host whose resolved\n * `TextColor3` / `TextSize` / `FontFace` arrive here as ordinary props — so this\n * only has to forward them. Accepting `className` and re-applying it inside\n * drops them on the floor instead, which is what put every button label on\n * Roblox's 8px near-black default.\n *\n * `size-fit` is not decoration: a label with no resolved size collapses its\n * parent's automatic sizing along with it.\n */\nexport function TextSlot(props: TextSlotProps) {\n  if (props.Text === undefined) {\n    return <>{props.children}</>;\n  }\n\n  return (\n    <textlabel\n      className=\"size-fit\"\n      Text={props.Text}\n      BackgroundTransparency={1}\n      BorderSizePixel={0}\n      {...getPassthroughProps<TextLabel>(props, OWN_PROPS)}\n    />\n  );\n}\n"
+    }
+  ],
+  "dependencies": [
+    "@lattice-ui/react-runtime@^0.8.0"
+  ]
+}

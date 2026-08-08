@@ -1,6 +1,11 @@
 {
-  "latest": "821604a",
+  "latest": "d345608",
   "revisions": [
+    {
+      "revision": "d345608",
+      "generatedBy": "0.4.0",
+      "components": 23
+    },
     {
       "revision": "821604a",
       "generatedBy": "0.3.1",

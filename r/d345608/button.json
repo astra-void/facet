@@ -1,0 +1,33 @@
+{
+  "name": "button",
+  "type": "registry:ui",
+  "description": "Button with variant and size recipes",
+  "files": [
+    {
+      "path": "ui/button.tsx",
+      "type": "registry:ui",
+      "content": "import { fv, type VariantProps } from \"@facet-ui/react-variants\";\nimport {\n  composeEvents,\n  getPassthroughProps,\n  getSlotChild,\n  type PassthroughProps,\n  React,\n  Slot,\n  toSlotProps,\n} from \"@lattice-ui/react-runtime\";\nimport { TextSlot } from \"~/lib/text\";\nimport { cn } from \"~/lib/utils\";\n\n// `w-fit` is load-bearing: padding does not grow a frame on Roblox, so without\n// an automatic width this renders zero pixels wide. The `icon` size overrides it\n// with a concrete `w-9`, and the later token wins.\nexport const buttonVariants = fv(\n  \"flex-row items-center justify-center gap-2 w-fit rounded-md transition duration-150\",\n  {\n    variants: {\n      variant: {\n        default: \"bg-primary hover:bg-primary/90\",\n        destructive: \"bg-destructive hover:bg-destructive/90\",\n        outline: \"border border-input bg-background hover:bg-accent\",\n        secondary: \"bg-secondary hover:bg-secondary/80\",\n        ghost: \"hover:bg-accent\",\n        link: \"\",\n      },\n      size: {\n        sm: \"h-8 px-3\",\n        md: \"h-9 px-4\",\n        lg: \"h-10 px-6\",\n        icon: \"h-9 w-9\",\n      },\n    },\n    defaultVariants: {\n      variant: \"default\",\n      size: \"md\",\n    },\n  },\n);\n\n// Nothing inherits on Roblox, so the label needs its own recipe rather than\n// picking up `text-*` from the button.\nexport const buttonLabelVariants = fv(\"font-medium\", {\n  variants: {\n    variant: {\n      default: \"text-primary-foreground\",\n      destructive: \"text-destructive-foreground\",\n      outline: \"text-foreground\",\n      secondary: \"text-secondary-foreground\",\n      ghost: \"text-foreground\",\n      link: \"text-primary\",\n    },\n    size: {\n      sm: \"text-sm\",\n      md: \"text-sm\",\n      lg: \"text-base\",\n      icon: \"text-sm\",\n    },\n  },\n  defaultVariants: {\n    variant: \"default\",\n    size: \"md\",\n  },\n});\n\nexport type ButtonProps = VariantProps<typeof buttonVariants> & {\n  /**\n   * The button's label. Drawn as a styled child `textlabel`, not as this\n   * instance's `Text` — so it can be sized and coloured independently, and sit\n   * alongside an icon passed through `children`.\n   */\n  Text?: string;\n  /** Render the child element instead of a `textbutton`, merging behavior onto it. */\n  asChild?: boolean;\n  disabled?: boolean;\n  onClick?: () => void;\n  children?: React.ReactNode;\n} & PassthroughProps<TextButton>;\n\nconst OWN_PROPS = [\"variant\", \"size\", \"className\", \"Text\", \"asChild\", \"disabled\", \"onClick\", \"children\"] as const;\n\n// A bare `textbutton` renders an opaque grey box labelled \"Button\". Neutralize\n// that, then let the recipe and the consumer decide everything visual. `Text` is\n// cleared because the label is a child instance, not this instance's property.\nconst NEUTRAL_PROPS = {\n  AutoButtonColor: false,\n  BackgroundTransparency: 1,\n  BorderSizePixel: 0,\n  Text: \"\",\n};\n\nexport function Button(props: ButtonProps) {\n  const disabled = props.disabled === true;\n\n  // Vela has no `disabled:` variant — disabled is our state, not the host's —\n  // so the dimming is applied here rather than selected by one.\n  //\n  // It goes *inside* the recipe's className slot, ahead of the consumer's:\n  // resolution is last-token-wins, so anything appended after `props.className`\n  // is an override the consumer cannot undo. See docs/decisions/class-conflicts.md.\n  const className = buttonVariants({\n    variant: props.variant,\n    size: props.size,\n    className: cn(disabled && \"opacity-50\", props.className),\n  });\n\n  const handleActivated = React.useCallback(() => {\n    if (disabled) {\n      return;\n    }\n    props.onClick?.();\n  }, [disabled, props.onClick]);\n\n  const passthrough = getPassthroughProps<TextButton>(props, OWN_PROPS);\n  const behaviorProps = {\n    Active: !disabled,\n    Event: composeEvents(passthrough.Event, { Activated: handleActivated }),\n    Selectable: !disabled,\n  };\n\n  const content = (\n    <TextSlot\n      Text={props.Text}\n      // The label states its own fade, and states it as a prop. `opacity-50`\n      // cannot cross this boundary in either direction: the button's alpha stops\n      // at a component child, and a class on `TextSlot` resolves against a tag\n      // the runtime cannot identify, so it drops `TextTransparency` and leaves\n      // only a background that was already invisible.\n      // See docs/decisions/opacity-does-not-cascade.md.\n      TextTransparency={disabled ? 0.5 : 0}\n      className={buttonLabelVariants({\n        variant: props.variant,\n        size: props.size,\n      })}\n    >\n      {props.children}\n    </TextSlot>\n  );\n\n  if (props.asChild === true) {\n    if (getSlotChild(props.children) === undefined) {\n      error(\"[Button] `asChild` requires a child element.\");\n    }\n\n    // Verified in Studio against a bare `<textbutton>`: the recipe crosses `Slot`\n    // whole — background, size, automatic sizing, the hover variant, and the\n    // `UICorner`/`UIListLayout`/`UIPadding` re-parented under the child.\n    //\n    // The label does not come with it. `TextSlot` never renders on this path, so\n    // the child draws its own text at Roblox's 8px near-black default unless the\n    // consumer styles it. `buttonLabelVariants` is exported for that.\n    return (\n      <Slot className={className} {...toSlotProps(passthrough)} {...behaviorProps}>\n        {props.children}\n      </Slot>\n    );\n  }\n\n  return (\n    <textbutton className={className} {...NEUTRAL_PROPS} {...passthrough} {...behaviorProps}>\n      {content}\n    </textbutton>\n  );\n}\n"
+    }
+  ],
+  "registryDependencies": [
+    "utils",
+    "text"
+  ],
+  "dependencies": [
+    "@facet-ui/react-variants@^0.1.1",
+    "@lattice-ui/react-runtime@^0.8.0"
+  ],
+  "tokens": [
+    "primary",
+    "primary-foreground",
+    "destructive",
+    "destructive-foreground",
+    "secondary",
+    "secondary-foreground",
+    "accent",
+    "accent-foreground",
+    "background",
+    "input",
+    "foreground"
+  ]
+}
