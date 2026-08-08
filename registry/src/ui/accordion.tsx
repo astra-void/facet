@@ -23,8 +23,13 @@ import { type ClassName, cn } from "~/lib/utils";
  * docs/decisions/luau-register-limit.md.
  */
 export const accordionVariants = {
-  root: fv("flex-col w-full h-fit"),
-  item: fv("flex-col w-full h-fit border-b border-border"),
+  // The rule between items is `divide-y` on the root, not `border-b` on the
+  // item. A `border-*` class lowers to a `UIStroke`, which outlines the whole
+  // instance — Roblox has no per-side stroke, so Vela drops `border-b` and the
+  // surviving `border-border` would box every item. `divide-y` interleaves real
+  // one-pixel frames between children, and leaves no rule under the last item.
+  root: fv("flex-col w-full h-fit divide-y divide-border"),
+  item: fv("flex-col w-full h-fit"),
   trigger: fv("flex-row items-center justify-between w-full h-fit py-4"),
   triggerLabel: fv("text-left text-sm font-medium text-foreground"),
   chevron: fv("size-fit text-xs font-normal text-muted-foreground text-center"),
