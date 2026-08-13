@@ -74,6 +74,12 @@ importers:
       '@lattice-ui/react-motion':
         specifier: ^0.8.0
         version: 0.8.0(@rbxts/react-roblox@17.3.7-ts.1(@rbxts/react@17.3.7-ts.1))(@rbxts/react@17.3.7-ts.1)
+      '@lattice-ui/react-popover':
+        specifier: ^0.8.0
+        version: 0.8.1(@rbxts/react-roblox@17.3.7-ts.1(@rbxts/react@17.3.7-ts.1))(@rbxts/react@17.3.7-ts.1)
+      '@lattice-ui/react-popper':
+        specifier: ^0.8.0
+        version: 0.8.1(@rbxts/react-roblox@17.3.7-ts.1(@rbxts/react@17.3.7-ts.1))(@rbxts/react@17.3.7-ts.1)
       '@lattice-ui/react-progress':
         specifier: ^0.8.0
         version: 0.8.0(@rbxts/react-roblox@17.3.7-ts.1(@rbxts/react@17.3.7-ts.1))(@rbxts/react@17.3.7-ts.1)
@@ -226,6 +232,12 @@ importers:
       '@lattice-ui/react-layer':
         specifier: ^0.8.0
         version: 0.8.0(@rbxts/react-roblox@17.3.7-ts.1(@rbxts/react@17.3.7-ts.1))(@rbxts/react@17.3.7-ts.1)
+      '@lattice-ui/react-popover':
+        specifier: ^0.8.0
+        version: 0.8.1(@rbxts/react-roblox@17.3.7-ts.1(@rbxts/react@17.3.7-ts.1))(@rbxts/react@17.3.7-ts.1)
+      '@lattice-ui/react-popper':
+        specifier: ^0.8.0
+        version: 0.8.1(@rbxts/react-roblox@17.3.7-ts.1(@rbxts/react@17.3.7-ts.1))(@rbxts/react@17.3.7-ts.1)
       '@lattice-ui/react-progress':
         specifier: ^0.8.0
         version: 0.8.0(@rbxts/react-roblox@17.3.7-ts.1(@rbxts/react@17.3.7-ts.1))(@rbxts/react@17.3.7-ts.1)
@@ -605,14 +617,44 @@ packages:
       '@rbxts/react': ^17.3.7-ts.1
       '@rbxts/react-roblox': ^17.3.7-ts.1
 
+  '@lattice-ui/react-focus@0.8.1':
+    resolution: {integrity: sha512-ZZcUSsczpYFDRRinT0/61938209CuoqO2XtLaEhhJT6Wtk7/h8h+d5pUHg7tdOw5zs1hKRMoXuoEEhgSuwA9Kg==}
+    peerDependencies:
+      '@rbxts/react': ^17.3.7-ts.1
+      '@rbxts/react-roblox': ^17.3.7-ts.1
+
   '@lattice-ui/react-layer@0.8.0':
     resolution: {integrity: sha512-+3tkrOZ6SZkQRUU+eTE6e5N8FyozDap55qTqhrC28GUVMm7Uu/WzxFC6j8gs8GZsJaPEW8jRK68UEoeLm57yxg==}
     peerDependencies:
       '@rbxts/react': ^17.3.7-ts.1
       '@rbxts/react-roblox': ^17.3.7-ts.1
 
+  '@lattice-ui/react-layer@0.8.1':
+    resolution: {integrity: sha512-1qh+ihYtjEJ2Dz0syOJxXlKq4OJAA4EuCaWmVHJLX6zK5fRylpGYpyh9CXBVKTDQGlhMQMtubFMBqwss0Uic1A==}
+    peerDependencies:
+      '@rbxts/react': ^17.3.7-ts.1
+      '@rbxts/react-roblox': ^17.3.7-ts.1
+
   '@lattice-ui/react-motion@0.8.0':
     resolution: {integrity: sha512-aqSawFDJKf7NgdMytFO2KgCmonnsQTKzQ3c4mBtP/6gF6PDguCSsXQCj0ELEAprmZkrDbkK/BgEwNiKrt4EFjA==}
+    peerDependencies:
+      '@rbxts/react': ^17.3.7-ts.1
+      '@rbxts/react-roblox': ^17.3.7-ts.1
+
+  '@lattice-ui/react-motion@0.8.1':
+    resolution: {integrity: sha512-zaLvKFsCZylFhsv5XGPVrvuC9qHr6fbuRA3UyyjZ9HYSUXpfrej//i09ekukMIKFo3fT8moPAd4tqCwQlQ8Vcw==}
+    peerDependencies:
+      '@rbxts/react': ^17.3.7-ts.1
+      '@rbxts/react-roblox': ^17.3.7-ts.1
+
+  '@lattice-ui/react-popover@0.8.1':
+    resolution: {integrity: sha512-LWONxqnP3vebClg5azQkeUs9dpLDyd3+X85T4t1phekVOsIIMmKNbqWBBpl+kGfFtjw33hTlJBOceC56PQfKtw==}
+    peerDependencies:
+      '@rbxts/react': ^17.3.7-ts.1
+      '@rbxts/react-roblox': ^17.3.7-ts.1
+
+  '@lattice-ui/react-popper@0.8.1':
+    resolution: {integrity: sha512-jAQlDGuREJlGPS+tB2r89CPz9AYlBi/YUUysetmgWIBvLl8kU3+PjuNExVorQzylfnPYRR0XjJKGlwcEOUcOpQ==}
     peerDependencies:
       '@rbxts/react': ^17.3.7-ts.1
       '@rbxts/react-roblox': ^17.3.7-ts.1
@@ -631,6 +673,12 @@ packages:
 
   '@lattice-ui/react-runtime@0.8.0':
     resolution: {integrity: sha512-83P19pFTY3IGstGrezVUGDGTy/3vRHdHHOpSVktnQfEIVghUQYRaIwTo7JL+55zzcJqk48X2KIaTlz8bU/jLyQ==}
+    peerDependencies:
+      '@rbxts/react': ^17.3.7-ts.1
+      '@rbxts/react-roblox': ^17.3.7-ts.1
+
+  '@lattice-ui/react-runtime@0.8.1':
+    resolution: {integrity: sha512-VT0qeH3K4X+ym4zTJN1C0uxQvf0vf/VcSo/B654gOXftWYHY0ZJqPcNei8USVW1na+jHPLPJHZz8jZH80BTGHA==}
     peerDependencies:
       '@rbxts/react': ^17.3.7-ts.1
       '@rbxts/react-roblox': ^17.3.7-ts.1
@@ -2074,10 +2122,23 @@ snapshots:
       '@rbxts/react': 17.3.7-ts.1
       '@rbxts/react-roblox': 17.3.7-ts.1(@rbxts/react@17.3.7-ts.1)
 
+  '@lattice-ui/react-focus@0.8.1(@rbxts/react-roblox@17.3.7-ts.1(@rbxts/react@17.3.7-ts.1))(@rbxts/react@17.3.7-ts.1)':
+    dependencies:
+      '@lattice-ui/react-runtime': 0.8.1(@rbxts/react-roblox@17.3.7-ts.1(@rbxts/react@17.3.7-ts.1))(@rbxts/react@17.3.7-ts.1)
+      '@rbxts/react': 17.3.7-ts.1
+      '@rbxts/react-roblox': 17.3.7-ts.1(@rbxts/react@17.3.7-ts.1)
+
   '@lattice-ui/react-layer@0.8.0(@rbxts/react-roblox@17.3.7-ts.1(@rbxts/react@17.3.7-ts.1))(@rbxts/react@17.3.7-ts.1)':
     dependencies:
       '@lattice-ui/react-focus': 0.8.0(@rbxts/react-roblox@17.3.7-ts.1(@rbxts/react@17.3.7-ts.1))(@rbxts/react@17.3.7-ts.1)
       '@lattice-ui/react-runtime': 0.8.0(@rbxts/react-roblox@17.3.7-ts.1(@rbxts/react@17.3.7-ts.1))(@rbxts/react@17.3.7-ts.1)
+      '@rbxts/react': 17.3.7-ts.1
+      '@rbxts/react-roblox': 17.3.7-ts.1(@rbxts/react@17.3.7-ts.1)
+
+  '@lattice-ui/react-layer@0.8.1(@rbxts/react-roblox@17.3.7-ts.1(@rbxts/react@17.3.7-ts.1))(@rbxts/react@17.3.7-ts.1)':
+    dependencies:
+      '@lattice-ui/react-focus': 0.8.1(@rbxts/react-roblox@17.3.7-ts.1(@rbxts/react@17.3.7-ts.1))(@rbxts/react@17.3.7-ts.1)
+      '@lattice-ui/react-runtime': 0.8.1(@rbxts/react-roblox@17.3.7-ts.1(@rbxts/react@17.3.7-ts.1))(@rbxts/react@17.3.7-ts.1)
       '@rbxts/react': 17.3.7-ts.1
       '@rbxts/react-roblox': 17.3.7-ts.1(@rbxts/react@17.3.7-ts.1)
 
@@ -2087,6 +2148,30 @@ snapshots:
       '@rbxts/react': 17.3.7-ts.1
       '@rbxts/react-roblox': 17.3.7-ts.1(@rbxts/react@17.3.7-ts.1)
       '@rbxts/services': 1.6.0
+
+  '@lattice-ui/react-motion@0.8.1(@rbxts/react-roblox@17.3.7-ts.1(@rbxts/react@17.3.7-ts.1))(@rbxts/react@17.3.7-ts.1)':
+    dependencies:
+      '@lattice-ui/react-runtime': 0.8.1(@rbxts/react-roblox@17.3.7-ts.1(@rbxts/react@17.3.7-ts.1))(@rbxts/react@17.3.7-ts.1)
+      '@rbxts/react': 17.3.7-ts.1
+      '@rbxts/react-roblox': 17.3.7-ts.1(@rbxts/react@17.3.7-ts.1)
+      '@rbxts/services': 1.6.0
+
+  '@lattice-ui/react-popover@0.8.1(@rbxts/react-roblox@17.3.7-ts.1(@rbxts/react@17.3.7-ts.1))(@rbxts/react@17.3.7-ts.1)':
+    dependencies:
+      '@lattice-ui/react-focus': 0.8.1(@rbxts/react-roblox@17.3.7-ts.1(@rbxts/react@17.3.7-ts.1))(@rbxts/react@17.3.7-ts.1)
+      '@lattice-ui/react-layer': 0.8.1(@rbxts/react-roblox@17.3.7-ts.1(@rbxts/react@17.3.7-ts.1))(@rbxts/react@17.3.7-ts.1)
+      '@lattice-ui/react-motion': 0.8.1(@rbxts/react-roblox@17.3.7-ts.1(@rbxts/react@17.3.7-ts.1))(@rbxts/react@17.3.7-ts.1)
+      '@lattice-ui/react-popper': 0.8.1(@rbxts/react-roblox@17.3.7-ts.1(@rbxts/react@17.3.7-ts.1))(@rbxts/react@17.3.7-ts.1)
+      '@lattice-ui/react-runtime': 0.8.1(@rbxts/react-roblox@17.3.7-ts.1(@rbxts/react@17.3.7-ts.1))(@rbxts/react@17.3.7-ts.1)
+      '@rbxts/react': 17.3.7-ts.1
+      '@rbxts/react-roblox': 17.3.7-ts.1(@rbxts/react@17.3.7-ts.1)
+
+  '@lattice-ui/react-popper@0.8.1(@rbxts/react-roblox@17.3.7-ts.1(@rbxts/react@17.3.7-ts.1))(@rbxts/react@17.3.7-ts.1)':
+    dependencies:
+      '@lattice-ui/react-motion': 0.8.1(@rbxts/react-roblox@17.3.7-ts.1(@rbxts/react@17.3.7-ts.1))(@rbxts/react@17.3.7-ts.1)
+      '@lattice-ui/react-runtime': 0.8.1(@rbxts/react-roblox@17.3.7-ts.1(@rbxts/react@17.3.7-ts.1))(@rbxts/react@17.3.7-ts.1)
+      '@rbxts/react': 17.3.7-ts.1
+      '@rbxts/react-roblox': 17.3.7-ts.1(@rbxts/react@17.3.7-ts.1)
 
   '@lattice-ui/react-progress@0.8.0(@rbxts/react-roblox@17.3.7-ts.1(@rbxts/react@17.3.7-ts.1))(@rbxts/react@17.3.7-ts.1)':
     dependencies:
@@ -2105,6 +2190,11 @@ snapshots:
       '@rbxts/react-roblox': 17.3.7-ts.1(@rbxts/react@17.3.7-ts.1)
 
   '@lattice-ui/react-runtime@0.8.0(@rbxts/react-roblox@17.3.7-ts.1(@rbxts/react@17.3.7-ts.1))(@rbxts/react@17.3.7-ts.1)':
+    dependencies:
+      '@rbxts/react': 17.3.7-ts.1
+      '@rbxts/react-roblox': 17.3.7-ts.1(@rbxts/react@17.3.7-ts.1)
+
+  '@lattice-ui/react-runtime@0.8.1(@rbxts/react-roblox@17.3.7-ts.1(@rbxts/react@17.3.7-ts.1))(@rbxts/react@17.3.7-ts.1)':
     dependencies:
       '@rbxts/react': 17.3.7-ts.1
       '@rbxts/react-roblox': 17.3.7-ts.1(@rbxts/react@17.3.7-ts.1)

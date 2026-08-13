@@ -21,6 +21,8 @@
     "@lattice-ui/react-focus": "^0.8.0",
     "@lattice-ui/react-layer": "^0.8.0",
     "@lattice-ui/react-motion": "^0.8.0",
+    "@lattice-ui/react-popover": "^0.8.0",
+    "@lattice-ui/react-popper": "^0.8.0",
     "@lattice-ui/react-progress": "^0.8.0",
     "@lattice-ui/react-radio-group": "^0.8.0",
     "@lattice-ui/react-runtime": "^0.8.0",
