@@ -20,7 +20,8 @@ import { type ClassName, cn } from "~/lib/utils";
  * docs/decisions/luau-register-limit.md.
  */
 export const checkboxVariants = {
-  root: fv("size-4 rounded-sm border border-input transition duration-150"),
+  // `rounded-sm` is shadcn's `rounded-[4px]` by another name — both are 4px.
+  root: fv("shrink-0 size-4 rounded-sm border border-input shadow-sm transition duration-150"),
   indicator: fv("size-full flex-row items-center justify-center"),
   // The glyph is a text instance of its own, and nothing inherits: without a
   // `font-*` it would render in LegacyArial, not in the theme's typeface.

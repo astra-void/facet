@@ -12,40 +12,60 @@ import { TextSlot } from "~/lib/text";
 import { cn } from "~/lib/utils";
 
 // `w-fit` is load-bearing: padding does not grow a frame on Roblox, so without
-// an automatic width this renders zero pixels wide. The `icon` size overrides it
-// with a concrete `w-9`, and the later token wins.
+// an automatic width this renders zero pixels wide. The `icon*` sizes override it
+// with a concrete `size-*`, and the later token wins.
+//
+// The size names are shadcn's, which means the default one is called `default`
+// and not `md`. shadcn's set is eight: four that hug a label and four square ones
+// for a lone glyph.
 export const buttonVariants = fv(
-  "flex-row items-center justify-center gap-2 w-fit rounded-md transition duration-150",
+  "flex-row shrink-0 items-center justify-center gap-2 w-fit rounded-md transition duration-150",
   {
     variants: {
       variant: {
         default: "bg-primary hover:bg-primary/90",
         destructive: "bg-destructive hover:bg-destructive/90",
-        outline: "border border-input bg-background hover:bg-accent",
+        outline: "border border-input bg-background shadow-sm hover:bg-accent",
         secondary: "bg-secondary hover:bg-secondary/80",
         ghost: "hover:bg-accent",
         link: "",
       },
       size: {
-        sm: "h-8 px-3",
-        md: "h-9 px-4",
+        xs: "h-6 gap-1 px-2",
+        sm: "h-8 gap-1.5 px-3",
+        default: "h-9 px-4 py-2",
         lg: "h-10 px-6",
-        icon: "h-9 w-9",
+        icon: "size-9",
+        "icon-xs": "size-6",
+        "icon-sm": "size-8",
+        "icon-lg": "size-10",
       },
     },
     defaultVariants: {
       variant: "default",
-      size: "md",
+      size: "default",
     },
   },
 );
 
 // Nothing inherits on Roblox, so the label needs its own recipe rather than
 // picking up `text-*` from the button.
-export const buttonLabelVariants = fv("font-medium", {
+//
+// Only `xs` changes the type size. shadcn's base is `text-sm` and no size but
+// `xs` overrides it — a `lg` button is a taller button, not a bigger typeface.
+//
+// One token from shadcn is deliberately absent: `hover:text-accent-foreground`
+// on `outline` and `ghost`. Vela supports `hover:`, but a Roblox hover fires per
+// instance, and the label is a child of the button — so the colour would change
+// only while the pointer was over the glyphs themselves, not over the padding
+// the background already lit up. A half-working hover is worse than none.
+export const buttonLabelVariants = fv("whitespace-nowrap text-sm font-medium", {
   variants: {
     variant: {
       default: "text-primary-foreground",
+      // shadcn writes a literal `text-white` here. Facet's theme still defines
+      // the role Tailwind v4 dropped, and naming it keeps a retheme a config
+      // edit. Same call as `badge`'s.
       destructive: "text-destructive-foreground",
       outline: "text-foreground",
       secondary: "text-secondary-foreground",
@@ -53,15 +73,19 @@ export const buttonLabelVariants = fv("font-medium", {
       link: "text-primary",
     },
     size: {
+      xs: "text-xs",
       sm: "text-sm",
-      md: "text-sm",
-      lg: "text-base",
+      default: "text-sm",
+      lg: "text-sm",
       icon: "text-sm",
+      "icon-xs": "text-xs",
+      "icon-sm": "text-sm",
+      "icon-lg": "text-sm",
     },
   },
   defaultVariants: {
     variant: "default",
-    size: "md",
+    size: "default",
   },
 });
 

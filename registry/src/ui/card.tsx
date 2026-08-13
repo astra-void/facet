@@ -14,6 +14,13 @@ import { type ClassName, cn } from "~/lib/utils";
  * alone when no `font-*` token appears, and Roblox's untouched default is
  * LegacyArial — a different typeface at a visibly different size from the
  * SourceSansPro every other label here resolves to.
+ *
+ * shadcn has a seventh part, `CardAction`, and this file does not. It is placed
+ * entirely by grid — `col-start-2 row-span-2 justify-self-end` inside a header
+ * that is a two-column grid — and Vela lowers `grid` to a `UIGridLayout` with
+ * uniform cells, which cannot express any of those three. A part that cannot
+ * position itself is worse than no part; put the action in the header and give
+ * it `self-end`.
  */
 /**
  * One object rather than six exported recipes, and it is not a style choice:
@@ -25,12 +32,18 @@ import { type ClassName, cn } from "~/lib/utils";
  * one. See docs/decisions/luau-register-limit.md.
  */
 export const cardVariants = {
-  root: fv("flex-col w-full h-fit rounded-lg border border-border bg-card"),
-  header: fv("flex-col w-full h-fit gap-1 p-6"),
-  title: fv("w-full h-fit whitespace-normal text-left text-xl font-semibold text-card-foreground"),
-  description: fv("w-full h-fit whitespace-normal leading-tight text-left text-xs font-normal text-muted-foreground"),
-  content: fv("flex-col w-full h-fit gap-2 px-6 pb-6"),
-  footer: fv("flex-row items-center w-full h-fit gap-2 px-6 pb-6"),
+  // The padding is split the way shadcn splits it, and the split is the point:
+  // the vertical padding is the card's (`py-6`), the horizontal is each part's
+  // (`px-6`). That is what lets a part run edge to edge — a full-bleed image in
+  // `CardContent` — by dropping one class instead of unpicking the card's.
+  root: fv("flex-col w-full h-fit gap-6 rounded-xl border border-border bg-card py-6 shadow"),
+  header: fv("flex-col w-full h-fit gap-2 px-6"),
+  // `text-base` is the browser's inherited body size restated; shadcn's title
+  // sets weight and leading only. It is not `text-xl`.
+  title: fv("w-full h-fit whitespace-normal leading-none text-left text-base font-semibold text-card-foreground"),
+  description: fv("w-full h-fit whitespace-normal leading-tight text-left text-sm font-normal text-muted-foreground"),
+  content: fv("flex-col w-full h-fit px-6"),
+  footer: fv("flex-row items-center w-full h-fit px-6"),
 };
 
 // Wrapping and alignment are classes: Roblox centres text and leaves it on one

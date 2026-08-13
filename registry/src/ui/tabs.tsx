@@ -25,9 +25,11 @@ import { type ClassName, cn } from "~/lib/utils";
  */
 export const tabsVariants = {
   root: fv("flex-col gap-2 w-full h-fit"),
-  list: fv("flex-row items-center justify-center gap-1 w-fit h-9 rounded-lg bg-muted p-1"),
-  trigger: fv("flex-row items-center justify-center h-7 w-fit px-3 rounded-md transition duration-150"),
-  triggerLabel: fv("text-sm font-medium text-muted-foreground"),
+  list: fv("flex-row items-center justify-center w-fit h-9 rounded-lg bg-muted p-1"),
+  trigger: fv(
+    "flex-row items-center justify-center gap-1.5 h-7 w-fit px-2 py-1 rounded-md border border-transparent transition duration-150",
+  ),
+  triggerLabel: fv("whitespace-nowrap text-sm font-medium text-foreground/60"),
   content: fv("flex-col gap-2 w-full h-fit"),
 };
 

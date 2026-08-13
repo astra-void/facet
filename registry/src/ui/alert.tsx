@@ -14,15 +14,25 @@ import { type ClassName, cn } from "~/lib/utils";
  * alert above it.
  */
 export const alertVariants = {
-  root: fv("flex-col w-full h-fit gap-1 rounded-lg border p-4", {
+  // `px-4 py-3` and `gap-y-0.5` are shadcn's, to the pixel. What is not shadcn's
+  // is `flex-col`: the original is a two-column grid whose empty first column
+  // reserves room for an icon, and Vela's `grid` lowers to a `UIGridLayout` with
+  // uniform cells — it cannot express `grid-cols-[0_1fr]`. A column is the
+  // honest shape for a component that has no icon slot here.
+  root: fv("flex-col w-full h-fit gap-0.5 rounded-lg border border-border px-4 py-3", {
     variants: {
       variant: {
-        default: "bg-card border-border",
-        destructive: "bg-card border-destructive",
+        default: "bg-card",
+        // shadcn's destructive alert keeps the default border and recolours the
+        // text only. It looked like an oversight and is not one: the variant is
+        // `bg-card text-destructive`.
+        destructive: "bg-card",
       },
     },
     defaultVariants: { variant: "default" },
   }),
+  // `text-sm` on both parts is the root's `text-sm` restated: shadcn sets it
+  // once on the root and lets it cascade, and nothing cascades here.
   title: fv("w-full h-fit whitespace-normal text-left text-sm font-medium", {
     variants: {
       variant: {
@@ -32,11 +42,12 @@ export const alertVariants = {
     },
     defaultVariants: { variant: "default" },
   }),
-  description: fv("w-full h-fit whitespace-normal leading-tight text-left text-xs font-normal", {
+  description: fv("w-full h-fit whitespace-normal leading-tight text-left text-sm font-normal", {
     variants: {
       variant: {
         default: "text-muted-foreground",
-        destructive: "text-destructive",
+        // shadcn dims this one against the title: `text-destructive/90`.
+        destructive: "text-destructive/90",
       },
     },
     defaultVariants: { variant: "default" },

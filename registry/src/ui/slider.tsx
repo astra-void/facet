@@ -15,9 +15,9 @@ import { type ClassName, cn } from "~/lib/utils";
  * docs/decisions/luau-register-limit.md.
  */
 export const sliderVariants = {
-  track: fv("h-2 w-full rounded-full bg-secondary"),
+  track: fv("h-1.5 w-full rounded-full bg-muted"),
   range: fv("rounded-full bg-primary"),
-  thumb: fv("size-4 rounded-full border border-primary bg-background"),
+  thumb: fv("shrink-0 size-4 rounded-full border border-primary bg-background shadow"),
 };
 
 export type SliderProps = {

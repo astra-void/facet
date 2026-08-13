@@ -30,10 +30,13 @@ export const accordionVariants = {
   // one-pixel frames between children, and leaves no rule under the last item.
   root: fv("flex-col w-full h-fit divide-y divide-border"),
   item: fv("flex-col w-full h-fit"),
-  trigger: fv("flex-row items-center justify-between w-full h-fit py-4"),
+  // `items-start` is shadcn's, and it is the one that matters when the heading
+  // wraps: the chevron stays level with the first line rather than drifting to
+  // the middle of the block.
+  trigger: fv("flex-row items-start justify-between w-full h-fit gap-4 rounded-md py-4"),
   triggerLabel: fv("text-left text-sm font-medium text-foreground"),
   chevron: fv("size-fit text-xs font-normal text-muted-foreground text-center"),
-  content: fv("flex-col gap-2 w-full h-fit pb-4"),
+  content: fv("flex-col gap-2 w-full h-fit overflow-hidden pb-4"),
   contentText: fv("w-full h-fit whitespace-normal text-left text-sm font-normal text-muted-foreground"),
 };
 

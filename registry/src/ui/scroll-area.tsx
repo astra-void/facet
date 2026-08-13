@@ -26,7 +26,11 @@ import { type ClassName, cn } from "~/lib/utils";
 export const scrollAreaVariants = {
   root: fv("w-full h-full overflow-hidden"),
   viewport: fv("size-full scrollbar-none"),
-  scrollbar: fv("rounded-full"),
+  // `p-px` is shadcn's. Its inner `border-l-transparent` is a per-side border,
+  // which Vela rejects outright — the padding is what that border was buying.
+  // The bar's own thickness is set at the call site with its position, because
+  // both depend on `orientation`.
+  scrollbar: fv("p-px rounded-full"),
   thumb: fv("rounded-full bg-border"),
 };
 
@@ -75,7 +79,7 @@ export function ScrollBar(props: ScrollBarProps) {
     <ScrollAreaPrimitive.Scrollbar
       className={scrollAreaVariants.scrollbar({
         className: cn(
-          orientation === "vertical" ? "right-0 top-0 h-full w-2" : "bottom-0 left-0 w-full h-2",
+          orientation === "vertical" ? "right-0 top-0 h-full w-2.5" : "bottom-0 left-0 w-full h-2.5",
           props.className,
         ),
       })}

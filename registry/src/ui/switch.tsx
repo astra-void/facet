@@ -20,7 +20,14 @@ import { type ClassName, cn } from "~/lib/utils";
  * any thumb size. This file only says what the thumb looks like.
  */
 export const switchVariants = {
-  root: fv("h-5 w-9 rounded-full transition duration-150"),
+  // shadcn's track is `h-[1.15rem] w-8` — 18.4 by 32. `h-4.5` is 18, the nearest
+  // step Vela has, and the half-pixel is not one Roblox could draw anyway.
+  //
+  // Not carried over: shadcn's `border border-transparent`. There it keeps an
+  // unfocused switch the same size as a focused one under `box-sizing`; Vela
+  // lowers a border onto a `UIStroke` drawn *on* the border, which changes no
+  // size, so the token would buy an instance and nothing else.
+  root: fv("h-4.5 w-8 rounded-full shadow-sm transition duration-150"),
   thumb: fv("size-4 rounded-full bg-background"),
 };
 

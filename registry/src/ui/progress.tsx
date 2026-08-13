@@ -10,7 +10,14 @@ import { type ClassName, cn } from "~/lib/utils";
  * back and forth when `indeterminate`. This file only says what both look like.
  */
 export const progressVariants = {
-  root: fv("h-2 w-full rounded-full bg-secondary overflow-hidden"),
+  // The track is `bg-primary/20`, not `bg-secondary`: shadcn's is the accent
+  // colour at a fifth opacity, so the bar and its groove are the same hue and a
+  // retheme moves both. `bg-secondary` was a different role that happened to
+  // look similar in the zinc ramp.
+  root: fv("h-2 w-full rounded-full bg-primary/20 overflow-hidden"),
+  // `rounded-full` here is not in shadcn's, which relies on the track's
+  // `overflow-hidden` to round the fill's leading edge. Roblox clips to a
+  // rectangle, so the corner has to be on the indicator itself.
   indicator: fv("rounded-full bg-primary"),
 };
 

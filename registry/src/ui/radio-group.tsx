@@ -15,8 +15,11 @@ import { type ClassName, cn } from "~/lib/utils";
  * docs/decisions/luau-register-limit.md.
  */
 export const radioGroupVariants = {
-  root: fv("flex-col gap-2 w-fit h-fit"),
-  item: fv("size-4 rounded-full border border-input transition duration-150"),
+  // `gap-3` is shadcn's. Its root is a single-column `grid`, which Vela lowers
+  // to a `UIGridLayout` with uniform cells — a column of radios is not uniform,
+  // so `flex-col` is the shape and the gap is the part that carries over.
+  root: fv("flex-col gap-3 w-fit h-fit"),
+  item: fv("shrink-0 size-4 rounded-full border border-input shadow-sm transition duration-150"),
   indicator: fv("size-full flex-row items-center justify-center"),
   dot: fv("size-2 rounded-full bg-primary"),
 };

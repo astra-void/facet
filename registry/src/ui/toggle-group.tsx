@@ -23,8 +23,10 @@ import { type ClassName, cn } from "~/lib/utils";
  */
 export const toggleGroupVariants = {
   root: fv("flex-row items-center gap-1 w-fit h-fit"),
-  item: fv("flex-row items-center justify-center h-9 w-fit px-3 rounded-md transition duration-150 hover:bg-muted"),
-  label: fv("text-sm font-medium text-foreground"),
+  item: fv(
+    "flex-row items-center justify-center gap-2 h-9 w-fit min-w-9 px-2 rounded-md transition duration-150 hover:bg-muted",
+  ),
+  label: fv("whitespace-nowrap text-sm font-medium text-foreground"),
 };
 
 type ToggleGroupContextValue = {

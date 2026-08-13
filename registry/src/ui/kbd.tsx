@@ -6,25 +6,36 @@ import { type ClassName, cn } from "~/lib/utils";
 /**
  * A key cap — `Ctrl`, `⌘`, `E`.
  *
- * `size-fit` with padding rather than a fixed square: a cap has to hold `Ctrl`
- * as readily as `E`, and Roblox will not infer that width for us.
+ * Fixed height, fitted width, and a floor under the width: `h-5 w-fit min-w-5`
+ * is shadcn's, and it is what makes `E` a square and `Backspace` a lozenge from
+ * the same recipe. Vela lowers `min-w-5` onto a `UISizeConstraint`.
+ *
+ * No border. shadcn's cap is a filled `bg-muted` block and nothing more — the
+ * outline this file used to draw was an invention.
  */
 export const kbdVariants = fv(
-  "flex-row items-center justify-center size-fit rounded-md border border-border bg-muted px-1.5 py-0.5",
+  "flex-row items-center justify-center gap-1 w-fit h-5 min-w-5 rounded-sm bg-muted px-1 pointer-events-none",
 );
 
 /**
- * `font-mono` is a family here, not a weight — Vela resolves it to RobotoMono
+ * `font-sans` is a family, not a weight — Vela resolves it to SourceSansPro
  * against `theme.fontFamily`, where the weights resolve against something else
- * entirely. It is the one place in the registry where the mandatory `font-*`
- * (see registry-design.md §4) is picking a typeface on purpose rather than
- * naming a weight to avoid Roblox's LegacyArial default.
+ * entirely. shadcn names it explicitly here because a `<kbd>` element is
+ * monospace by user-agent default and the cap is not meant to be; Roblox has no
+ * such default, so the token is carried over for the meaning rather than the
+ * correction.
  */
-export const kbdLabelVariants = fv("text-xs font-mono text-muted-foreground");
+export const kbdLabelVariants = fv("whitespace-nowrap text-xs font-sans font-medium text-muted-foreground");
+
+/** A run of caps read as one shortcut — `Ctrl` `Shift` `P`. */
+export const kbdGroupVariants = fv("flex-row items-center gap-1 size-fit");
 
 export type KbdProps = { className?: ClassName; Text?: string; children?: React.ReactNode } & PassthroughProps<Frame>;
 
+export type KbdGroupProps = { className?: ClassName; children?: React.ReactNode } & PassthroughProps<Frame>;
+
 const OWN_PROPS = ["className", "Text", "children"] as const;
+const GROUP_OWN_PROPS = ["className", "children"] as const;
 
 const NEUTRAL_PROPS = {
   BackgroundTransparency: 1,
@@ -41,6 +52,18 @@ export function Kbd(props: KbdProps) {
       <TextSlot Text={props.Text} className={kbdLabelVariants()}>
         {props.children}
       </TextSlot>
+    </frame>
+  );
+}
+
+export function KbdGroup(props: KbdGroupProps) {
+  return (
+    <frame
+      className={cn(kbdGroupVariants({ className: props.className }))}
+      {...NEUTRAL_PROPS}
+      {...getPassthroughProps<Frame>(props, GROUP_OWN_PROPS)}
+    >
+      {props.children}
     </frame>
   );
 }

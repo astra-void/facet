@@ -4,7 +4,7 @@ import { cn } from "~/lib/utils";
 
 // Both axes are concrete on each orientation, so this needs no `AutomaticSize`.
 // `h-px` is one pixel, not a spacing step.
-export const separatorVariants = fv("bg-border", {
+export const separatorVariants = fv("shrink-0 bg-border", {
   variants: {
     orientation: {
       horizontal: "w-full h-px",

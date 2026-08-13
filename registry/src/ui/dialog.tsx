@@ -33,16 +33,16 @@ export const dialogVariants = {
   // shadcn's light theme and its dark one alike, and every role that stays dark
   // in both modes stays dark by coincidence. `overlayClassName` is the way out.
   // See docs/decisions/overlay-scrim.md.
-  overlay: fv("bg-black/80"),
+  overlay: fv("bg-black/50"),
   // `mx-auto my-auto` is the centring: Vela lowers each to `AnchorPoint` 0.5
   // plus `Position` 0.5 on that axis. It works because the primitive's content
   // host spans the layer and lays nothing out, so this frame positions itself
   // inside it.
-  content: fv("flex-col gap-4 w-96 h-fit mx-auto my-auto rounded-lg border border-border bg-background p-6"),
+  content: fv("flex-col gap-4 w-128 h-fit mx-auto my-auto rounded-lg border border-border bg-background p-6 shadow-lg"),
   close: fv("size-6 self-end rounded-md text-sm font-normal text-muted-foreground hover:bg-accent"),
   header: fv("flex-col w-full h-fit gap-2"),
   footer: fv("flex-row items-center justify-end w-full h-fit gap-2"),
-  title: fv("w-full h-fit whitespace-normal text-left text-lg font-semibold text-foreground"),
+  title: fv("w-full h-fit whitespace-normal leading-none text-left text-lg font-semibold text-foreground"),
   description: fv("w-full h-fit whitespace-normal leading-tight text-left text-sm font-normal text-muted-foreground"),
 };
 
@@ -73,7 +73,7 @@ export type DialogContentProps = {
   /** Styles the dim behind the panel. `DialogContent` renders its own overlay. */
   overlayClassName?: ClassName;
   /** The ✕ in the panel's top-right. Pass `false` when the only way out is a footer button. */
-  showClose?: boolean;
+  showCloseButton?: boolean;
   /** Fires before an outside press dismisses; `event.preventDefault()` keeps the dialog open. */
   onPointerDownOutside?: (event: LayerInteractEvent) => void;
   onInteractOutside?: (event: LayerInteractEvent) => void;
@@ -99,7 +99,7 @@ const OVERLAY_OWN_PROPS = ["className", "children"] as const;
 const CONTENT_OWN_PROPS = [
   "className",
   "overlayClassName",
-  "showClose",
+  "showCloseButton",
   "onPointerDownOutside",
   "onInteractOutside",
   "children",
@@ -162,7 +162,7 @@ export function DialogContent(props: DialogContentProps) {
               takes its own line at the top instead, pushed right by `self-end`
               (a `UIFlexItem`), and the glyph is text — replace it to use your
               own artwork. */}
-          {props.showClose === false ? undefined : (
+          {props.showCloseButton === false ? undefined : (
             <DialogPrimitive.Close className={cn(dialogVariants.close())} Text="✕" />
           )}
           {props.children}

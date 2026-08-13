@@ -17,10 +17,10 @@ import { type ClassName, cn } from "~/lib/utils";
 export const textareaVariants = {
   root: fv("flex-col gap-2 w-full h-fit"),
   input: fv(
-    "w-full rounded-md border border-input px-3 py-2 text-left text-sm font-normal text-foreground placeholder-muted-foreground focus:border-ring",
+    "w-full min-h-16 rounded-md border border-input shadow-sm px-3 py-2 text-left text-sm font-normal text-foreground placeholder-muted-foreground focus:border-ring",
   ),
   label: fv("w-full h-fit text-left text-sm font-medium text-foreground"),
-  description: fv("w-full h-fit whitespace-normal text-left text-xs font-normal text-muted-foreground"),
+  description: fv("w-full h-fit whitespace-normal leading-normal text-left text-sm font-normal text-muted-foreground"),
 };
 
 export type TextareaProps = {
