@@ -4,6 +4,17 @@ import { createPortal, createRoot } from "@rbxts/react-roblox";
 import { Players } from "@rbxts/services";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "../shared/ui/accordion";
 import { Alert, AlertDescription, AlertTitle } from "../shared/ui/alert";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "../shared/ui/alert-dialog";
 import { Avatar, AvatarFallback, AvatarImage } from "../shared/ui/avatar";
 import { Badge } from "../shared/ui/badge";
 import { Button } from "../shared/ui/button";
@@ -19,12 +30,30 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "../shared/ui/dialog";
-import { Kbd } from "../shared/ui/kbd";
+import { Kbd, KbdGroup } from "../shared/ui/kbd";
 import { Label } from "../shared/ui/label";
+import {
+  Popover,
+  PopoverContent,
+  PopoverDescription,
+  PopoverHeader,
+  PopoverTitle,
+  PopoverTrigger,
+} from "../shared/ui/popover";
 import { Progress } from "../shared/ui/progress";
 import { RadioGroup, RadioGroupItem } from "../shared/ui/radio-group";
 import { ScrollArea } from "../shared/ui/scroll-area";
 import { Separator } from "../shared/ui/separator";
+import {
+  Sheet,
+  SheetClose,
+  SheetContent,
+  SheetDescription,
+  SheetFooter,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "../shared/ui/sheet";
 import { Skeleton } from "../shared/ui/skeleton";
 import { Slider } from "../shared/ui/slider";
 import { Switch } from "../shared/ui/switch";
@@ -72,10 +101,13 @@ function Keys() {
   return (
     <frame className="w-full flex-row items-center gap-2" AutomaticSize={Enum.AutomaticSize.Y}>
       <Label Text="Press" />
-      <Kbd Text="Ctrl" />
-      <Kbd Text="E" />
-      {/* A cap has to hold a word as readily as a letter, which is what
-          `size-fit` plus padding is for. */}
+      {/* The group is the shortcut; the caps inside it are the keys. `E` should
+          come out square on `min-w-5` and `Backspace` a lozenge on `w-fit`,
+          from the one recipe. */}
+      <KbdGroup>
+        <Kbd Text="Ctrl" />
+        <Kbd Text="E" />
+      </KbdGroup>
       <Kbd Text="Backspace" />
     </frame>
   );
@@ -124,6 +156,15 @@ function Avatars() {
       </Avatar>
       <Avatar>
         <AvatarFallback Text="RF" />
+      </Avatar>
+      {/* `size` has to reach the fallback too — the small one drops to `text-xs`
+          and the other two hold at `text-sm`, which is the whole reason shadcn's
+          `group-data-[size]` selector needed replacing with a second prop. */}
+      <Avatar size="sm">
+        <AvatarFallback size="sm" Text="S" />
+      </Avatar>
+      <Avatar size="lg">
+        <AvatarFallback size="lg" Text="L" />
       </Avatar>
     </frame>
   );
@@ -285,45 +326,210 @@ function RadioGroups() {
  * Two of them, because the dismissal paths differ. The first takes every one —
  * the corner ✕, the overlay, and a footer `DialogClose`. The second refuses the
  * outside press and drops the ✕, so the footer button is the only way out.
+ *
+ * Every trigger and close in the layered scenes spells out `button`'s
+ * `size="sm"` recipe as a literal class string rather than reaching for
+ * `asChild` around a `<Button>`, for two reasons Studio turned up:
+ *
+ *  - `asChild` around a *component* loses the primitive's behaviour. `Slot`
+ *    rewrites the `Event` table into React's tag-keyed props, those keys are
+ *    tables, and a component's `getPassthroughProps` skips every non-string
+ *    key — so the handler that opens the dialog never reaches the instance.
+ *    `asChild` onto a bare host element is unaffected; that is the case the
+ *    roadmap verified.
+ *  - the class has to be a literal, not a `const` holding the same string.
+ *    Vela resolves a `className` on a component call site at compile time, and
+ *    wraps a computed one in its runtime host, but a bare identifier is
+ *    neither: it is dropped, and the trigger renders zero by zero.
  */
 function Dialogs() {
   return (
     <frame className="w-full flex-row items-center gap-2" AutomaticSize={Enum.AutomaticSize.Y}>
       <Dialog>
-        <DialogTrigger asChild>
-          <Button size="sm" variant="outline" Text="Open" />
-        </DialogTrigger>
+        <DialogTrigger
+          className="flex-row items-center justify-center w-fit h-8 px-3 rounded-md border border-input bg-background hover:bg-accent text-sm font-medium text-foreground"
+          Text="Open"
+        />
         <DialogContent>
           <DialogHeader>
             <DialogTitle Text="Sell this item?" />
             <DialogDescription Text="It leaves your inventory immediately. This cannot be undone." />
           </DialogHeader>
           <DialogFooter>
-            <DialogClose asChild>
-              <Button size="sm" variant="outline" Text="Cancel" />
-            </DialogClose>
-            <DialogClose asChild>
-              <Button size="sm" variant="destructive" Text="Sell" />
-            </DialogClose>
+            <DialogClose
+              className="flex-row items-center justify-center w-fit h-8 px-3 rounded-md border border-input bg-background hover:bg-accent text-sm font-medium text-foreground"
+              Text="Cancel"
+            />
+            <DialogClose
+              className="flex-row items-center justify-center w-fit h-8 px-3 rounded-md bg-destructive hover:bg-destructive/90 text-sm font-medium text-destructive-foreground"
+              Text="Sell"
+            />
           </DialogFooter>
         </DialogContent>
       </Dialog>
       <Dialog>
-        <DialogTrigger asChild>
-          <Button size="sm" variant="outline" Text="Open (insistent)" />
-        </DialogTrigger>
-        <DialogContent showClose={false} onInteractOutside={(event) => event.preventDefault()}>
+        <DialogTrigger
+          className="flex-row items-center justify-center w-fit h-8 px-3 rounded-md border border-input bg-background hover:bg-accent text-sm font-medium text-foreground"
+          Text="Open (insistent)"
+        />
+        <DialogContent showCloseButton={false} onInteractOutside={(event) => event.preventDefault()}>
           <DialogHeader>
             <DialogTitle Text="Read this first" />
             <DialogDescription Text="Clicking the dim does nothing here — the footer button is the only way out." />
           </DialogHeader>
           <DialogFooter>
-            <DialogClose asChild>
-              <Button size="sm" Text="Understood" />
-            </DialogClose>
+            <DialogClose
+              className="flex-row items-center justify-center w-fit h-8 px-3 rounded-md bg-primary hover:bg-primary/90 text-sm font-medium text-primary-foreground"
+              Text="Understood"
+            />
           </DialogFooter>
         </DialogContent>
       </Dialog>
+    </frame>
+  );
+}
+
+/**
+ * What Studio has to answer here is whether the dim really swallows the press:
+ * the second frame under `AlertDialogContent` is both the scrim and the
+ * outside-press boundary, so clicking anywhere off the panel should do nothing
+ * at all — no close, and no flicker.
+ */
+function AlertDialogs() {
+  return (
+    <frame className="w-full flex-row items-center gap-2" AutomaticSize={Enum.AutomaticSize.Y}>
+      <AlertDialog>
+        <AlertDialogTrigger
+          className="flex-row items-center justify-center w-fit h-8 px-3 rounded-md border border-input bg-background hover:bg-accent text-sm font-medium text-foreground"
+          Text="Delete save"
+        />
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle Text="Delete this save file?" />
+            <AlertDialogDescription Text="Every item, every stat, gone. Clicking the dim will not get you out of this one." />
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel size="sm" Text="Keep it" />
+            <AlertDialogAction size="sm" variant="destructive" Text="Delete" onClick={() => print("deleted")} />
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    </frame>
+  );
+}
+
+/** One trigger per side, because the geometry is the only thing `side` changes. */
+function Sheets() {
+  return (
+    <frame className="w-full flex-row items-center gap-2" AutomaticSize={Enum.AutomaticSize.Y}>
+      <Sheet>
+        <SheetTrigger
+          className="flex-row items-center justify-center w-fit h-8 px-3 rounded-md border border-input bg-background hover:bg-accent text-sm font-medium text-foreground"
+          Text="Right"
+        />
+        <SheetContent>
+          <SheetHeader>
+            <SheetTitle Text="Settings" />
+            <SheetDescription Text="Pinned to the right edge, full height." />
+          </SheetHeader>
+          <SheetFooter>
+            <SheetClose
+              className="flex-row items-center justify-center w-fit h-8 px-3 rounded-md bg-primary hover:bg-primary/90 text-sm font-medium text-primary-foreground"
+              Text="Done"
+            />
+          </SheetFooter>
+        </SheetContent>
+      </Sheet>
+      <Sheet>
+        <SheetTrigger
+          className="flex-row items-center justify-center w-fit h-8 px-3 rounded-md border border-input bg-background hover:bg-accent text-sm font-medium text-foreground"
+          Text="Left"
+        />
+        <SheetContent side="left">
+          <SheetHeader>
+            <SheetTitle Text="Inventory" />
+            <SheetDescription Text="Same panel, other edge." />
+          </SheetHeader>
+        </SheetContent>
+      </Sheet>
+      <Sheet>
+        <SheetTrigger
+          className="flex-row items-center justify-center w-fit h-8 px-3 rounded-md border border-input bg-background hover:bg-accent text-sm font-medium text-foreground"
+          Text="Bottom"
+        />
+        {/* `h-fit` on this side, so the panel is only as tall as what is in it —
+            the axis to watch when the header text wraps. */}
+        <SheetContent side="bottom">
+          <SheetHeader>
+            <SheetTitle Text="Quick actions" />
+            <SheetDescription Text="Spans the width and hugs its own height." />
+          </SheetHeader>
+        </SheetContent>
+      </Sheet>
+    </frame>
+  );
+}
+
+/**
+ * The first scene whose panel is placed against something in *this* tree rather
+ * than against the screen, so it is the first where the portal boundary is
+ * visible: the trigger stays in the scrolling column, the panel leaves for its
+ * own `ScreenGui`, and the popper is what keeps them together.
+ *
+ * One trigger per side, because `placement` is the only thing that moves. Three
+ * of the four are worth watching for different reasons:
+ *
+ *  - `bottom` is the default, and the one whose 4px `sideOffset` should read as
+ *    a visible gap rather than a seam.
+ *  - `top` is the collision case. These triggers sit low in a scrolling column,
+ *    so a panel opening upward is the one that should get nudged back inside
+ *    the screen by `collisionPadding` rather than clipping off it.
+ *  - `right` is the cross-axis case: Lattice's popper centres on the axis it is
+ *    not placing against, so this panel should straddle the trigger's midline —
+ *    there is no `align="start"` to ask for anything else.
+ *
+ * The column scrolls, which is the other thing to watch: an open panel has to
+ * follow its trigger when the page moves under it, or drift off it.
+ */
+function Popovers() {
+  return (
+    <frame className="w-full flex-row items-center gap-2" AutomaticSize={Enum.AutomaticSize.Y}>
+      <Popover>
+        <PopoverTrigger
+          className="flex-row items-center justify-center w-fit h-8 px-3 rounded-md border border-input bg-background hover:bg-accent text-sm font-medium text-foreground"
+          Text="Below"
+        />
+        <PopoverContent>
+          <PopoverHeader>
+            <PopoverTitle Text="Server region" />
+            <PopoverDescription Text="Players are matched to the closest region first." />
+          </PopoverHeader>
+        </PopoverContent>
+      </Popover>
+      <Popover>
+        <PopoverTrigger
+          className="flex-row items-center justify-center w-fit h-8 px-3 rounded-md border border-input bg-background hover:bg-accent text-sm font-medium text-foreground"
+          Text="Above"
+        />
+        <PopoverContent placement="top">
+          <PopoverHeader>
+            <PopoverTitle Text="Opens upward" />
+            <PopoverDescription Text="And gets pushed back on screen when there is no room up there." />
+          </PopoverHeader>
+        </PopoverContent>
+      </Popover>
+      <Popover>
+        <PopoverTrigger
+          className="flex-row items-center justify-center w-fit h-8 px-3 rounded-md border border-input bg-background hover:bg-accent text-sm font-medium text-foreground"
+          Text="Beside"
+        />
+        <PopoverContent placement="right" sideOffset={8}>
+          <PopoverHeader>
+            <PopoverTitle Text="Centred on the trigger" />
+            <PopoverDescription Text="`alignOffset` is the only way to shift it up or down from here." />
+          </PopoverHeader>
+        </PopoverContent>
+      </Popover>
     </frame>
   );
 }
@@ -357,6 +563,9 @@ function Playground() {
           <Textareas />
           <RadioGroups />
           <Dialogs />
+          <AlertDialogs />
+          <Sheets />
+          <Popovers />
           <Card>
             <CardHeader>
               <CardTitle Text="Shop" />

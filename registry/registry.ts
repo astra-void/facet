@@ -303,6 +303,95 @@ export default defineRegistry([
     tokens: ["background", "border", "foreground", "muted-foreground", "accent"],
   },
   {
+    name: "alert-dialog",
+    type: "registry:ui",
+    description: "Confirmation dialog that cannot be dismissed without answering",
+    files: [{ path: "ui/alert-dialog.tsx", type: "registry:ui" }],
+    // The registry's first `registry:ui` depending on another one, and it is the
+    // same edge shadcn's alert-dialog stands on: the two footer buttons wear
+    // `button`'s recipes, so a project that restyles its buttons restyles these.
+    // `text` comes with `button` anyway; it is listed because this file imports
+    // `TextSlot` directly.
+    registryDependencies: ["utils", "text", "button"],
+    dependencies: [
+      "@facet-ui/react-variants@^0.1.1",
+      "@lattice-ui/react-runtime@^0.8.0",
+      "@lattice-ui/react-dialog@^0.8.0",
+      "@lattice-ui/react-layer@^0.8.0",
+    ],
+    providers: [
+      {
+        name: "PortalProvider",
+        package: "@lattice-ui/react-layer",
+        props: { container: "player-gui" },
+        reason: "Lattice reads the portal target from it, and throws when a dialog opens without one",
+      },
+    ],
+    tokens: [
+      "background",
+      "border",
+      "foreground",
+      "muted-foreground",
+      "primary",
+      "primary-foreground",
+      "destructive",
+      "destructive-foreground",
+      "secondary",
+      "secondary-foreground",
+      "accent",
+      "accent-foreground",
+      "input",
+    ],
+  },
+  {
+    name: "sheet",
+    type: "registry:ui",
+    description: "Dialog panel pinned to a screen edge, on any of the four sides",
+    files: [{ path: "ui/sheet.tsx", type: "registry:ui" }],
+    registryDependencies: ["utils"],
+    dependencies: [
+      "@facet-ui/react-variants@^0.1.1",
+      "@lattice-ui/react-runtime@^0.8.0",
+      "@lattice-ui/react-dialog@^0.8.0",
+      "@lattice-ui/react-layer@^0.8.0",
+    ],
+    providers: [
+      {
+        name: "PortalProvider",
+        package: "@lattice-ui/react-layer",
+        props: { container: "player-gui" },
+        reason: "Lattice reads the portal target from it, and throws when a dialog opens without one",
+      },
+    ],
+    tokens: ["background", "border", "foreground", "muted-foreground", "accent"],
+  },
+  {
+    name: "popover",
+    type: "registry:ui",
+    description: "Panel positioned against its trigger, on any of the four sides",
+    files: [{ path: "ui/popover.tsx", type: "registry:ui" }],
+    registryDependencies: ["utils"],
+    // `react-popper` for the `PopperPlacement` type `placement` is spelled in.
+    // It arrives transitively through `react-popover` either way, but a project
+    // has to be able to resolve every module the copied source names.
+    dependencies: [
+      "@facet-ui/react-variants@^0.1.1",
+      "@lattice-ui/react-runtime@^0.8.0",
+      "@lattice-ui/react-popover@^0.8.0",
+      "@lattice-ui/react-popper@^0.8.0",
+      "@lattice-ui/react-layer@^0.8.0",
+    ],
+    providers: [
+      {
+        name: "PortalProvider",
+        package: "@lattice-ui/react-layer",
+        props: { container: "player-gui" },
+        reason: "Lattice reads the portal target from it, and throws when a dialog opens without one",
+      },
+    ],
+    tokens: ["popover", "popover-foreground", "border", "muted-foreground"],
+  },
+  {
     name: "alert",
     type: "registry:ui",
     description: "Alert with title and description parts, default or destructive",
