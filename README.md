@@ -109,18 +109,19 @@ exactly one mode — see [docs/decisions/runtime-theming.md](docs/decisions/runt
 Early, but the whole chain works. All three packages are on npm and the registry is live, so
 `npm i -D facet-rbxts` → `facet init` → `facet add button` → `rbxtsc` compiles in a project set up
 from scratch. Every command the CLI advertises — `list`, `init`, `add`, `remove`, `diff`, `doctor` —
-is written. The registry holds twenty-one components: the pure recipes (`alert`, `badge`, `card`,
+is written. The registry holds twenty-four components: the pure recipes (`alert`, `badge`, `card`,
 `kbd`, `label`, `separator`, `skeleton`), the twelve built on one Lattice primitive (`accordion`,
 `avatar`, `checkbox`, `progress`, `radio-group`, `scroll-area`, `slider`, `switch`, `tabs`,
-`text-field`, `textarea`, `toggle-group`), `button`, `dialog`, and the `utils` and `text` helpers
-they import.
+`text-field`, `textarea`, `toggle-group`), `button`, the four layered ones (`dialog`,
+`alert-dialog`, `sheet`, `popover`), and the `utils` and `text` helpers they import.
 
-`dialog` is the first layered one, and layered components need a `PortalProvider` above the app —
-`facet add` offers to write it into your client entry.
+Layered components need a `PortalProvider` above the app — `facet add` offers to write it into your
+client entry. `alert-dialog` is also the first component that copies another one in with it: its
+footer buttons wear `button`'s recipes, so `facet add alert-dialog` brings `button` along.
 
 What has *not* been checked is how most of it looks. `button`, `badge`, `card`, `label` and
-`separator` have been through Studio; everything after them compiles and type-checks and has never
-been on a screen. Compiling is a static result, and Roblox runtime behavior only shows up in Studio.
+`separator` have been through Studio; the other nineteen compile and type-check and have never been
+on a screen. Compiling is a static result, and Roblox runtime behavior only shows up in Studio.
 See [docs/roadmap.md](docs/roadmap.md).
 
 ## License

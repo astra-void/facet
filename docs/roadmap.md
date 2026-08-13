@@ -83,10 +83,13 @@ one-item `toggle-group` today.
 
 **Layered — needs portals, focus trapping, or popper**:
 
-`dialog` is built, pending Studio verification. Remaining: `alert-dialog` · `popover` · `tooltip` ·
-`dropdown-menu` · `context-menu` · `select` · `combobox` · `toast` · `sheet` · `command`.
-(`dropdown-menu` will wrap `@lattice-ui/react-menu`; there is no `react-dropdown-menu`, and
-`alert-dialog` and `sheet` are both `react-dialog` again with different chrome.)
+`dialog`, `alert-dialog`, `sheet` and `popover` are built, pending Studio verification. The first
+three are `react-dialog` with different chrome; `popover` is the first that places itself against
+something in the page rather than against the screen. Remaining: `tooltip` · `dropdown-menu` ·
+`context-menu` · `select` · `combobox` · `toast` · `command`. (`dropdown-menu` will wrap
+`@lattice-ui/react-menu`; there is no `react-dropdown-menu`. `command` waits on a
+`@lattice-ui/react-command` that does not exist, the way `toggle` waits on `react-toggle`; every
+other primitive on this list is published at 0.8.1.)
 
 Three things `dialog` established that the rest of this tier inherits:
 
@@ -111,10 +114,78 @@ Three things `dialog` established that the rest of this tier inherits:
 What Studio still has to answer is the geometry: whether the panel lands centred, whether the dim
 covers the screen beneath it, and whether the close ✕ sits at the panel's right edge.
 
+**`alert-dialog` cannot use `Dialog.Overlay`, and that is what makes it an alert dialog.** The
+primitive's overlay is a `textbutton` that closes on `Activated`, and it composes that handler in
+itself — a consumer cannot take it off, so an alert dialog built on it would dismiss on a stray
+click, which is the one thing an alert dialog exists not to do.
+
+What replaces it is worth writing down, because it explains `dialog` too. The layer looks for its
+content boundary among `Content`'s **host** children, and a Facet child is never one: an element
+carrying a `className` compiles to Vela's runtime host, which is a component, not a host string. So
+the boundary is always the layer's own full-screen canvas, matched with `boundaryMatchesSelf: false`
+— a press reads as inside when anything under the pointer is a *descendant* of that canvas.
+`dialog`'s panel is such a descendant over its own rect, which is exactly why pressing its dim
+dismisses it. `alert-dialog` adds a descendant that covers the screen: a `size-full` frame inside
+`Content` that is both the dim and the reason no press ever lands outside. The panel is the second
+child with `z-10` so it draws above rather than by sibling order. `onInteractOutside` still fires as
+a notification; there is nothing left for `preventDefault()` to stop.
+
+Nothing blocks the world beneath, and nothing has to: `Dialog.Root` is `modal` by default, so the
+layer already renders its own full-screen `Modal` blocker.
+
+**`sheet` pins to an edge with `origin-*` plus a positional class, because there is no `ml-auto`.**
+`dialog` centres with `mx-auto my-auto`, which Vela special-cases into `AnchorPoint` 0.5 plus
+`Position` 0.5; every other auto margin is consumed and does nothing, so nothing pushes a panel to
+one side. An edge is stated outright instead: `origin-top-right` is the `AnchorPoint`, `right-0` the
+`Position` — and `right-0` lowers to `UDim.new(1, 0)`, measured from the far edge as in CSS, not to
+zero. It works for the same reason the centring does: `Content`'s host spans the screen and lays
+nothing out.
+
+`sheet` also has no `rounded-*` and one whole `border`. It is flush with its edge, so there is
+nothing to round, and Vela lowers `border` onto a `UIStroke`, which has no per-side thickness —
+shadcn's single inner border is not expressible.
+
+`alert-dialog` is the registry's first `registry:ui` that depends on another one: its footer buttons
+wear `buttonVariants` and `buttonLabelVariants`, as shadcn's do, so `facet add alert-dialog` copies
+`button` in too and a project that restyles its buttons restyles these. `resolveItems` already
+walked `registryDependencies` by name, so nothing in the CLI had to change.
+
+What Studio has to answer for these two: whether the dim really swallows the press on `alert-dialog`
+— no close, no flicker — and whether each `side` of a `sheet` lands flush against the right edge,
+including the `h-fit` sides, which are the ones where the automatic-size chain has to hold.
+
+**`popover` inverts the rule about `Content`'s host: here the panel has to be measured, not
+covered.** `dialog` puts a frame inside `Dialog.Content` because that host is forced to span the
+screen. `Popover.Content`'s host is forced to `AutomaticSize.XY` instead — the popper needs
+something to measure before it can place anything — so the frame goes inside for the mirror-image
+reason. A `w-72` on the host would be overridden into a content-hugging width, and the same host is
+the boundary an outside press is measured against, so it has to end up exactly the panel's size.
+The chain is `w-72 h-fit` on the frame, `AutomaticSize.XY` on the host above it, and the popper
+positioning what it measured.
+
+**`side` and `align` collapse into one prop, and it is `placement`.**
+`@lattice-ui/react-popper` takes `"top" | "bottom" | "left" | "right"` and always centres the panel
+on the axis it is not placing against. shadcn's `align="start"` and `align="end"` have no
+equivalent; `alignOffset` shifts along that axis in pixels and is the only way to fake either. The
+other three positioning props map straight across — `sideOffset` (defaulted here to shadcn's 4,
+against the primitive's 0, because an unstyled popover has no border to clear) and
+`collisionPadding`, which is what nudges a panel back on screen instead of letting it clip off.
+
+`popover` keeps its `shadow-md`, and so does every other panel. Vela lowers `shadow-*` onto a
+`UIShadow`, so shadows are expressible after all — what is not expressible is a straight copy of
+shadcn's class, because Vela implements Tailwind v3's names and shadcn is on v4: their `shadow-xs`
+is Vela's `shadow-sm`, their `shadow-sm` is Vela's `shadow`, and `md` upward is the same word.
+See [decisions/shadow-scale.md](decisions/shadow-scale.md).
+
+What Studio has to answer here is whether the popper and the portal agree. The trigger stays in the
+scrolling column and the panel leaves for its own `ScreenGui`, which the layer offsets by the GUI
+inset; whether the panel lands on its trigger, keeps its 4px gap, and *follows* when the column
+scrolls under it are three separate questions, and only the first is visible in a still frame.
+
 **The corner ✕ is not a corner ✕.** shadcn floats it over the panel's top-right; a `UIListLayout`
 positions every child it has, so a floating child inside a `flex-col` panel is not expressible
 without a second frame purely to escape the layout — which is the wrapper §5 says not to add. It
-takes its own line at the top instead, pushed right by `self-end` (a `UIFlexItem`). `showClose`
+takes its own line at the top instead, pushed right by `self-end` (a `UIFlexItem`). `showCloseButton`
 turns it off for a dialog whose only way out is a footer button.
 
 **Blocks** (multi-file compositions, once the singles settle):
