@@ -1,0 +1,38 @@
+{
+  "name": "popover",
+  "type": "registry:ui",
+  "description": "Panel positioned against its trigger, on any of the four sides",
+  "files": [
+    {
+      "path": "ui/popover.tsx",
+      "type": "registry:ui",
+      "content": "import { fv } from \"@facet-ui/react-variants\";\nimport type { LayerInteractEvent } from \"@lattice-ui/react-layer\";\nimport { Popover as PopoverPrimitive } from \"@lattice-ui/react-popover\";\nimport type { PopperPlacement } from \"@lattice-ui/react-popper\";\nimport { getPassthroughProps, type PassthroughProps, React } from \"@lattice-ui/react-runtime\";\nimport { type ClassName, cn } from \"~/lib/utils\";\n\n/**\n * The first component positioned *relative to something else*. `dialog` and\n * `sheet` place a panel against the screen; this one places it against its\n * trigger, and the measurement is entirely Lattice's — `@lattice-ui/react-popper`\n * reads both rects and hands back an `AnchorPoint` and a `Position`. This file\n * says what the panel looks like and how far off the trigger it sits.\n *\n * **A `PortalProvider` has to be above this**, for the reason `dialog` gives:\n * the layer portals into a `BasePlayerGui` it reads from a strict context.\n *\n * **`side` and `align` are one prop here, and it is `placement`.** Lattice's\n * popper takes `\"top\" | \"bottom\" | \"left\" | \"right\"` and always centres the\n * panel on the other axis — shadcn's `align=\"start\"` and `align=\"end\"` have no\n * equivalent. `alignOffset` shifts along that axis in pixels, which is the way\n * to fake either one; `sideOffset` is the gap from the trigger, defaulted to\n * shadcn's 4.\n *\n * **`text-sm` is on the title and the description, not the header.** shadcn puts\n * it on the header once and lets it cascade; nothing cascades in Roblox, so\n * every text part states its own size. See docs/registry-design.md.\n *\n * One recipe object rather than four exports: every exported name costs a Luau\n * register once Vela inlines its runtime. See docs/decisions/luau-register-limit.md.\n */\nexport const popoverVariants = {\n  content: fv(\"flex-col w-72 h-fit rounded-md border border-border bg-popover p-4 shadow-md\"),\n  header: fv(\"flex-col w-full h-fit gap-1\"),\n  title: fv(\"w-full h-fit whitespace-normal text-left text-sm font-medium text-popover-foreground\"),\n  description: fv(\"w-full h-fit whitespace-normal leading-tight text-left text-sm font-normal text-muted-foreground\"),\n};\n\n/**\n * Re-exported unstyled, as shadcn does: the trigger is whatever the consumer\n * puts in it. Reached for bare it is a `textbutton` with Roblox's defaults\n * neutralized and no size of its own, so give it a `className` with both axes\n * resolved.\n *\n * `PopoverAnchor` is the escape hatch for the case the two differ — wrap the\n * element the panel should measure against, and the trigger can sit anywhere.\n * Without one the trigger is the anchor.\n */\nexport const Popover = PopoverPrimitive.Root;\nexport const PopoverTrigger = PopoverPrimitive.Trigger;\nexport const PopoverAnchor = PopoverPrimitive.Anchor;\n\nexport type PopoverContentProps = {\n  className?: ClassName;\n  /** Which side of the anchor the panel sits on. Defaults to `\"bottom\"`. */\n  placement?: PopperPlacement;\n  /** Gap from the anchor, in pixels. Defaults to 4, as shadcn's does. */\n  sideOffset?: number;\n  /** Shift along the other axis. The panel is centred there, so this is what offsets it. */\n  alignOffset?: number;\n  /** How close to the screen edge the panel may land before it is nudged back. */\n  collisionPadding?: number;\n  /** Fires before an outside press dismisses; `event.preventDefault()` keeps the popover open. */\n  onPointerDownOutside?: (event: LayerInteractEvent) => void;\n  onInteractOutside?: (event: LayerInteractEvent) => void;\n  children?: React.ReactNode;\n} & PassthroughProps<Frame>;\n\nexport type PopoverSectionProps = {\n  className?: ClassName;\n  children?: React.ReactNode;\n} & PassthroughProps<Frame>;\n\nexport type PopoverTextProps = {\n  className?: ClassName;\n  Text?: string;\n} & PassthroughProps<TextLabel>;\n\nconst NEUTRAL_PROPS = {\n  BackgroundTransparency: 1,\n  BorderSizePixel: 0,\n};\n\nconst CONTENT_OWN_PROPS = [\n  \"className\",\n  \"placement\",\n  \"sideOffset\",\n  \"alignOffset\",\n  \"collisionPadding\",\n  \"onPointerDownOutside\",\n  \"onInteractOutside\",\n  \"children\",\n] as const;\nconst SECTION_OWN_PROPS = [\"className\", \"children\"] as const;\nconst TEXT_OWN_PROPS = [\"className\", \"Text\"] as const;\n\n// shadcn's default, restated here because Lattice's popper defaults to 0 — an\n// unstyled popover has no border to clear, and this one does.\nconst DEFAULT_SIDE_OFFSET = 4;\n\n/**\n * Portal and panel in one part, like shadcn's.\n *\n * The panel is a frame *inside* `Popover.Content` rather than `Popover.Content`\n * itself, and here that is load-bearing twice over. The primitive forces\n * `AutomaticSize.XY` on its own host so the popper has something to measure, and\n * that would eat `w-72` — a class on the host would be overridden into a\n * content-hugging width. It is also the boundary an outside press is measured\n * against, so it has to end up exactly as large as the panel: the host measures\n * this frame, this frame is `w-72 h-fit`, and the popper positions what it\n * measured.\n */\nexport function PopoverContent(props: PopoverContentProps) {\n  return (\n    <PopoverPrimitive.Portal>\n      <PopoverPrimitive.Content\n        alignOffset={props.alignOffset}\n        collisionPadding={props.collisionPadding}\n        onInteractOutside={props.onInteractOutside}\n        onPointerDownOutside={props.onPointerDownOutside}\n        placement={props.placement}\n        sideOffset={props.sideOffset ?? DEFAULT_SIDE_OFFSET}\n      >\n        <frame\n          className={cn(popoverVariants.content({ className: props.className }))}\n          {...NEUTRAL_PROPS}\n          {...getPassthroughProps<Frame>(props, CONTENT_OWN_PROPS)}\n        >\n          {props.children}\n        </frame>\n      </PopoverPrimitive.Content>\n    </PopoverPrimitive.Portal>\n  );\n}\n\nexport function PopoverHeader(props: PopoverSectionProps) {\n  return (\n    <frame\n      className={cn(popoverVariants.header({ className: props.className }))}\n      {...NEUTRAL_PROPS}\n      {...getPassthroughProps<Frame>(props, SECTION_OWN_PROPS)}\n    >\n      {props.children}\n    </frame>\n  );\n}\n\nexport function PopoverTitle(props: PopoverTextProps) {\n  return (\n    <textlabel\n      className={cn(popoverVariants.title({ className: props.className }))}\n      Text={props.Text ?? \"\"}\n      {...NEUTRAL_PROPS}\n      {...getPassthroughProps<TextLabel>(props, TEXT_OWN_PROPS)}\n    />\n  );\n}\n\nexport function PopoverDescription(props: PopoverTextProps) {\n  return (\n    <textlabel\n      className={cn(popoverVariants.description({ className: props.className }))}\n      Text={props.Text ?? \"\"}\n      {...NEUTRAL_PROPS}\n      {...getPassthroughProps<TextLabel>(props, TEXT_OWN_PROPS)}\n    />\n  );\n}\n"
+    }
+  ],
+  "registryDependencies": [
+    "utils"
+  ],
+  "dependencies": [
+    "@facet-ui/react-variants@^0.1.1",
+    "@lattice-ui/react-runtime@^0.8.0",
+    "@lattice-ui/react-popover@^0.8.0",
+    "@lattice-ui/react-popper@^0.8.0",
+    "@lattice-ui/react-layer@^0.8.0"
+  ],
+  "providers": [
+    {
+      "name": "PortalProvider",
+      "package": "@lattice-ui/react-layer",
+      "props": {
+        "container": "player-gui"
+      },
+      "reason": "Lattice reads the portal target from it, and throws when a dialog opens without one"
+    }
+  ],
+  "tokens": [
+    "popover",
+    "popover-foreground",
+    "border",
+    "muted-foreground"
+  ]
+}
